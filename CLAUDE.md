@@ -23,6 +23,7 @@ JS ES modules, Leaflet 1.9.4 vendored, no build step. Start with `README.md`, th
 
 - `python -m http.server 8000`, open <http://localhost:8000> (`?lang=pt` to force a language).
 - `python tools/build_data.py nuoding --check` validates data without writing.
-- Tiles and `vendor/leaflet` may not be in a fresh checkout; see README "Running it".
+- Tiles and `vendor/leaflet` are committed (GitHub Pages serves the repo as is). Map images under `maps/`
+  are not: never commit them. Regenerate tiles only when a map image changes; see README "Running it".
 - Real Leaflet behavior (zoom, popups, touch) must be checked in a real browser. If you test with a Leaflet
   stub, say so explicitly.

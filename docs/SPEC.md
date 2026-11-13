@@ -32,7 +32,7 @@ the obligation of listing all of them at launch.
 ```text
 index.html
 js/            ES modules: app, layers, model, sidebar, storage, i18n, geo, util
-vendor/leaflet Leaflet 1.9.4 (download steps in README)
+vendor/leaflet Leaflet 1.9.4 (committed, with its LICENSE)
 css/
 icons/         only the icons actually used (not created yet)
 data/
@@ -47,7 +47,8 @@ i18n/
   languages.json, en.json, pt.json, zh.json      UI strings (flat keys)
   entries.<map>.<lang>.json                      entry names/descriptions (generated, always en/pt/zh)
   (planned: items.<lang>.json, markers.<map>.<lang>.json)
-tiles/<map>/{z}/{x}/{y}.webp   generated offline by tools/make_tiles.py
+tiles/<map>/{z}/{x}/{y}.webp   generated offline by tools/make_tiles.py (committed)
+maps/<map>.png  source map image, local only (ignored by git)
 tools/         Python: build_data.py, check_calibration.py, make_tiles.py
 docs/          SPEC.md, ROADMAP.md
 ```

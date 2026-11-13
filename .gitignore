@@ -1,6 +1,5 @@
-# Generated in build
-tiles/
-vendor/
+# Source map images (only the generated tiles are published)
+maps/
 
 # IDE files
 .vscode/

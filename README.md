@@ -10,16 +10,19 @@ backup, en/pt/zh UI and a responsive layout. See the roadmap for what comes next
 
 ## Running it
 
+Tiles and Leaflet 1.9.4 are committed, so a fresh checkout runs as is:
+`python -m http.server 8000` and open http://localhost:8000
+
+Map images are not committed (`maps/` is ignored; only the generated tiles are published). To regenerate
+the tiles after the map image changes (341 files, ~5.6 MB for a 4096x4096 image):
+
 1. `pip install pillow`
-2. Tiles (341 files, ~5 MB for a 4096x4096 image):
-   `python tools/make_tiles.py path/to/nuoding.png tiles/nuoding`
-3. Vendored Leaflet 1.9.4 (Leaflet's PNG images are not needed for now):
-   ```
-   mkdir -p vendor/leaflet
-   curl -L https://unpkg.com/leaflet@1.9.4/dist/leaflet.js  -o vendor/leaflet/leaflet.js
-   curl -L https://unpkg.com/leaflet@1.9.4/dist/leaflet.css -o vendor/leaflet/leaflet.css
-   ```
-4. `python -m http.server 8000` and open http://localhost:8000
+2. `python tools/make_tiles.py maps/nuoding.png tiles/nuoding`
+
+Regenerate tiles only when the image changes: another Pillow version may encode different bytes and bloat
+the history. Leaflet lives in `vendor/leaflet` (`leaflet.js`, `leaflet.css`, `LICENSE`; its PNG images are
+not needed for now). To update it, download the same files for the new version from
+`https://unpkg.com/leaflet@<version>/dist/` and `https://unpkg.com/leaflet@<version>/LICENSE`.
 
 ## Calibration
 
