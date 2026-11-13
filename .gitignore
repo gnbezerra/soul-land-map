@@ -1,9 +1,6 @@
-// Generated in build
+# Generated in build
 tiles/
 vendor/
 
-// IDE files
+# IDE files
 .vscode/
-
-// Erase later
-icons.old/
