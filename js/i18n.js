@@ -34,5 +34,7 @@ export async function loadI18n(lang, mapId) {
     name: entries.map((d) => d[id]?.name).find(Boolean) ?? id,
     description: entries.map((d) => d[id]?.description).find(Boolean) ?? "",
   });
-  return { lang, t, entry };
+  // Translation with {placeholders}: tf("ui.exported", { n: 3 }).
+  const tf = (key, vars = {}) => t(key).replace(/\{(\w+)\}/g, (m, name) => (name in vars ? String(vars[name]) : m));
+  return { lang, t, tf, entry };
 }

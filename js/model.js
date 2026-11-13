@@ -1,9 +1,9 @@
 // Builds the filter/sidebar model from categories, entries and markers.
 // Pure data logic: no DOM and no Leaflet, so it is easy to test.
 
-// Counter text for a type or group. Step 3 will switch this to found/total progress.
-export function formatCount(loaded, expected) {
-  return expected == null ? String(loaded) : `${loaded}/${expected}`;
+// Counter text for a type, entry or group: found / total.
+export function formatCount(found, total) {
+  return `${found}/${total}`;
 }
 
 export function buildModel(categories, entries, markers) {
@@ -16,7 +16,7 @@ export function buildModel(categories, entries, markers) {
       return null;
     }
     if (!types.has(id)) {
-      types.set(id, { id, ...categories.types[id], loaded: 0, expected: null, entries: [] });
+      types.set(id, { id, ...categories.types[id], loaded: 0, expected: null, total: 0, found: 0, markerIds: [], entries: [] });
     }
     return types.get(id);
   }
@@ -25,7 +25,7 @@ export function buildModel(categories, entries, markers) {
   for (const [id, e] of Object.entries(entries)) {
     const type = getType(e.type);
     if (!type) continue;
-    const entry = { id, size: e.size, loaded: 0, tags: e.tags ?? [] };
+    const entry = { id, size: e.size, loaded: 0, found: 0, markerIds: [], tags: e.tags ?? [] };
     type.expected = (type.expected ?? 0) + e.size;
     type.entries.push(entry);
     entryById.set(id, entry);
@@ -36,8 +36,15 @@ export function buildModel(categories, entries, markers) {
     const type = getType(m.type);
     if (!type) continue;
     type.loaded++;
-    if (m.entry && entryById.has(m.entry)) entryById.get(m.entry).loaded++;
+    type.markerIds.push(m.id);
+    if (m.entry && entryById.has(m.entry)) {
+      const entry = entryById.get(m.entry);
+      entry.loaded++;
+      entry.markerIds.push(m.id);
+    }
   }
+  // The total is what the game says exists; before an entry list exists, the mapped count.
+  for (const type of types.values()) type.total = type.expected ?? type.loaded;
 
   // Groups keep the order of categories.json; types with no entries and no markers are hidden.
   const groups = [];
@@ -46,14 +53,29 @@ export function buildModel(categories, entries, markers) {
       .map((id) => types.get(id))
       .filter((t) => t && (t.expected != null || t.loaded > 0));
     if (groupTypes.length === 0) continue;
-    const sum = (key) => groupTypes.reduce((acc, t) => acc + (t[key] ?? 0), 0);
-    groups.push({
-      id: g.id,
-      countsForExploration: g.countsForExploration,
-      types: groupTypes,
-      loaded: sum("loaded"),
-      expected: groupTypes.every((t) => t.expected != null) ? sum("expected") : null,
-    });
+    groups.push({ id: g.id, countsForExploration: g.countsForExploration, types: groupTypes, found: 0, total: 0 });
   }
-  return { groups, types, entryById, unknownTypes: [...unknownTypes] };
+  const model = { groups, types, entryById, unknownTypes: [...unknownTypes] };
+  applyProgress(model, new Set());
+  return model;
+}
+
+// Recomputes every `found` and group counter from the set of found marker ids.
+// Ids that no longer exist in the data are ignored, so stale progress never inflates counts.
+export function applyProgress(model, foundIds) {
+  const countFound = (ids) => ids.reduce((n, id) => n + (foundIds.has(id) ? 1 : 0), 0);
+  for (const type of model.types.values()) {
+    type.found = countFound(type.markerIds);
+    for (const entry of type.entries) entry.found = countFound(entry.markerIds);
+  }
+  for (const g of model.groups) {
+    g.found = g.types.reduce((n, t) => n + t.found, 0);
+    g.total = g.types.reduce((n, t) => n + t.total, 0);
+  }
+  // Overall exploration: only the categories the game counts towards exploration.
+  const counted = model.groups.filter((g) => g.countsForExploration);
+  model.exploration = {
+    found: counted.reduce((n, g) => n + g.found, 0),
+    total: counted.reduce((n, g) => n + g.total, 0),
+  };
 }

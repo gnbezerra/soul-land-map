@@ -98,15 +98,25 @@ mechanisms and seeds that do not match.
 - A group or type shows up only when the map has entries or markers for it. Checkboxes toggle visibility,
   the choice is saved per map in `localStorage` (`slmap:v1:settings`), and types missing from the saved list
   default to visible.
-- Counters currently read `markers mapped / expected in the game`: the expected number is the sum of the
-  `size` of the entries of that type. This is a data-completeness aid; step 3 replaces it with found/total
-  progress.
+- Counters read `found / total in the game`: the total is the sum of the `size` of the entries of that type
+  (or the number of mapped markers when a type has no entries yet). The bar at the top of the sidebar sums the
+  categories with `countsForExploration`; categories with no data yet are not part of its total.
+- Clicking a marker opens a popup with its name, description and a "Mark as found" button. Found markers are
+  faded on the map; "Hide found markers" removes them instead. Extra popup fields (`subtype`, `players`,
+  `contract`, `species`, `seed`, `requiresSeed`, `to`) appear automatically when a marker has them.
+- Progress is the set of found marker ids, saved per map in `localStorage` (`slmap:v1:progress:<map>`). Ids
+  are permanent, so progress survives data updates, and ids that no longer exist are ignored in the counts.
+  "Export"/"Import" in the sidebar save and restore a JSON backup (`{ app, version, exportedAt, progress }`);
+  importing replaces the saved progress after a confirmation.
 - Entry lists (for example the chest sets) expand under their type. Clicking an entry frames and highlights
   its markers on the map, and shows the type again if it was hidden.
 - UI texts live in `i18n/<lang>.json` (flat keys) and entry names in `i18n/entries.<map>.<lang>.json`.
   Missing keys fall back to English. To add a language, create `i18n/<lang>.json` with the keys of
   `i18n/en.json` and list it in `i18n/languages.json` (`{"pt": "Português"}`). Only listed languages are
   offered or auto-detected, so the UI is never half translated. Try it with `?lang=pt`.
+  The top bar selector saves the choice. Game terms (category, region, entry names) are the official in-game
+  texts; the site's own UI strings (filters, backup, popups) are unofficial translations, so corrections from
+  native speakers are very welcome. Keys missing from a language (for example `type.book`) fall back to English.
 - Entries appear in the order of the rows in `entries.csv`, so keep that order equal to the in-game list.
 - Tunables: `MARKER_SHRINK_PER_ZOOM` / `MARKER_MIN_SCALE` in `js/layers.js` (marker size when zoomed out),
   `wheelPxPerZoomLevel` in `js/app.js` (wheel zoom speed), `tiles.maxZoom` in `data/maps.json`.

@@ -1,8 +1,8 @@
 import { isCalibrated, pixelToGame, pixelToLatLng, latLngToPixel } from "./geo.js";
 import { fetchJson } from "./util.js";
-import { loadSettings, saveSettings } from "./storage.js";
+import { loadSettings, saveSettings, loadProgress, saveProgress, buildBackup, parseBackup } from "./storage.js";
 import { detectLang, loadI18n, loadLanguages } from "./i18n.js";
-import { buildModel } from "./model.js";
+import { buildModel, applyProgress } from "./model.js";
 import { createLayers } from "./layers.js";
 import { createSidebar } from "./sidebar.js";
 
@@ -36,6 +36,23 @@ select.addEventListener("change", () => {
   saveSettings({ ...settings, mapId: select.value });
   location.hash = select.value;
   location.reload();
+});
+
+// Language selector: shows the codes to keep the top bar narrow; full names are tooltips.
+// The choice is saved; an explicit ?lang= in the URL would override it, so it is dropped.
+const langSelect = document.getElementById("lang-select");
+langSelect.setAttribute("aria-label", t("ui.language"));
+for (const [code, name] of Object.entries(languages)) {
+  const option = new Option(code.toUpperCase(), code, false, code === lang);
+  option.title = name;
+  langSelect.append(option);
+}
+langSelect.title = languages[lang];
+langSelect.addEventListener("change", () => {
+  saveSettings({ ...settings, lang: langSelect.value });
+  const url = new URL(location.href);
+  url.searchParams.delete("lang");
+  location.replace(url);
 });
 
 // --- Map -----------------------------------------------------------------------------
@@ -149,7 +166,36 @@ if (!calibrated) {
   const model = buildModel(categories, entries, markers);
   for (const type of model.unknownTypes) console.warn(`Type '${type}' is missing from categories.json`);
 
-  const layers = createLayers({ L, map, markers, categories, calibration: cfg.calibration, nativeZoom: nz, i18n });
+  // Progress: the set of found marker ids. Every change is saved at once.
+  let found = loadProgress(mapId);
+  let hideFound = settings.hideFound?.[mapId] === true;
+  let storageWarned = false;
+  // Counts in messages only include markers that exist in the data (backups may carry stale ids).
+  const knownIds = new Set(markers.map((m) => m.id));
+  const countKnown = (ids) => [...ids].filter((id) => knownIds.has(id)).length;
+
+  function persistProgress() {
+    if (saveProgress(mapId, found) || storageWarned) return;
+    storageWarned = true; // warn once, not on every click
+    sidebar.showMessage(t("ui.storageError"), true);
+  }
+
+  function setFound(markerId, value) {
+    if (value) found.add(markerId);
+    else found.delete(markerId);
+    persistProgress();
+    applyProgress(model, found);
+    layers.refreshFound(markerId);
+    sidebar.refreshCounts();
+  }
+
+  const layers = createLayers({
+    L, map, markers, categories, calibration: cfg.calibration, nativeZoom: nz, i18n,
+    isFound: (id) => found.has(id),
+    onSetFound: setFound,
+  });
+  applyProgress(model, found);
+  layers.setHideFound(hideFound);
   // Hidden types are stored (not visible ones), so new types default to visible.
   const hidden = new Set(settings.hidden?.[mapId] ?? []);
   for (const type of model.types.keys()) layers.setVisible(type, !hidden.has(type));
@@ -165,17 +211,59 @@ if (!calibrated) {
     sidebar.refresh();
   }
 
+  function exportBackup() {
+    // Other maps' progress is included so one file carries everything.
+    const progress = {};
+    for (const id of Object.keys(maps)) progress[id] = id === mapId ? found : loadProgress(id);
+    const backup = buildBackup(progress);
+    const url = URL.createObjectURL(new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `soul-land-map-progress-${backup.exportedAt.slice(0, 10)}.json`;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    sidebar.showMessage(i18n.tf("ui.exported", { n: countKnown(found) }));
+  }
+
+  async function importBackup(file) {
+    const result = parseBackup(await file.text());
+    if (result.error) {
+      sidebar.showMessage(t(`ui.importError.${result.error}`), true);
+      return;
+    }
+    const incoming = result.progress[mapId] ?? new Set();
+    if (!window.confirm(i18n.tf("ui.importConfirm", { current: countKnown(found), incoming: countKnown(incoming) }))) return;
+    for (const [id, ids] of Object.entries(result.progress)) {
+      if (id !== mapId && maps[id]) saveProgress(id, ids);
+    }
+    found = new Set(incoming);
+    persistProgress();
+    applyProgress(model, found);
+    layers.refreshFound();
+    sidebar.refreshCounts();
+    sidebar.showMessage(i18n.tf("ui.imported", { n: countKnown(found) }));
+  }
+
   const sidebar = createSidebar({
     container: document.getElementById("sidebar"),
     model,
     i18n,
     isVisible: (type) => !hidden.has(type),
     onToggle: setTypes,
+    isHideFound: () => hideFound,
+    onHideFound(value) {
+      hideFound = value;
+      settings.hideFound = { ...settings.hideFound, [mapId]: value };
+      saveSettings(settings);
+      layers.setHideFound(value);
+    },
     onFocusEntry(entryId, typeId) {
       if (hidden.has(typeId)) setTypes([typeId], true);
       layers.focusEntry(entryId);
       closeDrawerIfNarrow();
     },
+    onExport: exportBackup,
+    onImport: importBackup,
   });
   map.on("click", () => {
     layers.highlight(null);
