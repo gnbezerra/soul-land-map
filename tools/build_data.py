@@ -28,6 +28,7 @@ markers.csv columns
     entry_index                            number of the [Location N] link in the game's answer
     subtype      (divine_trial)            puzzle | combat
     players      (chest_coop)              1 to 4
+                 (chest_challenge)         optional, 1 to 4; empty means a single player
     contract     (chest_contract)          wood | flame | frost
     pillar_x, pillar_y (chest_challenge)   optional, both or neither
     seed         (seed)                    number shown by the game when picking it up
@@ -77,7 +78,7 @@ ENTRY_TYPES = {
 # Extra column -> the only marker types where it may be filled in.
 EXTRA_COLUMNS = {
     "subtype": {"divine_trial"},
-    "players": {"chest_coop"},
+    "players": {"chest_coop", "chest_challenge"},
     "contract": {"chest_contract"},
     "pillar_x": {"chest_challenge"},
     "pillar_y": {"chest_challenge"},

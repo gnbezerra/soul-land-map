@@ -66,7 +66,7 @@ uses it, and column order does not matter.
 | `entry` | for chests, crystals, encounters, teleports, viewpoints and seeds | entry id, or its English name |
 | `entry_index` | optional | number of the `[Location N]` link in the in-game answer |
 | `subtype` | `divine_trial` | `puzzle` or `combat` |
-| `players` | `chest_coop` | 1 to 4 |
+| `players` | `chest_coop`; optional for `chest_challenge` | 1 to 4; on a challenge, empty means a single player |
 | `contract` | `chest_contract` | `wood`, `flame` or `frost` |
 | `pillar_x`, `pillar_y` | optional, `chest_challenge` | both or neither |
 | `seed` | `seed` | number shown by the game when picking the seed up |

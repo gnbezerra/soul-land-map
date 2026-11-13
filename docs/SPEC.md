@@ -103,6 +103,9 @@ it comes from the category's default loot.
   unlock button right next to the chest so one player can open them alone (`players: 1`).
 - `chest_challenge`: Pillars of Empty Path jumping puzzle; the location leads to the chest; optional pillar
   position (`pillar_x`, `pillar_y`) drawn as a small pin tied to the chest by a dashed line when the popup is open.
+  Optional `players` (empty = 1) for the rare challenge that needs help: in Nuoding, Pillar of Empty Path I has a
+  button on each side of a cliff that raises moving platforms only while someone stands on it (`players: 2`, the
+  button on the starting side as the pillar position).
 - `chest_contract`: `contract` = wood | flame | frost (Dragonwood 3, Desolate Flame 2, Mysterious Frost 1 in
   Nuoding) and a cost; the popup warns the contract is permanently consumed.
 - `crystal`: Divine Mind Crystal.
