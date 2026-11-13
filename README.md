@@ -2,9 +2,11 @@
 
 Interactive maps with filterable markers for Soul Land: New World (unofficial fan project).
 
-Current state: map with tiles, coordinate readout and calibration tools (step 1), data pipeline from the
-collection spreadsheet, and the filter sidebar with per-category counters (step 2). Popups, progress
-tracking ("found" checkboxes), language selector and the mobile layout come next.
+Documentation for contributors and agents: [`CLAUDE.md`](CLAUDE.md) (conventions),
+[`docs/SPEC.md`](docs/SPEC.md) (design) and [`docs/ROADMAP.md`](docs/ROADMAP.md) (current state, next steps).
+
+Current state: calibrated Nuoding map, data pipeline, filter sidebar with counters, popups, found tracking with
+backup, en/pt/zh UI and a responsive layout. See the roadmap for what comes next.
 
 ## Running it
 
@@ -21,18 +23,17 @@ tracking ("found" checkboxes), language selector and the mobile layout come next
 
 ## Calibration
 
-`data/maps.json` has `scaleX = 25/7` and `scaleY = -25/7` (game Y grows upwards, image pixel
-Y grows downwards) and `offsetX` / `offsetY` set to `null`. Replace them with the values from
-your own equations.
+`data/maps.json` holds `scaleX`/`scaleY` (±25/7; game Y grows upwards, image pixel Y grows downwards) and
+`offsetX`/`offsetY` (currently 428.5714285714 and 3657.142857142 for Nuoding, RMS 0.37 px over 11 points).
+A new map needs its own offsets.
 
-- While they are `null`, the readout in the bottom-left corner shows image pixels only, and a
-  click pins the reading (it is also logged to the console).
-- To check your ~10 known points, fill `data/calibration/nuoding.json` with
-  `{"x": ..., "y": ..., "px": ..., "py": ...}` (game coordinates and the observed pixel), then run
-  `python tools/check_calibration.py data/maps.json nuoding data/calibration/nuoding.json`.
-  It prints the least-squares fit and each point's error in pixels.
-- Then put 2 or 3 known chests in `data/markers/nuoding.json`
-  (`{"id": "nuoding-0001", "x": 123.4, "y": 567.8}`) and check they land exactly on the chest.
+- The readout in the bottom-left corner shows game coordinates; a click pins the reading (also logged to the
+  console). With offsets set to `null` it shows image pixels only.
+- To fit a new map, fill `data/calibration/<map>.json` with `{"x": ..., "y": ..., "px": ..., "py": ...}` (game
+  coordinates and the observed pixel), then run
+  `python tools/check_calibration.py data/maps.json <map> data/calibration/<map>.json`. It prints the
+  least-squares fit and each point's error in pixels.
+- Then check that a few known markers land exactly on their in-game positions.
 
 ## Data pipeline
 
@@ -120,4 +121,3 @@ mechanisms and seeds that do not match.
 - Entries appear in the order of the rows in `entries.csv`, so keep that order equal to the in-game list.
 - Tunables: `MARKER_SHRINK_PER_ZOOM` / `MARKER_MIN_SCALE` in `js/layers.js` (marker size when zoomed out),
   `wheelPxPerZoomLevel` in `js/app.js` (wheel zoom speed), `tiles.maxZoom` in `data/maps.json`.
-- Entries are listed in the order of `data/entries/<map>.json`, which is sorted by id for clean diffs.
