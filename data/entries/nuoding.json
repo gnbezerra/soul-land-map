@@ -1,217 +1,217 @@
 {
-  "andys-dilemma": {
-    "size": 1,
-    "type": "encounter"
+  "nuoding-academy-1": {
+    "type": "chest_normal",
+    "size": 11
   },
-  "animal-protection": {
-    "size": 1,
-    "type": "encounter"
+  "nuoding-academy-2": {
+    "type": "chest_normal",
+    "size": 13
   },
-  "coop-1": {
-    "size": 1,
-    "type": "chest_coop"
-  },
-  "coop-2": {
-    "size": 1,
-    "type": "chest_coop"
-  },
-  "coop-3": {
-    "size": 1,
-    "type": "chest_coop"
-  },
-  "coop-4": {
-    "size": 1,
-    "type": "chest_coop"
-  },
-  "desolate-flame-coffer-1": {
-    "size": 1,
-    "type": "chest_contract"
-  },
-  "desolate-flame-coffer-2": {
-    "size": 1,
-    "type": "chest_contract"
-  },
-  "dragonwood-coffer-1": {
-    "size": 1,
-    "type": "chest_contract"
-  },
-  "dragonwood-coffer-2": {
-    "size": 1,
-    "type": "chest_contract"
-  },
-  "dragonwood-coffer-3": {
-    "size": 1,
-    "type": "chest_contract"
-  },
-  "east-holy-soul-village": {
-    "size": 17,
-    "type": "chest_normal"
-  },
-  "east-holy-soul-village-crystal": {
-    "size": 5,
-    "type": "crystal"
-  },
-  "enjoy-the-scenery": {
-    "size": 4,
-    "type": "viewpoint"
+  "wind-rest-plains": {
+    "type": "chest_normal",
+    "size": 18
   },
   "floating-gold-creek-1": {
-    "size": 10,
-    "type": "chest_normal"
+    "type": "chest_normal",
+    "size": 10
   },
   "floating-gold-creek-2": {
-    "size": 7,
-    "type": "chest_normal"
+    "type": "chest_normal",
+    "size": 7
   },
-  "floating-gold-creek-crystal": {
-    "size": 6,
-    "type": "crystal"
+  "soul-hunting-forest-entrance": {
+    "type": "chest_normal",
+    "size": 6
+  },
+  "holy-soul-village": {
+    "type": "chest_normal",
+    "size": 18
+  },
+  "north-holy-soul-village": {
+    "type": "chest_normal",
+    "size": 17
+  },
+  "holy-soul-mountain": {
+    "type": "chest_normal",
+    "size": 17
+  },
+  "radiant-light-forest-1": {
+    "type": "chest_normal",
+    "size": 12
+  },
+  "radiant-light-forest-2": {
+    "type": "chest_normal",
+    "size": 13
+  },
+  "east-holy-soul-village": {
+    "type": "chest_normal",
+    "size": 17
+  },
+  "nuoding-outskirts": {
+    "type": "chest_normal",
+    "size": 12
+  },
+  "hidden-valley": {
+    "type": "chest_normal",
+    "size": 4
   },
   "guardian": {
+    "type": "chest_normal",
     "size": 9,
     "tags": [
       "guarded"
-    ],
-    "type": "chest_normal"
-  },
-  "hidden-1": {
-    "size": 20,
-    "tags": [
-      "hidden"
-    ],
-    "type": "chest_normal"
-  },
-  "hidden-2": {
-    "size": 20,
-    "tags": [
-      "hidden"
-    ],
-    "type": "chest_normal"
-  },
-  "hidden-valley": {
-    "size": 4,
-    "type": "chest_normal"
-  },
-  "holy-soul-mountain": {
-    "size": 17,
-    "type": "chest_normal"
-  },
-  "holy-soul-mountain-crystal": {
-    "size": 8,
-    "type": "crystal"
-  },
-  "holy-soul-village": {
-    "size": 18,
-    "type": "chest_normal"
-  },
-  "holy-soul-village-crystal": {
-    "size": 1,
-    "type": "crystal"
-  },
-  "light-up-teleport": {
-    "size": 6,
-    "type": "teleport"
-  },
-  "lost-in-the-maze": {
-    "size": 1,
-    "type": "encounter"
-  },
-  "market-games": {
-    "size": 1,
-    "type": "encounter"
-  },
-  "mysterious-frost-coffer-1": {
-    "size": 1,
-    "type": "chest_contract"
-  },
-  "north-holy-soul-village": {
-    "size": 17,
-    "type": "chest_normal"
-  },
-  "north-holy-soul-village-crystal": {
-    "size": 5,
-    "type": "crystal"
-  },
-  "nuoding-academy-1": {
-    "size": 11,
-    "type": "chest_normal"
-  },
-  "nuoding-academy-2": {
-    "size": 13,
-    "type": "chest_normal"
-  },
-  "nuoding-outskirts": {
-    "size": 12,
-    "type": "chest_normal"
-  },
-  "pillar-empty-path-1": {
-    "size": 1,
-    "type": "chest_challenge"
-  },
-  "pillar-empty-path-2": {
-    "size": 1,
-    "type": "chest_challenge"
-  },
-  "pillar-empty-path-3": {
-    "size": 1,
-    "type": "chest_challenge"
-  },
-  "pillar-empty-path-4": {
-    "size": 1,
-    "type": "chest_challenge"
-  },
-  "pillar-empty-path-5": {
-    "size": 1,
-    "type": "chest_challenge"
-  },
-  "pillar-empty-path-6": {
-    "size": 1,
-    "type": "chest_challenge"
-  },
-  "radiant-light-forest-1": {
-    "size": 12,
-    "type": "chest_normal"
-  },
-  "radiant-light-forest-2": {
-    "size": 13,
-    "type": "chest_normal"
-  },
-  "return-in-glory": {
-    "size": 1,
-    "type": "encounter"
-  },
-  "soul-hunting-forest-entrance": {
-    "size": 6,
-    "type": "chest_normal"
+    ]
   },
   "tang-sect-1": {
+    "type": "chest_normal",
     "size": 5,
     "tags": [
       "grappling_hook"
-    ],
-    "type": "chest_normal"
+    ]
   },
   "tang-sect-2": {
+    "type": "chest_normal",
     "size": 17,
     "tags": [
       "purple_demon_eye"
-    ],
-    "type": "chest_normal"
+    ]
   },
   "tang-sect-3": {
+    "type": "chest_normal",
     "size": 18,
     "tags": [
       "purple_demon_eye",
       "hidden"
-    ],
-    "type": "chest_normal"
+    ]
   },
-  "wind-rest-plains": {
-    "size": 18,
-    "type": "chest_normal"
+  "hidden-1": {
+    "type": "chest_normal",
+    "size": 20,
+    "tags": [
+      "hidden"
+    ]
+  },
+  "hidden-2": {
+    "type": "chest_normal",
+    "size": 20,
+    "tags": [
+      "hidden"
+    ]
+  },
+  "coop-1": {
+    "type": "chest_coop",
+    "size": 1
+  },
+  "coop-2": {
+    "type": "chest_coop",
+    "size": 1
+  },
+  "coop-3": {
+    "type": "chest_coop",
+    "size": 1
+  },
+  "coop-4": {
+    "type": "chest_coop",
+    "size": 1
+  },
+  "pillar-empty-path-1": {
+    "type": "chest_challenge",
+    "size": 1
+  },
+  "pillar-empty-path-2": {
+    "type": "chest_challenge",
+    "size": 1
+  },
+  "pillar-empty-path-3": {
+    "type": "chest_challenge",
+    "size": 1
+  },
+  "pillar-empty-path-4": {
+    "type": "chest_challenge",
+    "size": 1
+  },
+  "pillar-empty-path-5": {
+    "type": "chest_challenge",
+    "size": 1
+  },
+  "pillar-empty-path-6": {
+    "type": "chest_challenge",
+    "size": 1
+  },
+  "dragonwood-coffer-1": {
+    "type": "chest_contract",
+    "size": 1
+  },
+  "dragonwood-coffer-2": {
+    "type": "chest_contract",
+    "size": 1
+  },
+  "dragonwood-coffer-3": {
+    "type": "chest_contract",
+    "size": 1
+  },
+  "desolate-flame-coffer-1": {
+    "type": "chest_contract",
+    "size": 1
+  },
+  "desolate-flame-coffer-2": {
+    "type": "chest_contract",
+    "size": 1
+  },
+  "mysterious-frost-coffer-1": {
+    "type": "chest_contract",
+    "size": 1
   },
   "wind-rest-plains-crystal": {
-    "size": 3,
-    "type": "crystal"
+    "type": "crystal",
+    "size": 3
+  },
+  "floating-gold-creek-crystal": {
+    "type": "crystal",
+    "size": 6
+  },
+  "holy-soul-village-crystal": {
+    "type": "crystal",
+    "size": 1
+  },
+  "north-holy-soul-village-crystal": {
+    "type": "crystal",
+    "size": 5
+  },
+  "east-holy-soul-village-crystal": {
+    "type": "crystal",
+    "size": 5
+  },
+  "holy-soul-mountain-crystal": {
+    "type": "crystal",
+    "size": 8
+  },
+  "animal-protection": {
+    "type": "encounter",
+    "size": 1
+  },
+  "return-in-glory": {
+    "type": "encounter",
+    "size": 1
+  },
+  "andys-dilemma": {
+    "type": "encounter",
+    "size": 1
+  },
+  "lost-in-the-maze": {
+    "type": "encounter",
+    "size": 1
+  },
+  "market-games": {
+    "type": "encounter",
+    "size": 1
+  },
+  "light-up-teleport": {
+    "type": "teleport",
+    "size": 6
+  },
+  "enjoy-the-scenery": {
+    "type": "viewpoint",
+    "size": 4
   }
 }

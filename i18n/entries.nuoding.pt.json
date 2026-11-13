@@ -1,198 +1,198 @@
 {
-  "andys-dilemma": {
-    "description": "Andy, aluno da Academia de Nuoding, parece ter encontrado algumas dificuldades recentemente.",
-    "name": "O Dilema de Andy"
-  },
-  "animal-protection": {
-    "description": "Alguém prendeu maliciosamente Bestas Espirituais em jaulas perto do Riacho do Ouro Flutuante.",
-    "name": "Proteção Animal"
-  },
-  "coop-1": {
-    "description": "Encontre os Baús de Tesouro próximos à Academia de Nuoding e coopere com outros Mestres Espirituais para abri-los.",
-    "name": "Baú de Tesouro Cooperativo Um"
-  },
-  "coop-2": {
-    "description": "Encontre os Baús de Tesouro na Academia de Nuoding e coopere com outros Mestres Espirituais para abri-los.",
-    "name": "Baú de Tesouro Cooperativo Dois"
-  },
-  "coop-3": {
-    "description": "Encontre os Baús de Tesouro Avançados no Riacho do Ouro Flutuante e coopere com outros Mestres Espirituais para abri-los.",
-    "name": "Baú de Tesouro Cooperativo III"
-  },
-  "coop-4": {
-    "description": "Encontre os Baús de Tesouro Avançados ao norte da Vila do Espírito Sagrado e coopere com outros Mestres Espirituais para abri-los.",
-    "name": "Baú Cooperativo Quatro"
-  },
-  "desolate-flame-coffer-1": {
-    "description": "Deuses tomaram o fogo da Chama Desolada ocidental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo.",
-    "name": "Baú de Contrato da Chama Desolada I"
-  },
-  "desolate-flame-coffer-2": {
-    "description": "Deuses tomaram o fogo da Chama Desolada ocidental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo.",
-    "name": "Baú de Contrato da Chama Desolada II"
-  },
-  "dragonwood-coffer-1": {
-    "description": "Deuses retiraram a essência da Madeira-Dragão Oriental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo.",
-    "name": "Baú de Contrato de Madeira de Dragão I"
-  },
-  "dragonwood-coffer-2": {
-    "description": "Deuses retiraram a essência da Madeira-Dragão Oriental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo.",
-    "name": "Baú de Contrato de Madeira de Dragão II"
-  },
-  "dragonwood-coffer-3": {
-    "description": "Deuses retiraram a essência da Madeira-Dragão Oriental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo.",
-    "name": "Baú de Contrato de Madeira de Dragão III"
-  },
-  "east-holy-soul-village": {
-    "description": "Encontre os Baús de Tesouro Básicos espalhados a leste da Vila do Espírito Sagrado.",
-    "name": "Baú de Tesouro Leste da Vila do Espírito Sagrado"
-  },
-  "east-holy-soul-village-crystal": {
-    "description": "Encontre os Cristais da Mente Divina do Deus Asura espalhados pelas florestas a leste da Vila do Espírito Sagrado.",
-    "name": "Cristal do Leste da Vila do Espírito Sagrado"
-  },
-  "enjoy-the-scenery": {
-    "description": "Ilumine todos os Pontos Panorâmicos do mapa.",
-    "name": "Contemple Todas as Paisagens do Mapa"
-  },
-  "floating-gold-creek-1": {
-    "description": "Encontre os Baús de Tesouro Básicos espalhados ao redor da Praia do Riacho do Ouro Flutuante.",
-    "name": "Baú de Tesouro Um do Riacho do Ouro Flutuante"
-  },
-  "floating-gold-creek-2": {
-    "description": "Encontre os Baús de Tesouro Intermediários espalhados ao redor da Praia do Riacho do Ouro Flutuante.",
-    "name": "Baú de Tesouro Dois do Riacho do Ouro Flutuante"
-  },
-  "floating-gold-creek-crystal": {
-    "description": "Encontre os Cristais da Mente Divina do Deus Asura espalhados ao redor do Riacho do Ouro Flutuante.",
-    "name": "Cristal do Riacho do Ouro Flutuante"
-  },
-  "guardian": {
-    "description": "Obtenha todos os Baús de Tesouro protegidos por Monstros no mapa!",
-    "name": "Baú de Tesouro do Guardião"
-  },
-  "hidden-1": {
-    "description": "Encontrar Todos os Baús de Tesouro Ocultos Espalhados por Nuoding",
-    "name": "Baú de Tesouro Oculto I"
-  },
-  "hidden-2": {
-    "description": "Encontrar Todos os Baús de Tesouro Ocultos Espalhados por Nuoding",
-    "name": "Baú de Tesouro Oculto II"
-  },
-  "hidden-valley": {
-    "description": "A nordeste da Vila do Espírito Sagrado, há um vale sombreado (Vale Oculto). Encontre os Baús de Tesouro Básicos espalhados nas proximidades.",
-    "name": "Baú de Tesouro do Vale Oculto"
-  },
-  "holy-soul-mountain": {
-    "description": "Encontre os Baús de Tesouro Básicos espalhados ao redor da Montanha do Espírito Sagrada.",
-    "name": "Baú de Tesouro da Montanha do Espírito Sagrado"
-  },
-  "holy-soul-mountain-crystal": {
-    "description": "Encontre os Cristais da Mente Divina do Deus Asura espalhados ao redor da Montanha do Espírito Sagrado.",
-    "name": "Cristal da Montanha do Espírito Sagrado"
-  },
-  "holy-soul-village": {
-    "description": "Encontre os Baús de Tesouro Básicos espalhados pela Vila do Espírito Sagrado e seus arredores.",
-    "name": "Baú de Tesouro da Vila do Espírito Sagrado"
-  },
-  "holy-soul-village-crystal": {
-    "description": "Encontre os Cristais da Mente Divina do Deus Asura espalhados atrás da casa de Tang San, na Vila do Espírito Sagrado.",
-    "name": "Cristal da Vila do Espírito Sagrado"
-  },
-  "light-up-teleport": {
-    "description": "Ilumine todos os Pontos de Teletransporte do mapa.",
-    "name": "Acenda! Teletransporte"
-  },
-  "lost-in-the-maze": {
-    "description": "Nas profundezas da Cidade de Nuoding, há um Tesouro que atrai inúmeras pessoas.",
-    "name": "Memórias do Fogo do Labirinto"
-  },
-  "market-games": {
-    "description": "No mercado perto da entrada da Academia de Nuoding, sempre há minijogos divertidos.",
-    "name": "Jogo do Mercado"
-  },
-  "mysterious-frost-coffer-1": {
-    "description": "Deuses extraíram a energia da Geada Misteriosa do extremo norte e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo.",
-    "name": "Baú de Contrato da Geada Misteriosa I"
-  },
-  "north-holy-soul-village": {
-    "description": "Encontre os Baús de Tesouro Básicos espalhados pelas florestas e estradas ao norte da Vila do Espírito Sagrado.",
-    "name": "Baú de Tesouro do Norte da Vila do Espírito Sagrado"
-  },
-  "north-holy-soul-village-crystal": {
-    "description": "Encontre os Cristais da Mente Divina do Deus Asura espalhados pelas florestas e estradas ao norte da Vila do Espírito Sagrado.",
-    "name": "Cristal do Norte da Vila do Espírito Sagrado"
-  },
   "nuoding-academy-1": {
-    "description": "Encontre os Baús Básicos espalhados pela Academia Nuoding e seus arredores.",
-    "name": "Baú de Tesouro Um da Academia Nuoding"
+    "name": "Baú de Tesouro Um da Academia Nuoding",
+    "description": "Encontre os Baús Básicos espalhados pela Academia Nuoding e seus arredores."
   },
   "nuoding-academy-2": {
-    "description": "Encontre os Baús Básicos espalhados pela Academia Nuoding e seus arredores.",
-    "name": "Baú de Tesouro Dois da Academia de Nuoding"
-  },
-  "nuoding-outskirts": {
-    "description": "Encontre os Baús de Tesouro Básicos espalhados nos arredores da Cidade de Nuoding.",
-    "name": "Baú de Tesouro dos Arredores da Cidade de Nuoding"
-  },
-  "pillar-empty-path-1": {
-    "description": "Use o Pilar do Caminho Vazio para encontrar o Baú de Tesouro Avançado oculto na Montanha do Espírito Sagrado.",
-    "name": "Pilar do Caminho Vazio I"
-  },
-  "pillar-empty-path-2": {
-    "description": "Use o Pilar do Caminho Vazio para encontrar o Baú Avançado oculto a leste da Vila do Espírito Sagrado.",
-    "name": "Pilar do Caminho Vazio II"
-  },
-  "pillar-empty-path-3": {
-    "description": "Use o Pilar do Caminho Vazio para encontrar o Baú de Tesouro Avançado oculto no Riacho do Ouro Flutuante.",
-    "name": "Pilar do Caminho Vazio Três"
-  },
-  "pillar-empty-path-4": {
-    "description": "Use o Pilar do Caminho Vazio para encontrar o Baú Avançado oculto a leste da Vila do Espírito Sagrado.",
-    "name": "Pilar do Caminho Vazio Quatro"
-  },
-  "pillar-empty-path-5": {
-    "description": "Use o Pilar do Caminho Vazio para encontrar o Baú Avançado oculto ao norte da Vila do Espírito Sagrado.",
-    "name": "Pilar do Caminho Vazio Cinco"
-  },
-  "pillar-empty-path-6": {
-    "description": "Use o Pilar do Caminho Vazio para encontrar o Baú Avançado oculto ao norte da Vila do Espírito Sagrado.",
-    "name": "Pilar do Caminho Vazio Seis"
-  },
-  "radiant-light-forest-1": {
-    "description": "Encontre os Baús Básicos espalhados perto da Floresta da Luz Radiante.",
-    "name": "Baú de Tesouro Um da Floresta da Luz Radiante"
-  },
-  "radiant-light-forest-2": {
-    "description": "Encontre os Baús Básicos espalhados perto da Floresta da Luz Radiante.",
-    "name": "Baú de Tesouro Dois da Floresta da Luz Radiante"
-  },
-  "return-in-glory": {
-    "description": "Ao norte da Vila do Espírito Sagrado, há uma velha cega que tem um filho Mestre Espiritual.",
-    "name": "Retorno Glorioso"
-  },
-  "soul-hunting-forest-entrance": {
-    "description": "Encontre os Baús de Tesouro Básicos espalhados perto da entrada da Floresta de Caça Espiritual.",
-    "name": "Baú de Tesouro da Entrada da Floresta de Caça Espiritual"
-  },
-  "tang-sect-1": {
-    "description": "Use o Gancho para encontrar todos os Baús de Tesouro da Seita Tang espalhados pelo mapa.",
-    "name": "Baú de Tesouro Um da Seita Tang"
-  },
-  "tang-sect-2": {
-    "description": "Use o Olho Demoníaco Púrpura para Encontrar todos os Baús de Tesouro da Seita Tang Transformados espalhados pelo mapa.",
-    "name": "Baú Dois da Seita Tang"
-  },
-  "tang-sect-3": {
-    "description": "Use o Olho Demoníaco Púrpura para encontrar todos os Baús de Tesouro da Seita Tang espalhados pelo mapa.",
-    "name": "Baú Três da Seita Tang"
+    "name": "Baú de Tesouro Dois da Academia de Nuoding",
+    "description": "Encontre os Baús Básicos espalhados pela Academia Nuoding e seus arredores."
   },
   "wind-rest-plains": {
-    "description": "Encontre os Baús de Tesouro Básicos espalhados pelas Planícies do Repouso do Vento.",
-    "name": "Baú de Tesouro das Planícies do Repouso do Vento"
+    "name": "Baú de Tesouro das Planícies do Repouso do Vento",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados pelas Planícies do Repouso do Vento."
+  },
+  "floating-gold-creek-1": {
+    "name": "Baú de Tesouro Um do Riacho do Ouro Flutuante",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados ao redor da Praia do Riacho do Ouro Flutuante."
+  },
+  "floating-gold-creek-2": {
+    "name": "Baú de Tesouro Dois do Riacho do Ouro Flutuante",
+    "description": "Encontre os Baús de Tesouro Intermediários espalhados ao redor da Praia do Riacho do Ouro Flutuante."
+  },
+  "soul-hunting-forest-entrance": {
+    "name": "Baú de Tesouro da Entrada da Floresta de Caça Espiritual",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados perto da entrada da Floresta de Caça Espiritual."
+  },
+  "holy-soul-village": {
+    "name": "Baú de Tesouro da Vila do Espírito Sagrado",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados pela Vila do Espírito Sagrado e seus arredores."
+  },
+  "north-holy-soul-village": {
+    "name": "Baú de Tesouro do Norte da Vila do Espírito Sagrado",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados pelas florestas e estradas ao norte da Vila do Espírito Sagrado."
+  },
+  "holy-soul-mountain": {
+    "name": "Baú de Tesouro da Montanha do Espírito Sagrado",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados ao redor da Montanha do Espírito Sagrada."
+  },
+  "radiant-light-forest-1": {
+    "name": "Baú de Tesouro Um da Floresta da Luz Radiante",
+    "description": "Encontre os Baús Básicos espalhados perto da Floresta da Luz Radiante."
+  },
+  "radiant-light-forest-2": {
+    "name": "Baú de Tesouro Dois da Floresta da Luz Radiante",
+    "description": "Encontre os Baús Básicos espalhados perto da Floresta da Luz Radiante."
+  },
+  "east-holy-soul-village": {
+    "name": "Baú de Tesouro Leste da Vila do Espírito Sagrado",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados a leste da Vila do Espírito Sagrado."
+  },
+  "nuoding-outskirts": {
+    "name": "Baú de Tesouro dos Arredores da Cidade de Nuoding",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados nos arredores da Cidade de Nuoding."
+  },
+  "hidden-valley": {
+    "name": "Baú de Tesouro do Vale Oculto",
+    "description": "A nordeste da Vila do Espírito Sagrado, há um vale sombreado (Vale Oculto). Encontre os Baús de Tesouro Básicos espalhados nas proximidades."
+  },
+  "guardian": {
+    "name": "Baú de Tesouro do Guardião",
+    "description": "Obtenha todos os Baús de Tesouro protegidos por Monstros no mapa!"
+  },
+  "tang-sect-1": {
+    "name": "Baú de Tesouro Um da Seita Tang",
+    "description": "Use o Gancho para encontrar todos os Baús de Tesouro da Seita Tang espalhados pelo mapa."
+  },
+  "tang-sect-2": {
+    "name": "Baú Dois da Seita Tang",
+    "description": "Use o Olho Demoníaco Púrpura para Encontrar todos os Baús de Tesouro da Seita Tang Transformados espalhados pelo mapa."
+  },
+  "tang-sect-3": {
+    "name": "Baú Três da Seita Tang",
+    "description": "Use o Olho Demoníaco Púrpura para encontrar todos os Baús de Tesouro da Seita Tang espalhados pelo mapa."
+  },
+  "hidden-1": {
+    "name": "Baú de Tesouro Oculto I",
+    "description": "Encontrar Todos os Baús de Tesouro Ocultos Espalhados por Nuoding"
+  },
+  "hidden-2": {
+    "name": "Baú de Tesouro Oculto II",
+    "description": "Encontrar Todos os Baús de Tesouro Ocultos Espalhados por Nuoding"
+  },
+  "coop-1": {
+    "name": "Baú de Tesouro Cooperativo Um",
+    "description": "Encontre os Baús de Tesouro próximos à Academia de Nuoding e coopere com outros Mestres Espirituais para abri-los."
+  },
+  "coop-2": {
+    "name": "Baú de Tesouro Cooperativo Dois",
+    "description": "Encontre os Baús de Tesouro na Academia de Nuoding e coopere com outros Mestres Espirituais para abri-los."
+  },
+  "coop-3": {
+    "name": "Baú de Tesouro Cooperativo III",
+    "description": "Encontre os Baús de Tesouro Avançados no Riacho do Ouro Flutuante e coopere com outros Mestres Espirituais para abri-los."
+  },
+  "coop-4": {
+    "name": "Baú Cooperativo Quatro",
+    "description": "Encontre os Baús de Tesouro Avançados ao norte da Vila do Espírito Sagrado e coopere com outros Mestres Espirituais para abri-los."
+  },
+  "pillar-empty-path-1": {
+    "name": "Pilar do Caminho Vazio I",
+    "description": "Use o Pilar do Caminho Vazio para encontrar o Baú de Tesouro Avançado oculto na Montanha do Espírito Sagrado."
+  },
+  "pillar-empty-path-2": {
+    "name": "Pilar do Caminho Vazio II",
+    "description": "Use o Pilar do Caminho Vazio para encontrar o Baú Avançado oculto a leste da Vila do Espírito Sagrado."
+  },
+  "pillar-empty-path-3": {
+    "name": "Pilar do Caminho Vazio Três",
+    "description": "Use o Pilar do Caminho Vazio para encontrar o Baú de Tesouro Avançado oculto no Riacho do Ouro Flutuante."
+  },
+  "pillar-empty-path-4": {
+    "name": "Pilar do Caminho Vazio Quatro",
+    "description": "Use o Pilar do Caminho Vazio para encontrar o Baú Avançado oculto a leste da Vila do Espírito Sagrado."
+  },
+  "pillar-empty-path-5": {
+    "name": "Pilar do Caminho Vazio Cinco",
+    "description": "Use o Pilar do Caminho Vazio para encontrar o Baú Avançado oculto ao norte da Vila do Espírito Sagrado."
+  },
+  "pillar-empty-path-6": {
+    "name": "Pilar do Caminho Vazio Seis",
+    "description": "Use o Pilar do Caminho Vazio para encontrar o Baú Avançado oculto ao norte da Vila do Espírito Sagrado."
+  },
+  "dragonwood-coffer-1": {
+    "name": "Baú de Contrato de Madeira de Dragão I",
+    "description": "Deuses retiraram a essência da Madeira-Dragão Oriental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "dragonwood-coffer-2": {
+    "name": "Baú de Contrato de Madeira de Dragão II",
+    "description": "Deuses retiraram a essência da Madeira-Dragão Oriental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "dragonwood-coffer-3": {
+    "name": "Baú de Contrato de Madeira de Dragão III",
+    "description": "Deuses retiraram a essência da Madeira-Dragão Oriental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "desolate-flame-coffer-1": {
+    "name": "Baú de Contrato da Chama Desolada I",
+    "description": "Deuses tomaram o fogo da Chama Desolada ocidental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "desolate-flame-coffer-2": {
+    "name": "Baú de Contrato da Chama Desolada II",
+    "description": "Deuses tomaram o fogo da Chama Desolada ocidental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "mysterious-frost-coffer-1": {
+    "name": "Baú de Contrato da Geada Misteriosa I",
+    "description": "Deuses extraíram a energia da Geada Misteriosa do extremo norte e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
   },
   "wind-rest-plains-crystal": {
-    "description": "Encontre os Cristais da Mente Divina do Deus Asura espalhados pelas Planícies do Repouso do Vento.",
-    "name": "Cristal das Planícies do Repouso do Vento"
+    "name": "Cristal das Planícies do Repouso do Vento",
+    "description": "Encontre os Cristais da Mente Divina do Deus Asura espalhados pelas Planícies do Repouso do Vento."
+  },
+  "floating-gold-creek-crystal": {
+    "name": "Cristal do Riacho do Ouro Flutuante",
+    "description": "Encontre os Cristais da Mente Divina do Deus Asura espalhados ao redor do Riacho do Ouro Flutuante."
+  },
+  "holy-soul-village-crystal": {
+    "name": "Cristal da Vila do Espírito Sagrado",
+    "description": "Encontre os Cristais da Mente Divina do Deus Asura espalhados atrás da casa de Tang San, na Vila do Espírito Sagrado."
+  },
+  "north-holy-soul-village-crystal": {
+    "name": "Cristal do Norte da Vila do Espírito Sagrado",
+    "description": "Encontre os Cristais da Mente Divina do Deus Asura espalhados pelas florestas e estradas ao norte da Vila do Espírito Sagrado."
+  },
+  "east-holy-soul-village-crystal": {
+    "name": "Cristal do Leste da Vila do Espírito Sagrado",
+    "description": "Encontre os Cristais da Mente Divina do Deus Asura espalhados pelas florestas a leste da Vila do Espírito Sagrado."
+  },
+  "holy-soul-mountain-crystal": {
+    "name": "Cristal da Montanha do Espírito Sagrado",
+    "description": "Encontre os Cristais da Mente Divina do Deus Asura espalhados ao redor da Montanha do Espírito Sagrado."
+  },
+  "animal-protection": {
+    "name": "Proteção Animal",
+    "description": "Alguém prendeu maliciosamente Bestas Espirituais em jaulas perto do Riacho do Ouro Flutuante."
+  },
+  "return-in-glory": {
+    "name": "Retorno Glorioso",
+    "description": "Ao norte da Vila do Espírito Sagrado, há uma velha cega que tem um filho Mestre Espiritual."
+  },
+  "andys-dilemma": {
+    "name": "O Dilema de Andy",
+    "description": "Andy, aluno da Academia de Nuoding, parece ter encontrado algumas dificuldades recentemente."
+  },
+  "lost-in-the-maze": {
+    "name": "Memórias do Fogo do Labirinto",
+    "description": "Nas profundezas da Cidade de Nuoding, há um Tesouro que atrai inúmeras pessoas."
+  },
+  "market-games": {
+    "name": "Jogo do Mercado",
+    "description": "No mercado perto da entrada da Academia de Nuoding, sempre há minijogos divertidos."
+  },
+  "light-up-teleport": {
+    "name": "Acenda! Teletransporte",
+    "description": "Ilumine todos os Pontos de Teletransporte do mapa."
+  },
+  "enjoy-the-scenery": {
+    "name": "Contemple Todas as Paisagens do Mapa",
+    "description": "Ilumine todos os Pontos Panorâmicos do mapa."
   }
 }

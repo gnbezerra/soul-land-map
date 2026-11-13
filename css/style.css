@@ -1,0 +1,256 @@
+:root {
+  --bg: #0f1418;
+  --panel: #151b22;
+  --panel-hover: #1e2733;
+  --border: #263040;
+  --text: #e6ecf2;
+  --muted: #9fb0c3;
+  --accent: #f5a524;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.4 system-ui, sans-serif;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+input[type="checkbox"] {
+  accent-color: var(--accent);
+  margin: 0;
+}
+
+/* Top bar */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 52px;
+  padding: 0 16px;
+  flex: none;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+
+.topbar strong {
+  font-size: 16px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.topbar select,
+.topbar button,
+.bulk button {
+  padding: 6px 12px;
+  border: 1px solid #2c394a;
+  border-radius: 16px;
+  background: var(--panel);
+  color: var(--text);
+}
+
+/* Layout */
+.layout {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+#map-wrap {
+  flex: 1;
+  position: relative;
+  min-width: 0;
+}
+
+#map {
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+}
+
+body.sidebar-hidden #sidebar {
+  display: none;
+}
+
+/* Sidebar */
+#sidebar {
+  width: 320px;
+  flex: none;
+  overflow-y: auto;
+  padding: 12px 4px;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+}
+
+#sidebar h2 {
+  margin: 0 10px 8px;
+  font-size: 12px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.bulk {
+  display: flex;
+  gap: 8px;
+  margin: 0 10px 8px;
+}
+
+.line {
+  display: flex;
+  align-items: center;
+}
+
+.line .row {
+  flex: 1;
+  min-width: 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.row:hover,
+.entry:hover,
+.expander:hover {
+  background: var(--panel-hover);
+}
+
+.row.nested {
+  padding-left: 34px;
+  color: #c3cfdd;
+}
+
+.group-head {
+  font-weight: 600;
+}
+
+.row.off {
+  opacity: .45;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.name {
+  flex: 1;
+  min-width: 0;
+}
+
+.count {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.expander {
+  border: 0;
+  background: none;
+  border-radius: 6px;
+  padding: 4px 10px;
+  color: var(--muted);
+}
+
+.entries {
+  list-style: none;
+  margin: 0 0 4px;
+  padding: 0;
+}
+
+.entry {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  padding: 4px 10px 4px 56px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  text-align: left;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* Markers (placeholder look: colored circle with a letter; real icons come later) */
+.mk-dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--c);
+  border: 2px solid #fff;
+  color: #10151b;
+  font: 700 12px/1 system-ui, sans-serif;
+  box-shadow: 0 1px 3px #000a;
+  transform: scale(var(--mk-scale, 1));
+  transition: transform .1s;
+}
+
+.mk.hl .mk-dot {
+  transform: scale(calc(var(--mk-scale, 1) * 1.35));
+  box-shadow: 0 0 0 4px #ffffff66;
+}
+
+.mk-tiny .mk-dot {
+  font-size: 0;
+}
+
+/* Coordinate readout */
+.hud {
+  position: absolute;
+  left: 12px;
+  z-index: 1000;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid #2c394a;
+  font-variant-numeric: tabular-nums;
+}
+
+#readout {
+  bottom: 12px;
+}
+
+#pin {
+  bottom: 52px;
+  color: var(--accent);
+}
+
+#pin:empty {
+  display: none;
+}
+
+/* No focus ring after a mouse click on a marker; keyboard focus still shows it. */
+.leaflet-marker-icon:focus:not(:focus-visible) {
+  outline: none;
+}

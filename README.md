@@ -1,7 +1,10 @@
-# Soul Land Map: step 1 (map, tiles and calibration)
+# Soul Land Map
 
-Everything needed to view the Nuoding map with tiles and to validate the calibration.
-There are no filters, categories, popups or i18n yet.
+Interactive maps with filterable markers for Soul Land: New World (unofficial fan project).
+
+Current state: map with tiles, coordinate readout and calibration tools (step 1), data pipeline from the
+collection spreadsheet, and the filter sidebar with per-category counters (step 2). Popups, progress
+tracking ("found" checkboxes), language selector and the mobile layout come next.
 
 ## Running it
 
@@ -72,7 +75,7 @@ point). No other type may repeat an id.
 
 | Column | Required | Meaning |
 |---|---|---|
-| `id` | yes | lowercase slug, e.g. `nuoding-academy-1` |
+| `id` | yes | lowercase slug, e.g. `nuoding-academy-1`; unique within a map, not across maps |
 | `type` | yes | the marker type of its members (same vocabulary as `markers.csv`) |
 | `name_en` | yes | name exactly as shown in the game |
 | `size` | yes | expected number of markers (the `11/11` in the game) |
@@ -86,3 +89,25 @@ coordinates outside the image, more markers than an entry's `size`, `entry_index
 repeated, unknown link targets, and ids whose type changed since the last build. Warnings: entries
 that are still incomplete, `entry_index` gaps, ids that disappeared since the last build, and
 mechanisms and seeds that do not match.
+
+## Filters and counters (step 2)
+
+- `data/categories.json` defines the sidebar groups (the game's own exploration categories plus a few
+  extra groups), their marker types, and each type's placeholder color and glyph. Real icons will replace
+  the glyphs later.
+- A group or type shows up only when the map has entries or markers for it. Checkboxes toggle visibility,
+  the choice is saved per map in `localStorage` (`slmap:v1:settings`), and types missing from the saved list
+  default to visible.
+- Counters currently read `markers mapped / expected in the game`: the expected number is the sum of the
+  `size` of the entries of that type. This is a data-completeness aid; step 3 replaces it with found/total
+  progress.
+- Entry lists (for example the chest sets) expand under their type. Clicking an entry frames and highlights
+  its markers on the map, and shows the type again if it was hidden.
+- UI texts live in `i18n/<lang>.json` (flat keys) and entry names in `i18n/entries.<map>.<lang>.json`.
+  Missing keys fall back to English. To add a language, create `i18n/<lang>.json` with the keys of
+  `i18n/en.json` and list it in `i18n/languages.json` (`{"pt": "Português"}`). Only listed languages are
+  offered or auto-detected, so the UI is never half translated. Try it with `?lang=pt`.
+- Entries appear in the order of the rows in `entries.csv`, so keep that order equal to the in-game list.
+- Tunables: `MARKER_SHRINK_PER_ZOOM` / `MARKER_MIN_SCALE` in `js/layers.js` (marker size when zoomed out),
+  `wheelPxPerZoomLevel` in `js/app.js` (wheel zoom speed), `tiles.maxZoom` in `data/maps.json`.
+- Entries are listed in the order of `data/entries/<map>.json`, which is sorted by id for clean diffs.

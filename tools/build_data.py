@@ -375,8 +375,8 @@ def dump_markers(markers):
     return "[\n" + ",\n".join("  " + s for s in lines) + "\n]\n"
 
 
-def dump(obj):
-    return json.dumps(obj, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+def dump(obj, sort_keys=True):
+    return json.dumps(obj, ensure_ascii=False, indent=2, sort_keys=sort_keys) + "\n"
 
 
 def write(path, text):
@@ -431,15 +431,17 @@ def main():
 
     print("\nWriting files:")
     write(root / "data" / "markers" / f"{map_id}.json", dump_markers(markers))
-    write(root / "data" / "entries" / f"{map_id}.json", dump(entries))
+    # Entries keep the CSV row order, which mirrors the in-game exploration list.
+    write(root / "data" / "entries" / f"{map_id}.json", dump(entries, sort_keys=False))
     for lang in LANGS:
         out = {}
         for eid, t in texts.items():
             item = {k: v for k, v in t[lang].items() if v}
             if item:
                 out[eid] = item
-        if out or lang == "en":
-            write(root / "i18n" / f"entries.{map_id}.{lang}.json", dump(out))
+        # Always write every language so the site never requests a missing file.
+        write(root / "i18n" / f"entries.{map_id}.{lang}.json", dump(out, sort_keys=False))
+        print(f"    {lang}: {len(out)}/{len(texts)} entries with text")
     print(f"\nOK ({len(rep.warnings)} warning(s)).")
 
 

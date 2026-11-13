@@ -7,7 +7,7 @@
     "tiles": {
       "tileSize": 256,
       "maxNativeZoom": 4,
-      "maxZoom": 6
+      "maxZoom": 5
     },
     "calibration": {
       "scaleX": 3.5714285714,
