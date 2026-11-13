@@ -99,7 +99,8 @@ it comes from the category's default loot.
 ### 4.5 Marker types
 
 - `chest_normal`: default loot table `normal_chest`.
-- `chest_coop`: `players` 1–4; the mechanism is text.
+- `chest_coop`: `players` 1–4; the mechanism is text. A few are tutorials of the mechanic, with the
+  unlock button right next to the chest so one player can open them alone (`players: 1`).
 - `chest_challenge`: Pillars of Empty Path jumping puzzle; the location leads to the chest; optional pillar
   position (`pillar_x`, `pillar_y`) drawn as a small pin tied to the chest by a dashed line when the popup is open.
 - `chest_contract`: `contract` = wood | flame | frost (Dragonwood 3, Desolate Flame 2, Mysterious Frost 1 in
