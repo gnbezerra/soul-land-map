@@ -9,7 +9,7 @@ Usage:
 Inputs (one sheet tab per map, exported as UTF-8 CSV with a header row):
     data/src/<map>/markers.csv   one row per marker
     data/src/<map>/entries.csv   one row per exploration entry (the in-game list)
-    data/src/<map>/trials.csv    one row per Divine Trial (its name), optional
+    data/src/<map>/marker_texts.csv  one row per marker text (name, note, howto), optional
     data/src/<map>/stages.csv    one row per Divine Trial stage, optional
     data/maps.json               image size and calibration (used for bounds checks)
 
@@ -20,7 +20,7 @@ Outputs (nothing is written if there are errors):
     data/markers/<map>.json
     data/entries/<map>.json
     i18n/entries.<map>.<lang>.json   official entry names and descriptions
-    i18n/markers.<map>.<lang>.json   marker names (Divine Trial names)
+    i18n/markers.<map>.<lang>.json   marker texts (Divine Trial names, notes, howtos)
 
 markers.csv columns
     id, type, x, y                         always required
@@ -45,9 +45,11 @@ entries.csv columns
     tags                                   separated by ';'
     name_pt, name_zh, desc_en, desc_pt, desc_zh   optional official texts
 
-trials.csv columns
-    trial, name_en                         required (trial is the id of a divine_trial marker)
-    name_pt, name_zh                       optional
+marker_texts.csv columns (one row per marker and field)
+    marker, field, en                      required
+                                           field: name (divine_trial only), note (always shown),
+                                           howto (solution, shown on request)
+    pt, zh                                 optional
 
 stages.csv columns
     trial, stage, stars                    required (stage: 1, 2, 3... in play order, no gaps;
@@ -100,10 +102,12 @@ ENUMS = {"subtype": {"puzzle", "combat"}, "contract": {"wood", "flame", "frost"}
 MARKER_COLUMNS = {"id", "type", "x", "y", "entry", "entry_index", "links", *EXTRA_COLUMNS}
 ENTRY_COLUMNS = {"id", "type", "name_en", "size", "tags",
                  "name_pt", "name_zh", "desc_en", "desc_pt", "desc_zh"}
-TRIAL_COLUMNS = {"trial", "name_en", "name_pt", "name_zh"}
+LANGS = ("en", "pt", "zh")
+TEXT_COLUMNS = {"marker", "field", *LANGS}
+# Text field -> the only marker types where it may be used (None: any type).
+TEXT_FIELDS = {"name": {"divine_trial"}, "note": None, "howto": None}
 STAGE_COLUMNS = {"trial", "stage", "stars", "level", "cp"}
 MIN_STAGES, MAX_STAGES = 3, 10
-LANGS = ("en", "pt", "zh")
 SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 TAG = re.compile(r"^[a-z0-9_]+$")
 
@@ -336,24 +340,35 @@ def load_markers(rows, map_id, entries, by_name, inside, rep):
     return markers
 
 
-def load_trials(trial_rows, stage_rows, markers, rep):
-    """Attach "stages" to divine_trial markers and return {marker id: {lang: name}}."""
-    trials = {mid: m for mid, m in markers.items() if m["type"] == "divine_trial"}
-    names = {}
-    for line, r in trial_rows:
-        where = f"trials.csv:{line}"
-        tid = r["trial"]
-        if tid not in trials:
-            rep.error(where, f"'{tid}' is not a divine_trial marker in markers.csv")
+def load_texts(rows, markers, rep):
+    """Return {marker id: {field: {lang: text}}} from marker_texts.csv."""
+    texts = defaultdict(dict)
+    for line, r in rows:
+        where = f"marker_texts.csv:{line}"
+        mid, field = r["marker"], r["field"]
+        if mid not in markers:
+            rep.error(where, f"unknown marker '{mid}'")
             continue
-        if tid in names:
-            rep.error(where, f"duplicate trial '{tid}'")
+        if field not in TEXT_FIELDS:
+            rep.error(where, f"field '{field}' must be one of: {', '.join(TEXT_FIELDS)}")
             continue
-        if not r["name_en"]:
-            rep.error(where, "name_en is required")
+        types = TEXT_FIELDS[field]
+        if types and markers[mid]["type"] not in types:
+            rep.error(where, f"field '{field}' is only valid for type {', '.join(sorted(types))}")
             continue
-        names[tid] = {lang: r[f"name_{lang}"] for lang in LANGS}
+        if field in texts[mid]:
+            rep.error(where, f"'{mid}' already has a '{field}'")
+            continue
+        if not r["en"]:
+            rep.error(where, "en is required (English is the fallback)")
+            continue
+        texts[mid][field] = {lang: r[lang] for lang in LANGS}
+    return texts
 
+
+def load_trials(stage_rows, markers, texts, rep):
+    """Attach "stages" to divine_trial markers."""
+    trials = {mid: m for mid, m in markers.items() if m["type"] == "divine_trial"}
     stages = defaultdict(dict)
     for line, r in stage_rows:
         where = f"stages.csv:{line}"
@@ -385,8 +400,8 @@ def load_trials(trial_rows, stage_rows, markers, rep):
         stages[tid][n] = stage
 
     for tid, m in trials.items():
-        if tid not in names:
-            rep.warn(tid, "divine trial has no name in trials.csv")
+        if "name" not in texts.get(tid, {}):
+            rep.warn(tid, "divine trial has no name in marker_texts.csv")
         got = stages.get(tid)
         if not got:
             rep.warn(tid, "divine trial has no stages in stages.csv")
@@ -402,7 +417,6 @@ def load_trials(trial_rows, stage_rows, markers, rep):
             levels = [s["level"] for s in m["stages"] if "level" in s]
             if any(b < a for a, b in zip(levels, levels[1:])):
                 rep.warn(tid, f"stage levels go down: {levels}")
-    return names
 
 
 def cross_check(markers, entries, maps, rep):
@@ -494,13 +508,14 @@ def main():
     if marker_rows is None:
         sys.exit(f"Missing {src / 'markers.csv'}")
     entry_rows = read_csv(src / "entries.csv", ENTRY_COLUMNS, ["id", "type", "name_en", "size"], rep) or []
-    trial_rows = read_csv(src / "trials.csv", TRIAL_COLUMNS, ["trial", "name_en"], rep) or []
+    text_rows = read_csv(src / "marker_texts.csv", TEXT_COLUMNS, ["marker", "field", "en"], rep) or []
     stage_rows = read_csv(src / "stages.csv", STAGE_COLUMNS, ["trial", "stage", "stars"], rep) or []
 
     entries, texts, by_name = load_entries(entry_rows, rep)
     inside = make_bounds_check(maps[map_id], rep)
     markers = load_markers(marker_rows, map_id, entries, by_name, inside, rep)
-    trial_names = load_trials(trial_rows, stage_rows, markers, rep)
+    marker_texts = load_texts(text_rows, markers, rep)
+    load_trials(stage_rows, markers, marker_texts, rep)
     cross_check(markers, entries, maps, rep)
     compare_with_previous(root / "data" / "markers" / f"{map_id}.json", markers, rep)
 
@@ -540,8 +555,13 @@ def main():
         write(root / "i18n" / f"entries.{map_id}.{lang}.json", dump(out, sort_keys=False))
         print(f"    {lang}: {len(out)}/{len(texts)} entries with text")
     for lang in LANGS:
-        out = {mid: {"name": n[lang]} for mid, n in sorted(trial_names.items()) if n[lang]}
+        out = {}
+        for mid, fields in sorted(marker_texts.items()):
+            item = {f: t[lang] for f, t in fields.items() if t[lang]}
+            if item:
+                out[mid] = item
         write(root / "i18n" / f"markers.{map_id}.{lang}.json", dump(out, sort_keys=False))
+        print(f"    {lang}: {len(out)}/{len(marker_texts)} markers with text")
     print(f"\nOK ({len(rep.warnings)} warning(s)).")
 
 

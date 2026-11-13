@@ -41,8 +41,8 @@ A new map needs its own offsets.
 ## Data pipeline
 
 The collection spreadsheet (one tab per map) is exported as UTF-8 CSV into
-`data/src/<map>/markers.csv` and `data/src/<map>/entries.csv` (plus `trials.csv` and `stages.csv`
-for Divine Trials), then:
+`data/src/<map>/markers.csv` and `data/src/<map>/entries.csv` (plus `marker_texts.csv` for
+marker names, notes and howtos, and `stages.csv` for Divine Trials), then:
 
 ```
 python tools/build_data.py nuoding            # validate, then write the JSON files
@@ -51,7 +51,7 @@ python tools/build_data.py nuoding --strict   # warnings also fail the build
 ```
 
 It writes `data/markers/<map>.json`, `data/entries/<map>.json`,
-`i18n/entries.<map>.<lang>.json` and `i18n/markers.<map>.<lang>.json` (Divine Trial names). Nothing
+`i18n/entries.<map>.<lang>.json` and `i18n/markers.<map>.<lang>.json` (marker texts). Nothing
 is written when there are errors. Use a dot as the decimal separator in the CSV. Only the columns
 marked "always" or "yes" below must exist; any other column can be left out of a sheet when no row
 uses it, and column order does not matter.
@@ -89,21 +89,35 @@ point). No other type may repeat an id.
 | `tags` | optional | separated by `;`, e.g. `purple_demon_eye` |
 | `name_pt`, `name_zh`, `desc_en`, `desc_pt`, `desc_zh` | optional | official texts |
 
-### Divine Trials: `trials.csv` and `stages.csv`
+### `marker_texts.csv`
 
-Divine Trials have no entry in the game's list. The pillar itself is a `divine_trial` row in
-`markers.csv` (`id`, `x`, `y`, `subtype`); its name and stages live in two more files, both keyed by
-that marker id.
-
-`trials.csv`, one row per trial:
+Texts that belong to one marker, one row per marker and field (rows may be in any order):
 
 | Column | Required | Meaning |
 |---|---|---|
-| `trial` | yes | id of a `divine_trial` marker |
-| `name_en` | yes | name as shown in the game |
-| `name_pt`, `name_zh` | optional | official names |
+| `marker` | yes | marker id |
+| `field` | yes | `name`, `note` or `howto` (see below) |
+| `en` | yes | English text (the fallback for every language) |
+| `pt`, `zh` | optional | translations |
 
-`stages.csv`, one row per stage (rows may be in any order):
+- `name`: the marker's own name, only for `divine_trial` (other markers take their title from the entry
+  or the type). Use the game's official names.
+- `note`: a short fact the player needs to find the point, always shown in the popup, e.g. "Inside the
+  cave under the plains". Any marker type.
+- `howto`: the solution, for things the game's description does not say, e.g. "Talk to Andy five
+  times". Any marker type; it will sit behind a "show solution" button (not shown on the site yet).
+
+```csv
+marker,field,en,pt,zh
+nuoding-0412,name,Trial of Flames,Provação das Chamas,火焰试炼
+nuoding-0150,note,Inside the cave under the plains,Dentro da caverna sob a planície,
+```
+
+### Divine Trials: `stages.csv`
+
+Divine Trials have no entry in the game's list. The pillar itself is a `divine_trial` row in
+`markers.csv` (`id`, `x`, `y`, `subtype`), its name is a `name` row in `marker_texts.csv`, and its
+stages live in `stages.csv`, one row per stage (rows may be in any order):
 
 | Column | Required | Meaning |
 |---|---|---|
@@ -129,7 +143,8 @@ Errors: duplicate or malformed ids, unknown types, missing columns for a type, u
 coordinates outside the image, more markers than an entry's `size`, `entry_index` above `size` or
 repeated, unknown link targets, ids whose type changed since the last build, and Divine Trials with stage
 gaps, repeated stages, fewer than 3 or more than 10 stages, stars outside 1 to 5, or `level`/`cp`
-missing on a combat trial (or filled in on a puzzle one). Warnings: entries that are still
+missing on a combat trial (or filled in on a puzzle one), and marker texts with an unknown marker
+or field, a `name` on a type other than `divine_trial`, a repeated field or no `en`. Warnings: entries that are still
 incomplete, `entry_index` gaps, ids that disappeared since the last build, mechanisms and seeds that
 do not match, Divine Trials without a name or stages, and stage levels that go down.
 

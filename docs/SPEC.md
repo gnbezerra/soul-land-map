@@ -40,13 +40,14 @@ data/
   categories.json      groups, types, placeholder color/glyph, countsForExploration
   entries/<map>.json   exploration-list entries (generated, CSV row order)
   markers/<map>.json   markers (generated)
-  src/<map>/{markers,entries}.csv   hand-collected source data
+  src/<map>/{markers,entries,marker_texts,stages}.csv   hand-collected source data
   calibration/<map>.json            known points used by tools/check_calibration.py
   (planned: items.json, loot.json)
 i18n/
   languages.json, en.json, pt.json, zh.json      UI strings (flat keys)
   entries.<map>.<lang>.json                      entry names/descriptions (generated, always en/pt/zh)
-  (planned: items.<lang>.json, markers.<map>.<lang>.json)
+  markers.<map>.<lang>.json                      marker names/notes/howtos (generated, always en/pt/zh)
+  (planned: items.<lang>.json)
 tiles/<map>/{z}/{x}/{y}.webp   generated offline by tools/make_tiles.py (committed)
 maps/<map>.png  source map image, local only (ignored by git)
 tools/         Python: build_data.py, check_calibration.py, make_tiles.py
@@ -93,8 +94,9 @@ the Scenery 4). Divine Trials are not in the game's list and have no entry. Tags
 
 `id` (immutable, assigned once, never reused, e.g. `nuoding-0142`; never derived from row, coordinate or type),
 `type`, `x`, `y` (game units), `entry`, `entry_index` (position in the in-game answer's `[Location N]` order),
-`links` (related marker ids, bidirectional in the UI), optional short `note`. Normal chests carry no reward;
-it comes from the category's default loot.
+`links` (related marker ids, bidirectional in the UI), optional short `note` and `howto` (i18n texts from
+`marker_texts.csv`: the note is always shown, the howto sits behind a "show solution" button). Normal chests
+carry no reward; it comes from the category's default loot.
 
 ### 4.5 Marker types
 
@@ -126,7 +128,7 @@ entered directly by the user. `stars` 1–5; `level` and `cp` only for combat (p
 each stage has its own reward of 2–4 items; the pillar's theme name lives in marker i18n; stages have no name.
 The popup highlights the next stage. Filtering by player level is post-MVP.
 
-Source data: the marker row in `markers.csv`, the name in `trials.csv` (one row per trial, built into
+Source data: the marker row in `markers.csv`, the name as a `name` row in `marker_texts.csv` (built into
 `i18n/markers.<map>.<lang>.json`) and the stages in `stages.csv` (one row per stage, columns `trial`, `stage`,
 `stars`, `level`, `cp`). Rewards will be extra `stages.csv` columns once items exist (4.8).
 
@@ -139,7 +141,8 @@ Source data: the marker row in `markers.csv`, the name in `trials.csv` (one row 
 
 Hidden trigger quests. Answer formats in the game are not uniform (Andy's Dilemma gives one `[Location]` but the
 real trigger, talking to the NPC repeatedly, is not in the text; Animal Protection has no links and describes
-three rescue points). Fields: `points` (list of x/y, counted once), i18n `hint` (the game's description, always
+three rescue points: the trigger is the primary point and the three cages are extra points). Fields: `points`
+(list of x/y, counted once), i18n `hint` (the game's description, always
 visible) and `howto` (own text, behind a "show solution" button), `reward`. Progress is by marker id.
 
 ### 4.8 Rewards, items and loot (not implemented yet)
@@ -280,8 +283,9 @@ Open: final marker size/style per zoom (depends on real icons); official Chinese
 
 - Done: tiles + calibrated map + readout; pipeline; sidebar with counters and entry lists; popups with found
   button; progress, hide-found and backup/restore; en/pt/zh with selector; responsive drawer layout.
-- Divine Trials: pipeline done (`trials.csv`, `stages.csv`, validation, `stages` in the marker JSON, name in the
-  marker title). The stage sum is printed, not checked against the game counter (not stored anywhere yet).
+- Divine Trials: pipeline done (`marker_texts.csv` names, `stages.csv`, validation, `stages` in the marker JSON,
+  name in the marker title).
+- Marker texts: `note` is shown in the popup; `howto` is built and validated but not shown yet. The stage sum is printed, not checked against the game counter (not stored anywhere yet).
 - Not yet: items/loot/rewards, Divine Trial popup stage list and progress, encounter points/howto, deep links,
   copy-link, bottom-sheet popup, pillar line for `chest_challenge`, species filter, real icons, disclaimer,
   GitHub Pages deploy, other regions.

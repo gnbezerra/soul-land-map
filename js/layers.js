@@ -55,7 +55,7 @@ export function createLayers({ L, map, markers, categories, calibration, nativeZ
 
   function titleOf(m) {
     if (m.entry) return i18n.entry(m.entry).name + (m.entryIndex ? ` #${m.entryIndex}` : "");
-    return i18n.markerName(m.id) || i18n.t(`type.${m.type}`);
+    return i18n.marker(m.id).name || i18n.t(`type.${m.type}`);
   }
 
   function makeTooltip(m, point) {
@@ -84,6 +84,14 @@ export function createLayers({ L, map, markers, categories, calibration, nativeZ
       const p = document.createElement("p");
       p.className = "desc";
       p.textContent = description;
+      root.append(p);
+    }
+    // Own note (e.g. "inside the cave under the plains"); howto is not shown yet.
+    const note = i18n.marker(m.id).note;
+    if (note) {
+      const p = document.createElement("p");
+      p.className = "note";
+      p.textContent = note;
       root.append(p);
     }
 

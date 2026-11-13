@@ -463,6 +463,13 @@ body.sidebar-hidden #sidebar {
   font-size: 13px;
 }
 
+.mk-popup .note {
+  margin: 0;
+  padding-left: 8px;
+  border-left: 2px solid var(--muted);
+  font-size: 13px;
+}
+
 .mk-popup dl {
   display: grid;
   grid-template-columns: auto 1fr;

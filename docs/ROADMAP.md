@@ -32,7 +32,7 @@ vendored Leaflet.
    crops/resizes to 48–64 px and outputs WebP/PNG into `icons/`; reference them from `data/categories.json`.
    Then settle marker sizes per zoom (SPEC §12).
 3. **Divine Trials** (65 stages in Nuoding, ~10 pillars). Needs from the owner: the list with positions, subtype,
-   stages (stars, level, CP, rewards) and pillar theme names (en/pt/zh). Done: `trials.csv` and `stages.csv`,
+   stages (stars, level, CP, rewards) and pillar theme names (en/pt/zh). Done: names in `marker_texts.csv`, `stages.csv`,
    build validation, name in the marker title. Left: popup stage list, integer progress control (`trials` in
    the progress store; bump the storage version only if the format breaks), badge on the marker, counter by
    stage (sum of stages, 65 in Nuoding).
@@ -42,7 +42,8 @@ vendored Leaflet.
    EN text of the game's rules popup. Currently the bar counts markers; the "Exploration Value" label is
    inferred and should be confirmed against the official wording.
 6. **Rewards/items/loot** (SPEC §4.8), popup rewards with icons, deep links, copy-link, bottom-sheet popup on
-   mobile, pillar line for `chest_challenge`, encounter hint/howto.
+   mobile, pillar line for `chest_challenge`, encounter extra points on the map, "show solution" button for
+   `howto` (texts already in `marker_texts.csv`).
 7. **Other regions**, one at a time, each needing a map image, tiles, calibration points (~10), `maps.json`
    entry, and CSVs. Region ids/names still to be fixed with the owner.
 8. Dragon Island (Combat/Safe toggle, species filter) last.

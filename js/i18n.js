@@ -21,7 +21,7 @@ export function detectLang(settings, languages) {
 }
 
 // Loads UI strings (i18n/<lang>.json), entry texts (i18n/entries.<map>.<lang>.json) and
-// marker names such as Divine Trial names (i18n/markers.<map>.<lang>.json).
+// marker texts such as Divine Trial names and notes (i18n/markers.<map>.<lang>.json).
 // Anything missing in the chosen language falls back to English.
 export async function loadI18n(lang, mapId) {
   const order = lang === "en" ? ["en"] : [lang, "en"];
@@ -37,9 +37,14 @@ export async function loadI18n(lang, mapId) {
     name: entries.map((d) => d[id]?.name).find(Boolean) ?? id,
     description: entries.map((d) => d[id]?.description).find(Boolean) ?? "",
   });
-  // Own name of a marker (e.g. a Divine Trial), or "" when it has none.
-  const markerName = (id) => markers.map((d) => d[id]?.name).find(Boolean) ?? "";
+  // Texts of one marker: own name (Divine Trials), note and howto; "" when missing.
+  const markerText = (id, field) => markers.map((d) => d[id]?.[field]).find(Boolean) ?? "";
+  const marker = (id) => ({
+    name: markerText(id, "name"),
+    note: markerText(id, "note"),
+    howto: markerText(id, "howto"),
+  });
   // Translation with {placeholders}: tf("ui.exported", { n: 3 }).
   const tf = (key, vars = {}) => t(key).replace(/\{(\w+)\}/g, (m, name) => (name in vars ? String(vars[name]) : m));
-  return { lang, t, tf, entry, markerName };
+  return { lang, t, tf, entry, marker };
 }
