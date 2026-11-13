@@ -131,7 +131,16 @@ toggle.addEventListener("click", () => {
   updateToggleLabel();
   fitWholeMapIfMinimal();
 });
+// On small screens the sidebar is a drawer: start closed and close it after the user
+// picks something, so the map is visible again.
+const narrow = window.matchMedia("(max-width: 700px)");
+if (narrow.matches) document.body.classList.add("sidebar-hidden");
 updateToggleLabel();
+function closeDrawerIfNarrow() {
+  if (!narrow.matches || document.body.classList.contains("sidebar-hidden")) return;
+  document.body.classList.add("sidebar-hidden");
+  updateToggleLabel();
+}
 
 // --- Markers and filters ------------------------------------------------------------------
 if (!calibrated) {
@@ -165,7 +174,11 @@ if (!calibrated) {
     onFocusEntry(entryId, typeId) {
       if (hidden.has(typeId)) setTypes([typeId], true);
       layers.focusEntry(entryId);
+      closeDrawerIfNarrow();
     },
   });
-  map.on("click", () => layers.highlight(null));
+  map.on("click", () => {
+    layers.highlight(null);
+    closeDrawerIfNarrow();
+  });
 }

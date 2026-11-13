@@ -19,6 +19,9 @@ body {
 }
 
 body {
+  height: 100vh;
+  height: 100dvh;
+  /* dvh: mobile browser toolbars must not cut off the map */
   display: flex;
   flex-direction: column;
   background: var(--bg);
@@ -51,6 +54,7 @@ input[type="checkbox"] {
 
 .topbar strong {
   font-size: 16px;
+  white-space: nowrap;
 }
 
 .spacer {
@@ -211,12 +215,12 @@ body.sidebar-hidden #sidebar {
   color: #10151b;
   font: 700 12px/1 system-ui, sans-serif;
   box-shadow: 0 1px 3px #000a;
-  transform: scale(var(--mk-scale, 1));
+  transform: scale(calc(var(--mk-scale, 1) * var(--mk-touch, 1)));
   transition: transform .1s;
 }
 
 .mk.hl .mk-dot {
-  transform: scale(calc(var(--mk-scale, 1) * 1.35));
+  transform: scale(calc(var(--mk-scale, 1) * var(--mk-touch, 1) * 1.35));
   box-shadow: 0 0 0 4px #ffffff66;
 }
 
@@ -253,4 +257,94 @@ body.sidebar-hidden #sidebar {
 /* No focus ring after a mouse click on a marker; keyboard focus still shows it. */
 .leaflet-marker-icon:focus:not(:focus-visible) {
   outline: none;
+}
+
+/* --- Small screens: the sidebar becomes a drawer over the map ------------------------- */
+@media (max-width: 700px) {
+  .layout {
+    position: relative;
+  }
+
+  #sidebar {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1100;
+    width: min(320px, 88vw);
+    box-shadow: 4px 0 16px #0009;
+    transition: transform .2s ease, visibility .2s;
+  }
+
+  /* Closed: slid out and hidden from keyboard and screen readers (overrides display: none). */
+  body.sidebar-hidden #sidebar {
+    display: block;
+    transform: translateX(-100%);
+    visibility: hidden;
+    box-shadow: none;
+  }
+
+  .topbar {
+    gap: 8px;
+    padding: 0 10px;
+  }
+
+  .topbar strong {
+    font-size: 14px;
+  }
+
+  .topbar select {
+    min-width: 0;
+    max-width: 42vw;
+    text-overflow: ellipsis;
+  }
+}
+
+@media (max-width: 420px) {
+  .topbar strong {
+    display: none;
+  }
+}
+
+/* --- Touch screens: bigger targets, no hover-only UI -------------------------------------- */
+@media (pointer: coarse) {
+  :root {
+    --mk-touch: 1.25;
+  }
+
+  .row,
+  .expander {
+    min-height: 44px;
+  }
+
+  .entry {
+    min-height: 40px;
+    align-items: center;
+  }
+
+  input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+  }
+
+  .topbar select,
+  .topbar button,
+  .bulk button {
+    min-height: 40px;
+  }
+
+  .leaflet-touch .leaflet-bar a {
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+  }
+
+  #readout {
+    display: none;
+  }
+
+  /* "move the cursor" makes no sense without a cursor */
+  #pin {
+    bottom: 12px;
+  }
 }
