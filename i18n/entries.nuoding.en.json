@@ -1,0 +1,198 @@
+{
+  "andys-dilemma": {
+    "description": "Recently, Andy, a student at the Nuoding Academy, seems to have encountered some difficulties.",
+    "name": "Andy's Dilemma"
+  },
+  "animal-protection": {
+    "description": "Someone maliciously trapped Soul Beasts near the Fugold Creek Beach.",
+    "name": "Animal Protection"
+  },
+  "coop-1": {
+    "description": "Find the chests near Nuoding Academy and cooperate with other Soul Masters to open them.",
+    "name": "Cooperative Chest One"
+  },
+  "coop-2": {
+    "description": "Find the chests at Nuoding Academy and cooperate with other Soul Masters to open them.",
+    "name": "Cooperative Chest Two"
+  },
+  "coop-3": {
+    "description": "Locate the advanced chests at Floating Gold Creek and cooperate with other Soul Masters to open them.",
+    "name": "Cooperative Chest Three"
+  },
+  "coop-4": {
+    "description": "Locate the advanced chests at the north of Soul Village and cooperate with other Soul Masters to open them.",
+    "name": "Cooperative Chest Four"
+  },
+  "desolate-flame-coffer-1": {
+    "description": "Gods took the fire of the western Desolate Flame and formed a divine covenant to protect precious items. Find the covenant stone to unlock it.",
+    "name": "Desolate Flame Coffer I"
+  },
+  "desolate-flame-coffer-2": {
+    "description": "Gods took the fire of the western Desolate Flame and formed a divine covenant to protect precious items. Find the covenant stone to unlock it.",
+    "name": "Desolate Flame Coffer II"
+  },
+  "dragonwood-coffer-1": {
+    "description": "Gods took the essence of the eastern Dragonwood and formed a divine covenant to protect precious items. Find the covenant stone to unlock it.",
+    "name": "Dragonwood Coffer I"
+  },
+  "dragonwood-coffer-2": {
+    "description": "Gods took the essence of the eastern Dragonwood and formed a divine covenant to protect precious items. Find the covenant stone to unlock it.",
+    "name": "Dragonwood Coffer II"
+  },
+  "dragonwood-coffer-3": {
+    "description": "Gods took the essence of the eastern Dragonwood and formed a divine covenant to protect precious items. Find the covenant stone to unlock it.",
+    "name": "Dragonwood Coffer III"
+  },
+  "east-holy-soul-village": {
+    "description": "Find the primary chests scattered in the east of the Soul Village.",
+    "name": "Santa Village East Chest"
+  },
+  "east-holy-soul-village-crystal": {
+    "description": "Find the Asura God Mind Crystals scattered in the eastern woods of Holy Soul Village.",
+    "name": "East Holy Soul Village Crystal"
+  },
+  "enjoy-the-scenery": {
+    "description": "Illuminate all the observation points on the map.",
+    "name": "Enjoy the Scenery"
+  },
+  "floating-gold-creek-1": {
+    "description": "Find the primary chests scattered around Floating Gold Creek Beach.",
+    "name": "Floating Gold Creek Chest One"
+  },
+  "floating-gold-creek-2": {
+    "description": "Find the intermediate chests scattered around Floating Gold Creek Beach.",
+    "name": "Floating Gold Creek Chest Two"
+  },
+  "floating-gold-creek-crystal": {
+    "description": "Find the Asura God Mind Crystals scattered around Floating Gold Creek Beach.",
+    "name": "Floating Gold Creek Crystal"
+  },
+  "guardian": {
+    "description": "Obtain all the chests guarded by monsters on the map!",
+    "name": "Guardian Chest"
+  },
+  "hidden-1": {
+    "description": "Find the hidden chests scattered around Nuoding.",
+    "name": "Hidden Chest I"
+  },
+  "hidden-2": {
+    "description": "Find the hidden chests scattered around Nuoding.",
+    "name": "Hidden Chest II"
+  },
+  "hidden-valley": {
+    "description": "In the northeast of Soul Village, there is a shaded valley (Hidden Valley), find the primary chests scattered nearby.",
+    "name": "Hidden Valley Chest"
+  },
+  "holy-soul-mountain": {
+    "description": "Find the primary chests scattered around Holy Soul Mountain.",
+    "name": "Holy Soul Mountain Chest"
+  },
+  "holy-soul-mountain-crystal": {
+    "description": "Find the Asura God Mind Crystals scattered around Holy Soul Mountain.",
+    "name": "Holy Soul Mountain Crystal"
+  },
+  "holy-soul-village": {
+    "description": "Find the primary chests scattered within and around Holy Soul Village.",
+    "name": "Holy Soul Village Chest"
+  },
+  "holy-soul-village-crystal": {
+    "description": "Find the Asura God Mind Crystals scattered behind Tang San's house in Holy Soul Village.",
+    "name": "Holy Soul Village Crystal"
+  },
+  "light-up-teleport": {
+    "description": "Illuminate all the teleport points on the map.",
+    "name": "Light Up! Teleport"
+  },
+  "lost-in-the-maze": {
+    "description": "There is a treasure deep in Norton City, attracting countless people.",
+    "name": "Lost in the Maze"
+  },
+  "market-games": {
+    "description": "At the market near the entrance of Norton Academy, there are often fun little games.",
+    "name": "Market Games"
+  },
+  "mysterious-frost-coffer-1": {
+    "description": "Gods took the extreme northern Mysterious Frost and formed a divine covenant to protect precious items. Find the covenant stone to unlock it.",
+    "name": "Mysterious Frost Coffer I"
+  },
+  "north-holy-soul-village": {
+    "description": "Find the primary chests scattered around the northern woods and roads of Holy Soul Village.",
+    "name": "North Holy Soul Village Chest"
+  },
+  "north-holy-soul-village-crystal": {
+    "description": "Find the Asura God Mind Crystals scattered around the northern woods and roads of Holy Soul Village.",
+    "name": "North Holy Soul Village Crystal"
+  },
+  "nuoding-academy-1": {
+    "description": "Find the primary chests scattered around Nuoding Academy and its surroundings.",
+    "name": "Nuoding Academy Chest One"
+  },
+  "nuoding-academy-2": {
+    "description": "Find the primary chests scattered around Nuoding Academy and its surroundings.",
+    "name": "Nuoding Academy Chest Two"
+  },
+  "nuoding-outskirts": {
+    "description": "Find the primary chests scattered in the outskirts of Nuoding City.",
+    "name": "Nuoding Outskirts Chest"
+  },
+  "pillar-empty-path-1": {
+    "description": "Use the Pillar of Empty Path to find the hidden advanced chest at Soul Mountain.",
+    "name": "Pillar of Empty Path I"
+  },
+  "pillar-empty-path-2": {
+    "description": "Use the Pillar of Empty Path to find the hidden advanced chest at the east of Soul Mountain.",
+    "name": "Pillar of Empty Path II"
+  },
+  "pillar-empty-path-3": {
+    "description": "Use the Pillar of Empty Path to find the hidden advanced chest at Floating Gold Creek.",
+    "name": "Pillar of Empty Path Three"
+  },
+  "pillar-empty-path-4": {
+    "description": "Use the Pillar of Empty Path to find the hidden advanced chest at the east of Soul Village.",
+    "name": "Pillar of Empty Path Four"
+  },
+  "pillar-empty-path-5": {
+    "description": "Use the Pillar of Empty Path to find the hidden advanced chest at the north of Soul Village.",
+    "name": "Pillar of Empty Path Five"
+  },
+  "pillar-empty-path-6": {
+    "description": "Use the Pillar of Empty Path to find the hidden advanced chest at the north of Soul Village.",
+    "name": "Pillar of Empty Path Six"
+  },
+  "radiant-light-forest-1": {
+    "description": "Find the primary chests scattered near Dawnlight Jungle.",
+    "name": "Radiant Light Forest Chest One"
+  },
+  "radiant-light-forest-2": {
+    "description": "Find the primary chests scattered near Dawnlight Jungle.",
+    "name": "Sunset Forest Chest Two"
+  },
+  "return-in-glory": {
+    "description": "North of Holy Soul Village, there is a blind old woman with a Soul Master son.",
+    "name": "Return in Glory"
+  },
+  "soul-hunting-forest-entrance": {
+    "description": "Find the primary chests scattered near the entrance of Soul Hunting Forest.",
+    "name": "Soul Hunting Forest Entrance Chest"
+  },
+  "tang-sect-1": {
+    "description": "Use the Grappling Hook to find all the scattered Tang Sect chests on the map.",
+    "name": "Tang Sect Chest One"
+  },
+  "tang-sect-2": {
+    "description": "Use the Purple Demon Eye to locate all the scattered transformed Tang Sect chests on the map.",
+    "name": "Tang Sect Chest Two"
+  },
+  "tang-sect-3": {
+    "description": "Use the Purple Demon Eye to locate all the scattered hidden Tang Sect chests on the map.",
+    "name": "Tang Sect Chest Three"
+  },
+  "wind-rest-plains": {
+    "description": "Find the primary chests scattered within Wind Rest Plains.",
+    "name": "Wind Rest Plains Chest"
+  },
+  "wind-rest-plains-crystal": {
+    "description": "Find the Asura God Mind Crystals scattered around Wind Rest Plains.",
+    "name": "Wind Rest Plains Crystal"
+  }
+}

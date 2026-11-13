@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Soul Land Map</title>
+  <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+  <style>
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      background: #0f1418;
+    }
+
+    #map {
+      height: 100%;
+      background: #0f1418;
+    }
+
+    .hud {
+      position: absolute;
+      left: 12px;
+      z-index: 1000;
+      padding: 6px 10px;
+      border-radius: 6px;
+      background: #151b22;
+      color: #e6ecf2;
+      font: 14px/1.3 system-ui, sans-serif;
+      border: 1px solid #2c394a;
+      font-variant-numeric: tabular-nums;
+    }
+
+    #readout {
+      bottom: 12px;
+    }
+
+    #pin {
+      bottom: 52px;
+      color: #f5a524;
+    }
+
+    #pin:empty {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="map"></div>
+  <div id="pin" class="hud"></div>
+  <div id="readout" class="hud">move the cursor over the map</div>
+  <script src="vendor/leaflet/leaflet.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+
+</html>

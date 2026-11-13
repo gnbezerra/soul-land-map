@@ -1,0 +1,9 @@
+// Generated in build
+tiles/
+vendor/
+
+// IDE files
+.vscode/
+
+// Erase later
+icons.old/

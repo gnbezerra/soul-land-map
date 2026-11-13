@@ -1,0 +1,19 @@
+{
+  "nuoding": {
+    "image": {
+      "width": 4096,
+      "height": 4096
+    },
+    "tiles": {
+      "tileSize": 256,
+      "maxNativeZoom": 4,
+      "maxZoom": 6
+    },
+    "calibration": {
+      "scaleX": 3.5714285714,
+      "offsetX": 428.5714285714,
+      "scaleY": -3.5714285714,
+      "offsetY": 3657.142857142
+    }
+  }
+}
