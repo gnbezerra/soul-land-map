@@ -54,9 +54,8 @@ export function createLayers({ L, map, markers, categories, calibration, nativeZ
   }
 
   function titleOf(m) {
-    return m.entry
-      ? i18n.entry(m.entry).name + (m.entryIndex ? ` #${m.entryIndex}` : "")
-      : i18n.t(`type.${m.type}`);
+    if (m.entry) return i18n.entry(m.entry).name + (m.entryIndex ? ` #${m.entryIndex}` : "");
+    return i18n.markerName(m.id) || i18n.t(`type.${m.type}`);
   }
 
   function makeTooltip(m, point) {

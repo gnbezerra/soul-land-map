@@ -41,7 +41,8 @@ A new map needs its own offsets.
 ## Data pipeline
 
 The collection spreadsheet (one tab per map) is exported as UTF-8 CSV into
-`data/src/<map>/markers.csv` and `data/src/<map>/entries.csv`, then:
+`data/src/<map>/markers.csv` and `data/src/<map>/entries.csv` (plus `trials.csv` and `stages.csv`
+for Divine Trials), then:
 
 ```
 python tools/build_data.py nuoding            # validate, then write the JSON files
@@ -49,9 +50,11 @@ python tools/build_data.py nuoding --check    # validate only
 python tools/build_data.py nuoding --strict   # warnings also fail the build
 ```
 
-It writes `data/markers/<map>.json`, `data/entries/<map>.json` and
-`i18n/entries.<map>.<lang>.json`. Nothing is written when there are errors. Use a dot as the
-decimal separator in the CSV.
+It writes `data/markers/<map>.json`, `data/entries/<map>.json`,
+`i18n/entries.<map>.<lang>.json` and `i18n/markers.<map>.<lang>.json` (Divine Trial names). Nothing
+is written when there are errors. Use a dot as the decimal separator in the CSV. Only the columns
+marked "always" or "yes" below must exist; any other column can be left out of a sheet when no row
+uses it, and column order does not matter.
 
 ### `markers.csv`
 
@@ -63,7 +66,7 @@ decimal separator in the CSV.
 | `entry` | for chests, crystals, encounters, teleports, viewpoints and seeds | entry id, or its English name |
 | `entry_index` | optional | number of the `[Location N]` link in the in-game answer |
 | `subtype` | `divine_trial` | `puzzle` or `combat` |
-| `players` | `chest_coop` | 2 to 4 |
+| `players` | `chest_coop` | 1 to 4 |
 | `contract` | `chest_contract` | `wood`, `flame` or `frost` |
 | `pillar_x`, `pillar_y` | optional, `chest_challenge` | both or neither |
 | `seed` | `seed` | number shown by the game when picking the seed up |
@@ -86,13 +89,49 @@ point). No other type may repeat an id.
 | `tags` | optional | separated by `;`, e.g. `purple_demon_eye` |
 | `name_pt`, `name_zh`, `desc_en`, `desc_pt`, `desc_zh` | optional | official texts |
 
+### Divine Trials: `trials.csv` and `stages.csv`
+
+Divine Trials have no entry in the game's list. The pillar itself is a `divine_trial` row in
+`markers.csv` (`id`, `x`, `y`, `subtype`); its name and stages live in two more files, both keyed by
+that marker id.
+
+`trials.csv`, one row per trial:
+
+| Column | Required | Meaning |
+|---|---|---|
+| `trial` | yes | id of a `divine_trial` marker |
+| `name_en` | yes | name as shown in the game |
+| `name_pt`, `name_zh` | optional | official names |
+
+`stages.csv`, one row per stage (rows may be in any order):
+
+| Column | Required | Meaning |
+|---|---|---|
+| `trial` | yes | id of a `divine_trial` marker |
+| `stage` | yes | 1, 2, 3... in the order the stages are played, no gaps (3 to 10 stages) |
+| `stars` | yes | difficulty, 1 to 5 |
+| `level`, `cp` | combat trials only | level required to enter and recommended combat power; empty for puzzle trials |
+
+```csv
+trial,stage,stars,level,cp
+nuoding-0412,1,1,20,8000
+nuoding-0412,2,2,25,10000
+nuoding-0412,3,3,30,12000
+nuoding-0413,1,2,,
+```
+
+The build adds a `stages` list (in stage order) to the marker and prints the stage total of the map,
+to compare with the game's Divine Trial counter.
+
 ### Checks
 
 Errors: duplicate or malformed ids, unknown types, missing columns for a type, unknown entries,
 coordinates outside the image, more markers than an entry's `size`, `entry_index` above `size` or
-repeated, unknown link targets, and ids whose type changed since the last build. Warnings: entries
-that are still incomplete, `entry_index` gaps, ids that disappeared since the last build, and
-mechanisms and seeds that do not match.
+repeated, unknown link targets, ids whose type changed since the last build, and Divine Trials with stage
+gaps, repeated stages, fewer than 3 or more than 10 stages, stars outside 1 to 5, or `level`/`cp`
+missing on a combat trial (or filled in on a puzzle one). Warnings: entries that are still
+incomplete, `entry_index` gaps, ids that disappeared since the last build, mechanisms and seeds that
+do not match, Divine Trials without a name or stages, and stage levels that go down.
 
 ## Filters and counters (step 2)
 

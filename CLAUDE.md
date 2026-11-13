@@ -19,6 +19,16 @@ JS ES modules, Leaflet 1.9.4 vendored, no build step. Start with `README.md`, th
 - UI strings: add the key to `i18n/en.json` first, then pt and zh. Official game terms vs unofficial UI
   translations are described in the README. Missing keys fall back to English.
 
+## Constraints
+
+- Hosting: the site must work as plain static files on GitHub Pages or similar hosts (Vercel,
+  Netlify). No server code, no required build step, relative paths only.
+- Browser support: current and recent versions of Chrome, Edge, Firefox and Safari, desktop and
+  mobile. Use only web features that are Baseline "widely available" (see MDN); anything newer
+  needs a fallback or the owner's approval. No IE support.
+- Node.js may be used locally as a dev tool (e.g. `node --check js/*.js`), but the repo has no
+  `package.json`, dependencies or build step until there is a clear need.
+
 ## Run and check
 
 - `python -m http.server 8000`, open <http://localhost:8000> (`?lang=pt` to force a language).

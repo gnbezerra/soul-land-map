@@ -2,7 +2,8 @@ import { fetchJson } from "./util.js";
 
 // The languages the UI is translated into are listed in i18n/languages.json
 // ({ "<code>": "<native name>" }). To add one, create i18n/<code>.json, add it to the
-// manifest, and run tools/build_data.py so i18n/entries.<map>.<code>.json exists.
+// manifest, and run tools/build_data.py so i18n/entries.<map>.<code>.json and
+// i18n/markers.<map>.<code>.json exist.
 export async function loadLanguages() {
   return fetchJson("i18n/languages.json", { en: "English" });
 }
@@ -19,12 +20,14 @@ export function detectLang(settings, languages) {
   return candidates.find(supported) ?? "en";
 }
 
-// Loads UI strings (i18n/<lang>.json) and entry texts (i18n/entries.<map>.<lang>.json).
+// Loads UI strings (i18n/<lang>.json), entry texts (i18n/entries.<map>.<lang>.json) and
+// marker names such as Divine Trial names (i18n/markers.<map>.<lang>.json).
 // Anything missing in the chosen language falls back to English.
 export async function loadI18n(lang, mapId) {
   const order = lang === "en" ? ["en"] : [lang, "en"];
   const ui = await Promise.all(order.map((l) => fetchJson(`i18n/${l}.json`, {})));
   const entries = await Promise.all(order.map((l) => fetchJson(`i18n/entries.${mapId}.${l}.json`, {})));
+  const markers = await Promise.all(order.map((l) => fetchJson(`i18n/markers.${mapId}.${l}.json`, {})));
 
   const t = (key, fallback) => {
     for (const dict of ui) if (key in dict) return dict[key];
@@ -34,7 +37,9 @@ export async function loadI18n(lang, mapId) {
     name: entries.map((d) => d[id]?.name).find(Boolean) ?? id,
     description: entries.map((d) => d[id]?.description).find(Boolean) ?? "",
   });
+  // Own name of a marker (e.g. a Divine Trial), or "" when it has none.
+  const markerName = (id) => markers.map((d) => d[id]?.name).find(Boolean) ?? "";
   // Translation with {placeholders}: tf("ui.exported", { n: 3 }).
   const tf = (key, vars = {}) => t(key).replace(/\{(\w+)\}/g, (m, name) => (name in vars ? String(vars[name]) : m));
-  return { lang, t, tf, entry };
+  return { lang, t, tf, entry, markerName };
 }

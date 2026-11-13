@@ -99,13 +99,14 @@ it comes from the category's default loot.
 ### 4.5 Marker types
 
 - `chest_normal`: default loot table `normal_chest`.
-- `chest_coop`: `players` 2–4; the mechanism is text.
+- `chest_coop`: `players` 1–4; the mechanism is text.
 - `chest_challenge`: Pillars of Empty Path jumping puzzle; the location leads to the chest; optional pillar
   position (`pillar_x`, `pillar_y`) drawn as a small pin tied to the chest by a dashed line when the popup is open.
 - `chest_contract`: `contract` = wood | flame | frost (Dragonwood 3, Desolate Flame 2, Mysterious Frost 1 in
   Nuoding) and a cost; the popup warns the contract is permanently consumed.
 - `crystal`: Divine Mind Crystal.
-- `divine_trial`: section 4.6. `encounter`: section 4.7.
+- `divine_trial`: section 4.6.
+- `encounter`: section 4.7.
 - `teleport`, `viewpoint`; `portal`: whirlpool to another map, field `to` (map id), auxiliary group.
 - `seed`: Blue Silver Grass seed (Mixed Area), field `seed` = number the game shows on pickup (can differ from
   `entry_index`; both are stored).
@@ -120,6 +121,10 @@ so the site's counter sums stages. Stages are sequential; progress is an integer
 entered directly by the user. `stars` 1–5; `level` and `cp` only for combat (puzzle assumes level 1, CP 0);
 each stage has its own reward of 2–4 items; the pillar's theme name lives in marker i18n; stages have no name.
 The popup highlights the next stage. Filtering by player level is post-MVP.
+
+Source data: the marker row in `markers.csv`, the name in `trials.csv` (one row per trial, built into
+`i18n/markers.<map>.<lang>.json`) and the stages in `stages.csv` (one row per stage, columns `trial`, `stage`,
+`stars`, `level`, `cp`). Rewards will be extra `stages.csv` columns once items exist (4.8).
 
 ```json
 { "id": "nuoding-0412", "type": "divine_trial", "subtype": "combat", "x": 123.4, "y": 567.8,
@@ -271,7 +276,9 @@ Open: final marker size/style per zoom (depends on real icons); official Chinese
 
 - Done: tiles + calibrated map + readout; pipeline; sidebar with counters and entry lists; popups with found
   button; progress, hide-found and backup/restore; en/pt/zh with selector; responsive drawer layout.
-- Not yet: items/loot/rewards, Divine Trial stages and progress, encounter points/howto, deep links,
+- Divine Trials: pipeline done (`trials.csv`, `stages.csv`, validation, `stages` in the marker JSON, name in the
+  marker title). The stage sum is printed, not checked against the game counter (not stored anywhere yet).
+- Not yet: items/loot/rewards, Divine Trial popup stage list and progress, encounter points/howto, deep links,
   copy-link, bottom-sheet popup, pillar line for `chest_challenge`, species filter, real icons, disclaimer,
   GitHub Pages deploy, other regions.
 - The exploration bar is count-based (found/total of countable groups, currently 323 in Nuoding without

@@ -9,19 +9,25 @@ Usage:
 Inputs (one sheet tab per map, exported as UTF-8 CSV with a header row):
     data/src/<map>/markers.csv   one row per marker
     data/src/<map>/entries.csv   one row per exploration entry (the in-game list)
+    data/src/<map>/trials.csv    one row per Divine Trial (its name), optional
+    data/src/<map>/stages.csv    one row per Divine Trial stage, optional
     data/maps.json               image size and calibration (used for bounds checks)
+
+Only the required columns listed below must be present; any other column may be left
+out of the sheet when no row uses it.
 
 Outputs (nothing is written if there are errors):
     data/markers/<map>.json
     data/entries/<map>.json
     i18n/entries.<map>.<lang>.json   official entry names and descriptions
+    i18n/markers.<map>.<lang>.json   marker names (Divine Trial names)
 
 markers.csv columns
     id, type, x, y                         always required
     entry                                  entry id, or its English name (types that belong to an entry)
     entry_index                            number of the [Location N] link in the game's answer
     subtype      (divine_trial)            puzzle | combat
-    players      (chest_coop)              2 to 4
+    players      (chest_coop)              1 to 4
     contract     (chest_contract)          wood | flame | frost
     pillar_x, pillar_y (chest_challenge)   optional, both or neither
     seed         (seed)                    number shown by the game when picking it up
@@ -37,6 +43,15 @@ entries.csv columns
     id, type, name_en, size                required (type is the marker type of its members)
     tags                                   separated by ';'
     name_pt, name_zh, desc_en, desc_pt, desc_zh   optional official texts
+
+trials.csv columns
+    trial, name_en                         required (trial is the id of a divine_trial marker)
+    name_pt, name_zh                       optional
+
+stages.csv columns
+    trial, stage, stars                    required (stage: 1, 2, 3... in play order, no gaps;
+                                           stars: 1 to 5)
+    level, cp                              combat trials only: required level and recommended CP
 """
 import argparse
 import csv
@@ -84,6 +99,9 @@ ENUMS = {"subtype": {"puzzle", "combat"}, "contract": {"wood", "flame", "frost"}
 MARKER_COLUMNS = {"id", "type", "x", "y", "entry", "entry_index", "links", *EXTRA_COLUMNS}
 ENTRY_COLUMNS = {"id", "type", "name_en", "size", "tags",
                  "name_pt", "name_zh", "desc_en", "desc_pt", "desc_zh"}
+TRIAL_COLUMNS = {"trial", "name_en", "name_pt", "name_zh"}
+STAGE_COLUMNS = {"trial", "stage", "stars", "level", "cp"}
+MIN_STAGES, MAX_STAGES = 3, 10
 LANGS = ("en", "pt", "zh")
 SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 TAG = re.compile(r"^[a-z0-9_]+$")
@@ -118,7 +136,9 @@ def read_csv(path, allowed, required, rep):
             rep.error(path.name, f"missing required column(s): {', '.join(missing)}")
             return []
         for row in reader:
-            clean = {k: (v or "").strip() for k, v in row.items() if k in allowed}
+            # Optional columns left out of the sheet read as empty.
+            clean = dict.fromkeys(allowed, "")
+            clean.update({k: (v or "").strip() for k, v in row.items() if k in allowed})
             if any(clean.values()):
                 rows.append((reader.line_num, clean))
     return rows
@@ -282,7 +302,7 @@ def load_markers(rows, map_id, entries, by_name, inside, rep):
 
         m["x"], m["y"] = x, y
         if r["players"]:
-            v = parse_int(r["players"], where, "players", rep, lo=2, hi=4)
+            v = parse_int(r["players"], where, "players", rep, lo=1, hi=4)
             if v is not None:
                 m["players"] = v
         if r["contract"]:
@@ -313,6 +333,75 @@ def load_markers(rows, map_id, entries, by_name, inside, rep):
             m["links"] = [s.strip() for s in r["links"].split(";") if s.strip()]
         markers[mid] = m
     return markers
+
+
+def load_trials(trial_rows, stage_rows, markers, rep):
+    """Attach "stages" to divine_trial markers and return {marker id: {lang: name}}."""
+    trials = {mid: m for mid, m in markers.items() if m["type"] == "divine_trial"}
+    names = {}
+    for line, r in trial_rows:
+        where = f"trials.csv:{line}"
+        tid = r["trial"]
+        if tid not in trials:
+            rep.error(where, f"'{tid}' is not a divine_trial marker in markers.csv")
+            continue
+        if tid in names:
+            rep.error(where, f"duplicate trial '{tid}'")
+            continue
+        if not r["name_en"]:
+            rep.error(where, "name_en is required")
+            continue
+        names[tid] = {lang: r[f"name_{lang}"] for lang in LANGS}
+
+    stages = defaultdict(dict)
+    for line, r in stage_rows:
+        where = f"stages.csv:{line}"
+        tid = r["trial"]
+        if tid not in trials:
+            rep.error(where, f"'{tid}' is not a divine_trial marker in markers.csv")
+            continue
+        n = parse_int(r["stage"], where, "stage", rep, lo=1, hi=MAX_STAGES)
+        stars = parse_int(r["stars"], where, "stars", rep, lo=1, hi=5)
+        if n is None or stars is None:
+            continue
+        if n in stages[tid]:
+            rep.error(where, f"stage {n} of '{tid}' is already listed")
+            continue
+        stage = {"stars": stars}
+        if trials[tid].get("subtype") == "combat":
+            missing = [c for c in ("level", "cp") if not r[c]]
+            if missing:
+                rep.error(where, f"combat trial stages require {' and '.join(missing)}")
+                continue
+            level = parse_int(r["level"], where, "level", rep, lo=1)
+            cp = parse_int(r["cp"], where, "cp", rep, lo=0)
+            if level is None or cp is None:
+                continue
+            stage["level"], stage["cp"] = level, cp
+        elif r["level"] or r["cp"]:
+            rep.error(where, "level and cp are only for combat trials")
+            continue
+        stages[tid][n] = stage
+
+    for tid, m in trials.items():
+        if tid not in names:
+            rep.warn(tid, "divine trial has no name in trials.csv")
+        got = stages.get(tid)
+        if not got:
+            rep.warn(tid, "divine trial has no stages in stages.csv")
+            continue
+        numbers = sorted(got)
+        gaps = sorted(set(range(1, numbers[-1] + 1)) - set(numbers))
+        if gaps:
+            rep.error(tid, f"missing stage(s) {gaps}")
+        elif len(numbers) < MIN_STAGES:
+            rep.error(tid, f"has {len(numbers)} stages; trials have {MIN_STAGES} to {MAX_STAGES}")
+        else:
+            m["stages"] = [got[i] for i in numbers]
+            levels = [s["level"] for s in m["stages"] if "level" in s]
+            if any(b < a for a, b in zip(levels, levels[1:])):
+                rep.warn(tid, f"stage levels go down: {levels}")
+    return names
 
 
 def cross_check(markers, entries, maps, rep):
@@ -404,10 +493,13 @@ def main():
     if marker_rows is None:
         sys.exit(f"Missing {src / 'markers.csv'}")
     entry_rows = read_csv(src / "entries.csv", ENTRY_COLUMNS, ["id", "type", "name_en", "size"], rep) or []
+    trial_rows = read_csv(src / "trials.csv", TRIAL_COLUMNS, ["trial", "name_en"], rep) or []
+    stage_rows = read_csv(src / "stages.csv", STAGE_COLUMNS, ["trial", "stage", "stars"], rep) or []
 
     entries, texts, by_name = load_entries(entry_rows, rep)
     inside = make_bounds_check(maps[map_id], rep)
     markers = load_markers(marker_rows, map_id, entries, by_name, inside, rep)
+    trial_names = load_trials(trial_rows, stage_rows, markers, rep)
     cross_check(markers, entries, maps, rep)
     compare_with_previous(root / "data" / "markers" / f"{map_id}.json", markers, rep)
 
@@ -417,6 +509,10 @@ def main():
     counts = Counter(m["entry"] for m in markers.values() if "entry" in m)
     for eid, e in sorted(entries.items()):
         print(f"  entry {eid:<34}{counts.get(eid, 0)}/{e['size']}")
+    trials = [m for m in markers.values() if m["type"] == "divine_trial"]
+    if trials:
+        total = sum(len(m.get("stages", [])) for m in trials)
+        print(f"  divine trial stages: {total} in {len(trials)} trial(s)")
 
     for w in rep.warnings:
         print(f"WARNING {w}")
@@ -442,6 +538,9 @@ def main():
         # Always write every language so the site never requests a missing file.
         write(root / "i18n" / f"entries.{map_id}.{lang}.json", dump(out, sort_keys=False))
         print(f"    {lang}: {len(out)}/{len(texts)} entries with text")
+    for lang in LANGS:
+        out = {mid: {"name": n[lang]} for mid, n in sorted(trial_names.items()) if n[lang]}
+        write(root / "i18n" / f"markers.{map_id}.{lang}.json", dump(out, sort_keys=False))
     print(f"\nOK ({len(rep.warnings)} warning(s)).")
 
 
