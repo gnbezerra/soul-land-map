@@ -31,8 +31,9 @@ screenshots. These scripts are scratch files, not in the repo; adding them under
 
 ## Next steps (suggested order)
 
-1. **Deploy to GitHub Pages** (add the unofficial-fansite disclaimer first, see SPEC §10). Needs the owner's
-   go-ahead for making the site public. Add a favicon (the only request that fails today is `favicon.ico`).
+1. **Deploy to GitHub Pages** (add the unofficial-fansite disclaimer first, see SPEC §10). The repo is already
+   public at <https://github.com/gnbezerra/soul-land-map>; Pages is not enabled yet (the owner turns it on in the
+   repo settings, serving `main` from the root). Add a favicon (the only request that fails today is `favicon.ico`).
 2. **Divine Trial UI.** Data and validation are done. Left: popup stage list (stars, level, CP when known),
    integer progress control (`trials` in the progress store; bump the storage version only if the format
    breaks), badge on the marker, counter by stage (sum of stages, 65 in Nuoding; today the bar counts each
@@ -45,8 +46,8 @@ screenshots. These scripts are scratch files, not in the repo; adding them under
    EN text of the game's rules popup. Currently the bar counts markers; the "Exploration Value" label is
    inferred and should be confirmed against the official wording.
 5. **Popup extras**: "show solution" button for `howto` (texts already in `marker_texts.csv`), tags in the
-   popup and sidebar (data already carried), pillar line for `chest_challenge`, deep links, copy-link,
-   bottom-sheet popup on mobile.
+   popup and sidebar (data already carried), `links` between related markers, the contract-consumed warning
+   on `chest_contract`, pillar line for `chest_challenge`, deep links, copy-link, bottom-sheet popup on mobile.
 6. **Rewards/items/loot** (SPEC §4.8), popup rewards with icons.
 7. **Other regions**, one at a time, each needing a map image, tiles, calibration points (~10), `maps.json`
    entry, and CSVs. Region ids/names still to be fixed with the owner. Suotuo first (Nuoding already has a
@@ -60,10 +61,8 @@ screenshots. These scripts are scratch files, not in the repo; adding them under
 - Map images and calibration points for other regions.
 - Real icon sprites.
 - PT and EN text of the exploration rules popup (区域探索).
-- Official PT name of "Observation point" (currently the unofficial "Ponto de Observação").
 - Two Mixed Area PT descriptions that were cut off in screenshots.
 - Native review of the ZH UI strings.
-- Decision to make the site public.
 
 ## Known gaps and notes
 

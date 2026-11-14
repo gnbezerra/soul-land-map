@@ -1,12 +1,14 @@
 # Soul Land Map
 
 Interactive maps with filterable markers for Soul Land: New World (unofficial fan project).
+Repository: <https://github.com/gnbezerra/soul-land-map>.
 
 Documentation for contributors and agents: [`CLAUDE.md`](CLAUDE.md) (conventions),
 [`docs/SPEC.md`](docs/SPEC.md) (design) and [`docs/ROADMAP.md`](docs/ROADMAP.md) (current state, next steps).
 
-Current state: calibrated Nuoding map, data pipeline, filter sidebar with counters, popups, found tracking with
-backup, en/pt/zh UI and a responsive layout. See the roadmap for what comes next.
+Current state: the Nuoding map is calibrated and fully mapped (337 markers); data pipeline, filter sidebar
+with counters, popups, found tracking with backup, en/pt/zh UI and a responsive layout. See the roadmap for
+what comes next.
 
 ## Running it
 
@@ -77,7 +79,8 @@ uses it, and column order does not matter.
 | `tags` | optional | this marker's own requirements separated by `;`, on top of its entry's tags (e.g. `grappling_hook` on one chest of a `purple_demon_eye` entry) |
 
 An encounter with several points repeats its id on several rows (the first row is the primary
-point). No other type may repeat an id.
+point). Each point gets its own icon on the map, and the encounter still counts once. No other type may
+repeat an id.
 
 ### `entries.csv`
 
@@ -111,8 +114,8 @@ Texts that belong to one marker, one row per marker and field (rows may be in an
 
 ```csv
 marker,field,en,pt,zh
-nuoding-0412,name,Trial of Flames,Provação das Chamas,火焰试炼
-nuoding-0150,note,Inside the cave under the plains,Dentro da caverna sob a planície,
+nuoding-0281,name,Trial of Strength: Shield of Stone,Provação da Força: Escudo de Pedra,力之试炼·岩之盾
+nuoding-0185,note,Grapple onto the roof using the grappling hook.,Suba no telhado usando o gancho.,使用飞天神爪登上屋顶。
 ```
 
 ### Divine Trials: `stages.csv`
@@ -131,29 +134,38 @@ stages live in `stages.csv`, one row per stage (rows may be in any order):
 
 ```csv
 trial,stage,stars,level,cp
-nuoding-0412,1,1,20,8000
-nuoding-0412,2,2,25,10000
-nuoding-0412,3,3,30,12000
-nuoding-0413,1,2,,
+nuoding-0281,1,1,25,12000
+nuoding-0281,2,2,27,18000
+nuoding-0281,3,2,29,
+nuoding-0283,1,1,,
 ```
 
+The third row is a combat stage whose recommended CP is not known yet; the last one is a puzzle stage.
 The build adds a `stages` list (in stage order) to the marker and prints the stage total of the map,
-to compare with the game's Divine Trial counter.
+to compare with the game's Divine Trial counter (65 in Nuoding).
 
 ### Checks
 
-Errors: duplicate or malformed ids, unknown types, missing columns for a type, unknown entries,
-coordinates outside the image, more markers than an entry's `size`, `entry_index` above `size` or
-repeated, unknown link targets, ids whose type changed since the last build, and Divine Trials with stage
-gaps, repeated stages, fewer than 3 or more than 10 stages, stars outside 1 to 5, or `level`
-missing on a combat trial (or `level`/`cp` filled in on a puzzle one), and marker texts with an unknown marker
-or field, a `name` on a type other than `divine_trial`, `book`, `teleport` or `viewpoint`, a repeated field or no `en`, and malformed or
-repeated tags. Warnings: entries that are still
-incomplete, `entry_index` gaps, ids that disappeared since the last build, mechanisms and seeds that
-do not match, Divine Trials, books, teleports and viewpoints without a name, Divine Trials without stages, combat stages without a recommended CP yet, marker tags already on the
-entry, and stage levels that go down.
+Errors:
 
-## Filters and counters (step 2)
+- duplicate or malformed ids, unknown types, missing columns for a type, unknown entries, coordinates
+  outside the image, unknown link targets, ids whose type changed since the last build;
+- more markers than an entry's `size`, `entry_index` above `size` or repeated;
+- Divine Trials with stage gaps, repeated stages, fewer than 3 or more than 10 stages, stars outside 1 to 5,
+  `level` missing on a combat trial, or `level`/`cp` filled in on a puzzle one;
+- marker texts with an unknown marker or field, a `name` on a type other than `divine_trial`, `book`,
+  `teleport` or `viewpoint`, a repeated field, or no `en`;
+- malformed or repeated tags.
+
+Warnings:
+
+- entries that are still incomplete, `entry_index` gaps, ids that disappeared since the last build;
+- mechanisms and seeds that do not match, portals to maps not in `maps.json` yet;
+- Divine Trials, books, teleports and viewpoints without a name; Divine Trials without stages; combat stages
+  without a recommended CP yet; stage levels that go down;
+- marker tags already on the entry.
+
+## Site behavior
 
 - `data/categories.json` defines the sidebar groups (the game's own exploration categories plus a few
   extra groups), their marker types, and each type's placeholder color and glyph. Real icons will replace
@@ -164,16 +176,19 @@ entry, and stage levels that go down.
 - Counters read `found / total in the game`: the total is the sum of the `size` of the entries of that type
   (or the number of mapped markers when a type has no entries yet). The bar at the top of the sidebar sums the
   categories with `countsForExploration`; categories with no data yet are not part of its total.
-- Clicking a marker opens a popup with its name, description and a "Mark as found" button. Found markers are
-  faded on the map; "Hide found markers" removes them instead. Extra popup fields (`subtype`, `players`,
-  `contract`, `species`, `seed`, `requiresSeed`, `to`) appear automatically when a marker has them.
+- Clicking a marker opens a popup with its title (the marker's own name, else the entry name, else the type),
+  the entry description, the marker's note and a "Mark as found" button. Found markers are faded on the map;
+  "Hide found markers" removes them instead. Extra popup fields (`subtype`, `players`, `contract`, `species`,
+  `seed`, `requiresSeed`, `to`) appear automatically when a marker has them. Tags, Divine Trial stages and
+  howtos are in the data but not shown yet.
 - Progress is the set of found marker ids, saved per map in `localStorage` (`slmap:v1:progress:<map>`). Ids
   are permanent, so progress survives data updates, and ids that no longer exist are ignored in the counts.
   "Export"/"Import" in the sidebar save and restore a JSON backup (`{ app, version, exportedAt, progress }`);
   importing replaces the saved progress after a confirmation.
 - Entry lists (for example the chest sets) expand under their type. Clicking an entry frames and highlights
   its markers on the map, and shows the type again if it was hidden.
-- UI texts live in `i18n/<lang>.json` (flat keys) and entry names in `i18n/entries.<map>.<lang>.json`.
+- UI texts live in `i18n/<lang>.json` (flat keys), entry names in `i18n/entries.<map>.<lang>.json` and
+  marker names, notes and howtos in `i18n/markers.<map>.<lang>.json`.
   Missing keys fall back to English. To add a language, create `i18n/<lang>.json` with the keys of
   `i18n/en.json` and list it in `i18n/languages.json` (`{"pt": "Português"}`). Only listed languages are
   offered or auto-detected, so the UI is never half translated. Try it with `?lang=pt`.

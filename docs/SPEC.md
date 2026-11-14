@@ -67,7 +67,7 @@ docs/          SPEC.md, ROADMAP.md
 Markers store **game units, never pixels**, so fixing the calibration or the image never requires regenerating
 markers and the data stays verifiable in-game. The in-game `[Location]` link walks the character exactly onto
 the point, so a coordinate read on arrival is precise. There is no Z: the game has no floors and never puts two
-points at the same X/Y; rare vertical areas are disambiguated in the description text.
+points at the same X/Y; rare vertical areas (a cave under a plain) are disambiguated in the marker `note`.
 
 ### 4.2 Categories
 
@@ -88,7 +88,7 @@ Normal chests are partitioned into entries, so `entry` is mandatory for `chest_n
 Nuoding: 20 normal-chest sets (sum 264), 16 decryption chests (4 cooperative, 6 Pillar of Empty Path, 6 Coffers,
 each an entry of size 1), 6 crystal sets (sum 28), 5 encounters, 2 "Other" entries (Light Up! Teleport 6, Enjoy
 the Scenery 4). Divine Trials are not in the game's list and have no entry. Tags: `grappling_hook`,
-`purple_demon_eye`, `guarded`, `hidden`; filtering by tag is post-MVP but the data carries it. A marker may add
+`purple_demon_eye`, `guarded`, `hidden`, `ghostly_trace` (a Tang Sect skill); filtering by tag is post-MVP but the data carries it. A marker may add
 its own tags on top of its entry's (e.g. one Tang Sect Chest Two chest also needs the Grappling Hook); its
 effective tags are the union. The sidebar shows entry tags; the popup shows the effective tags of the marker.
 
@@ -139,9 +139,11 @@ Source data: the marker row in `markers.csv`, the name as a `name` row in `marke
 `stars`, `level`, `cp`; `cp` stays optional until it is collected). Rewards will be extra `stages.csv` columns once items exist (4.8).
 
 ```json
-{ "id": "nuoding-0412", "type": "divine_trial", "subtype": "combat", "x": 123.4, "y": 567.8,
-  "stages": [ { "stars": 2, "level": 30, "cp": 12000, "reward": [ { "item": "silver", "qty": 5000 } ] } ] }
+{ "id": "nuoding-0281", "type": "divine_trial", "subtype": "combat", "x": 386, "y": 786,
+  "stages": [ { "stars": 1, "level": 25, "cp": 12000, "reward": [ { "item": "silver", "qty": 5000 } ] } ] }
 ```
+
+(`reward` is planned, see 4.8; the build does not write it yet.)
 
 ### 4.7 Encounters
 
@@ -228,8 +230,8 @@ bottom-left, zoom control top-right. Markers shrink below the native zoom; under
 Mobile (< 700 px): the sidebar is a drawer that starts closed; `100dvh`; `pointer: coarse` enlarges touch
 targets (≥ 44 px). Planned: popup as bottom sheet.
 
-Popup: title, type, description, type-specific fields, "found" button, coordinates; planned: rewards with
-icons, copy-link, trial stages with progress control, encounter howto behind a button.
+Popup: title, type, description, note, type-specific fields, "found" button, coordinates; planned: tags,
+rewards with icons, copy-link, trial stages with progress control, howto behind a "show solution" button.
 
 Deep link by simple hash, `#nuoding/nuoding-0142` (only a bare `#name` works on GitHub Pages; no routes or
 query strings). Not implemented yet.
@@ -250,8 +252,9 @@ converts everything. Version only derived data, never raw dumps.
 Validations: unique never-reused ids; known types; bounds; per-entry marker count ≤ size; category totals equal
 the game's counters (Nuoding 264, 16, 65, 28, 5, 10); trial stage sum equals the game counter; `oneOf`
 weights = 100, stars 1–5, non-decreasing levels; referenced items exist; links point to existing ids; seeds and
-mechanisms consistent; id stability against the previous build. (Items, loot and trial checks arrive with those
-features.)
+mechanisms consistent; id stability against the previous build. Implemented today: everything except the
+category totals and stage sum against the game counters (the per-entry `size` covers most of it, and the stage
+sum is printed) and the item/loot checks, which arrive with those features. The full list is in `README.md`.
 
 ## 9. Tiles and icons
 
@@ -271,7 +274,7 @@ MVP.
 
 ## 11. Reference data
 
-- Nuoding City Area: Normal Chest 264, Decryption Chest 16, Divine Trial 65 stages (~10 pillars), Divine Mind
+- Nuoding City Area: Normal Chest 264, Decryption Chest 16, Divine Trial 65 stages (10 pillars), Divine Mind
   Crystal 28, Encounter 5, Other 10 (6 teleports + 4 viewpoints).
 - Mixed Area of Xing Dou Forest: 172 / 9 / 12 / 20 / 2 / 14 (8 seeds + 6 teleports, no viewpoints).
 - Planned regions: Nuoding City Area, Suotuo City Area, Xing Dou Great Forest, Tian Dou City Area, Sunset
@@ -293,15 +296,17 @@ Open: final marker size/style per zoom (depends on real icons); official Chinese
 ## 13. Implementation status (differences from this spec)
 
 - Done: tiles + calibrated map + readout; pipeline; sidebar with counters and entry lists; popups with found
-  button; progress, hide-found and backup/restore; en/pt/zh with selector; responsive drawer layout.
+  button; progress, hide-found and backup/restore; en/pt/zh with selector; responsive drawer layout; Nuoding
+  fully mapped (337 markers); encounters with several points draw an icon on each point.
 - Divine Trials: pipeline done (`marker_texts.csv` names, `stages.csv`, validation, `stages` in the marker JSON,
   name in the marker title). The stage sum is printed, not checked against the game counter (not stored
   anywhere yet). Most combat stages have no recommended CP yet.
 - Marker texts: `note` is shown in the popup; `howto` is built and validated but not shown yet.
 - Tags: carried by entries and markers in the data; not shown or filterable on the site yet.
-- Not yet: items/loot/rewards, Divine Trial popup stage list and progress, howto button, tags on the site, deep links,
-  copy-link, bottom-sheet popup, pillar line for `chest_challenge`, species filter, real icons, disclaimer,
-  GitHub Pages deploy, other regions.
+- Not yet: items/loot/rewards, Divine Trial popup stage list and progress, howto button, tags on the site,
+  `links` in the UI, the contract-consumed warning on `chest_contract`, deep links, copy-link, bottom-sheet
+  popup, pillar line for `chest_challenge`, species filter, real icons, disclaimer, favicon, GitHub Pages deploy,
+  other regions.
 - The exploration bar is count-based (found/total of countable groups, currently 333 in Nuoding with each
   trial counted once; 388 once trials count per stage), not points.
 - Backup contains `progress` only (no settings).

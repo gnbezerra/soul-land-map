@@ -13,11 +13,16 @@ JS ES modules, Leaflet 1.9.4 vendored, no build step. Start with `README.md`, th
 - All localStorage access goes through `js/storage.js` and is wrapped in try/catch. Keys: `slmap:v1:...`.
 - Marker ids (`<map>-0001`) are permanent and never reused or renumbered. Entries are identified by (map, slug).
 - Markers store game coordinates, never pixels. Conversion lives in `js/geo.js` and `data/maps.json`.
-- Never edit generated files by hand (`data/markers/*.json`, `data/entries/*.json`, `i18n/entries.*`). Edit
-  `data/src/<map>/*.csv`, then run `python tools/build_data.py <map>`; it must pass before you finish.
+- Never edit generated files by hand (`data/markers/*.json`, `data/entries/*.json`, `i18n/entries.*`,
+  `i18n/markers.*`). Edit `data/src/<map>/*.csv`, then run `python tools/build_data.py <map>`; it must pass
+  before you finish.
 - Do not change `data/maps.json` calibration offsets or the owner's CSV data without asking.
 - UI strings: add the key to `i18n/en.json` first, then pt and zh. Official game terms vs unofficial UI
   translations are described in the README. Missing keys fall back to English.
+- The owner edits the CSVs and docs in parallel. Run `git status` / `git diff` before editing and before
+  committing, build on their changes and never revert them; mention them in the commit message.
+- After changing the pipeline, test it on a copy of the project (`--root <scratch dir>`) with made-up valid and
+  invalid rows, never on the owner's CSVs.
 
 ## Constraints
 
@@ -32,8 +37,13 @@ JS ES modules, Leaflet 1.9.4 vendored, no build step. Start with `README.md`, th
 ## Run and check
 
 - `python -m http.server 8000`, open <http://localhost:8000> (`?lang=pt` to force a language).
-- `python tools/build_data.py nuoding --check` validates data without writing.
+- `python tools/build_data.py nuoding --check` validates data without writing. The expected warnings today:
+  the portal to `suotuo` (map not added yet) and combat trial stages without a recommended CP yet.
+- `node --check js/<file>.js` checks JS syntax (Node is installed on the owner's machine).
 - Tiles and `vendor/leaflet` are committed (GitHub Pages serves the repo as is). Map images under `maps/`
   are not: never commit them. Regenerate tiles only when a map image changes; see README "Running it".
-- Real Leaflet behavior (zoom, popups, touch) must be checked in a real browser. If you test with a Leaflet
-  stub, say so explicitly.
+- Real Leaflet behavior (zoom, popups, touch) must be checked in a real browser. Chrome is installed, so a
+  headless Chrome driven over the DevTools protocol from a dependency-free Node script works (Node has a
+  built-in `WebSocket`); keep such scripts in a scratch directory. Click icons with `dispatchEvent` and wait a
+  few tens of ms between clicks, or popups lag behind. If you test with a Leaflet stub, say so explicitly, and
+  say what was not covered (e.g. drag, wheel and pinch zoom).
