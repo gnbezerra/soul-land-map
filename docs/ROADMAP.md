@@ -7,6 +7,8 @@ Read order for a new agent: `README.md` (run it, data pipeline) → `CLAUDE.md` 
 
 Working, and verified by the owner in a real browser (Chrome, DevTools mobile emulation included):
 
+- Live at <https://gnbezerra.github.io/soul-land-map/> (GitHub Pages, `main` from the root; every push to
+  `main` publishes). Unofficial-fansite disclaimer in the sidebar footer, map-pin favicon.
 - Nuoding City Area map: 4096² image in 256 px tiles (zoom 0–4, `maxZoom` 5), calibrated, coordinate readout.
 - Zoom: fractional fit zoom as `minZoom`, slow wheel (`wheelPxPerZoomLevel` 120), +/- snap to multiples of 0.5.
 - Data pipeline CSV → JSON (`tools/build_data.py`), with validation and id stability checks.
@@ -31,30 +33,27 @@ screenshots. These scripts are scratch files, not in the repo; adding them under
 
 ## Next steps (suggested order)
 
-1. **Deploy to GitHub Pages** (the disclaimer and the favicon are in place, see SPEC §10). The repo is already
-   public at <https://github.com/gnbezerra/soul-land-map>; Pages is not enabled yet (the owner turns it on in the
-   repo settings, serving `main` from the root).
-2. **Divine Trial UI.** Data and validation are done. Left: popup stage list (stars, level, CP when known),
+1. **Divine Trial UI.** Data and validation are done. Left: popup stage list (stars, level, CP when known),
    integer progress control (`trials` in the progress store; bump the storage version only if the format
    breaks), badge on the marker, counter by stage (sum of stages, 65 in Nuoding; today the bar counts each
    trial once, 333 instead of 388).
-3. **Real icons.** The colored circles are a temporary placeholder to test the site; the real marker design is
+2. **Real icons.** The colored circles are a temporary placeholder to test the site; the real marker design is
    still to be discussed with the owner. Owner supplies the game's small map-marker sprites; write a Pillow
    script in `tools/` that crops/resizes to 48–64 px and outputs WebP/PNG into `icons/`; reference them from
    `data/categories.json`.
    Then settle marker sizes per zoom (SPEC §12): at the whole-map zoom the markers overlap heavily (some
    books sit under chests), especially on mobile.
-4. **Exploration value in points** with reward milestones (formula and milestones in SPEC §11). Needs the PT and
+3. **Exploration value in points** with reward milestones (formula and milestones in SPEC §11). Needs the PT and
    EN text of the game's rules popup. Currently the bar counts markers; the "Exploration Value" label is
    inferred and should be confirmed against the official wording.
-5. **Popup extras**: "show solution" button for `howto` (texts already in `marker_texts.csv`), tags in the
+4. **Popup extras**: "show solution" button for `howto` (texts already in `marker_texts.csv`), tags in the
    popup and sidebar (data already carried), `links` between related markers, the contract-consumed warning
    on `chest_contract`, pillar line for `chest_challenge`, deep links, copy-link, bottom-sheet popup on mobile.
-6. **Rewards/items/loot** (SPEC §4.8), popup rewards with icons.
-7. **Other regions**, one at a time, each needing a map image, tiles, calibration points (~10), `maps.json`
+5. **Rewards/items/loot** (SPEC §4.8), popup rewards with icons.
+6. **Other regions**, one at a time, each needing a map image, tiles, calibration points (~10), `maps.json`
    entry, and CSVs. Region ids/names still to be fixed with the owner. Suotuo first (Nuoding already has a
    portal to it).
-8. Dragon Island (Combat/Safe toggle, species filter) last.
+7. Dragon Island (Combat/Safe toggle, species filter) last.
 
 ## Waiting on the owner
 

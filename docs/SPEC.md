@@ -307,7 +307,7 @@ Open: final marker size/style per zoom (depends on real icons); official Chinese
 - Tags: carried by entries and markers in the data; not shown or filterable on the site yet.
 - Not yet: items/loot/rewards, Divine Trial popup stage list and progress, howto button, tags on the site,
   `links` in the UI, the contract-consumed warning on `chest_contract`, deep links, copy-link, bottom-sheet
-  popup, pillar line for `chest_challenge`, species filter, real icons, GitHub Pages deploy,
+  popup, pillar line for `chest_challenge`, species filter, real icons,
   other regions.
 - The exploration bar is count-based (found/total of countable groups, currently 333 in Nuoding with each
   trial counted once; 388 once trials count per stage), not points.

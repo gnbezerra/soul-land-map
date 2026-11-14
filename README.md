@@ -1,7 +1,7 @@
 # Soul Land Map
 
 Interactive maps with filterable markers for Soul Land: New World (unofficial fan project).
-Repository: <https://github.com/gnbezerra/soul-land-map>.
+Live site: <https://gnbezerra.github.io/soul-land-map/>. Repository: <https://github.com/gnbezerra/soul-land-map>.
 
 Documentation for contributors and agents: [`CLAUDE.md`](CLAUDE.md) (conventions),
 [`docs/SPEC.md`](docs/SPEC.md) (design) and [`docs/ROADMAP.md`](docs/ROADMAP.md) (current state, next steps).
