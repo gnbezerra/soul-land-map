@@ -136,7 +136,7 @@ The popup highlights the next stage. Filtering by player level is post-MVP.
 
 Source data: the marker row in `markers.csv`, the name as a `name` row in `marker_texts.csv` (built into
 `i18n/markers.<map>.<lang>.json`) and the stages in `stages.csv` (one row per stage, columns `trial`, `stage`,
-`stars`, `level`, `cp`). Rewards will be extra `stages.csv` columns once items exist (4.8).
+`stars`, `level`, `cp`; `cp` stays optional until it is collected). Rewards will be extra `stages.csv` columns once items exist (4.8).
 
 ```json
 { "id": "nuoding-0412", "type": "divine_trial", "subtype": "combat", "x": 123.4, "y": 567.8,
@@ -295,13 +295,14 @@ Open: final marker size/style per zoom (depends on real icons); official Chinese
 - Done: tiles + calibrated map + readout; pipeline; sidebar with counters and entry lists; popups with found
   button; progress, hide-found and backup/restore; en/pt/zh with selector; responsive drawer layout.
 - Divine Trials: pipeline done (`marker_texts.csv` names, `stages.csv`, validation, `stages` in the marker JSON,
-  name in the marker title).
-- Marker texts: `note` is shown in the popup; `howto` is built and validated but not shown yet. The stage sum is printed, not checked against the game counter (not stored anywhere yet).
+  name in the marker title). The stage sum is printed, not checked against the game counter (not stored
+  anywhere yet). Most combat stages have no recommended CP yet.
+- Marker texts: `note` is shown in the popup; `howto` is built and validated but not shown yet.
 - Tags: carried by entries and markers in the data; not shown or filterable on the site yet.
-- Not yet: items/loot/rewards, Divine Trial popup stage list and progress, encounter points/howto, deep links,
+- Not yet: items/loot/rewards, Divine Trial popup stage list and progress, howto button, tags on the site, deep links,
   copy-link, bottom-sheet popup, pillar line for `chest_challenge`, species filter, real icons, disclaimer,
   GitHub Pages deploy, other regions.
-- The exploration bar is count-based (found/total of countable groups, currently 323 in Nuoding without
-  trials; 388 with 65 trials), not points.
+- The exploration bar is count-based (found/total of countable groups, currently 333 in Nuoding with each
+  trial counted once; 388 once trials count per stage), not points.
 - Backup contains `progress` only (no settings).
 - Entry order follows the CSV row order, not alphabetical.

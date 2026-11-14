@@ -126,7 +126,8 @@ stages live in `stages.csv`, one row per stage (rows may be in any order):
 | `trial` | yes | id of a `divine_trial` marker |
 | `stage` | yes | 1, 2, 3... in the order the stages are played, no gaps (3 to 10 stages) |
 | `stars` | yes | difficulty, 1 to 5 |
-| `level`, `cp` | combat trials only | level required to enter and recommended combat power; empty for puzzle trials |
+| `level` | combat trials only | level required to enter; empty for puzzle trials |
+| `cp` | optional, combat trials only | recommended combat power; leave it empty while unknown (the build warns) |
 
 ```csv
 trial,stage,stars,level,cp
@@ -144,12 +145,12 @@ to compare with the game's Divine Trial counter.
 Errors: duplicate or malformed ids, unknown types, missing columns for a type, unknown entries,
 coordinates outside the image, more markers than an entry's `size`, `entry_index` above `size` or
 repeated, unknown link targets, ids whose type changed since the last build, and Divine Trials with stage
-gaps, repeated stages, fewer than 3 or more than 10 stages, stars outside 1 to 5, or `level`/`cp`
-missing on a combat trial (or filled in on a puzzle one), and marker texts with an unknown marker
+gaps, repeated stages, fewer than 3 or more than 10 stages, stars outside 1 to 5, or `level`
+missing on a combat trial (or `level`/`cp` filled in on a puzzle one), and marker texts with an unknown marker
 or field, a `name` on a type other than `divine_trial`, `book`, `teleport` or `viewpoint`, a repeated field or no `en`, and malformed or
 repeated tags. Warnings: entries that are still
 incomplete, `entry_index` gaps, ids that disappeared since the last build, mechanisms and seeds that
-do not match, Divine Trials, books, teleports and viewpoints without a name, Divine Trials without stages, marker tags already on the
+do not match, Divine Trials, books, teleports and viewpoints without a name, Divine Trials without stages, combat stages without a recommended CP yet, marker tags already on the
 entry, and stage levels that go down.
 
 ## Filters and counters (step 2)

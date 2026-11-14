@@ -56,7 +56,8 @@ marker_texts.csv columns (one row per marker and field)
 stages.csv columns
     trial, stage, stars                    required (stage: 1, 2, 3... in play order, no gaps;
                                            stars: 1 to 5)
-    level, cp                              combat trials only: required level and recommended CP
+    level                                  combat trials only (required): level needed to enter
+    cp                                     combat trials only (optional until collected): recommended CP
 """
 import argparse
 import csv
@@ -407,15 +408,19 @@ def load_trials(stage_rows, markers, rep):
             continue
         stage = {"stars": stars}
         if trials[tid].get("subtype") == "combat":
-            missing = [c for c in ("level", "cp") if not r[c]]
-            if missing:
-                rep.error(where, f"combat trial stages require {' and '.join(missing)}")
+            if not r["level"]:
+                rep.error(where, "combat trial stages require level")
                 continue
             level = parse_int(r["level"], where, "level", rep, lo=1)
-            cp = parse_int(r["cp"], where, "cp", rep, lo=0)
-            if level is None or cp is None:
+            if level is None:
                 continue
-            stage["level"], stage["cp"] = level, cp
+            stage["level"] = level
+            # The recommended CP may still be unknown; an empty cell leaves it out.
+            if r["cp"]:
+                cp = parse_int(r["cp"], where, "cp", rep, lo=0)
+                if cp is None:
+                    continue
+                stage["cp"] = cp
         elif r["level"] or r["cp"]:
             rep.error(where, "level and cp are only for combat trials")
             continue
@@ -434,6 +439,10 @@ def load_trials(stage_rows, markers, rep):
             rep.error(tid, f"has {len(numbers)} stages; trials have {MIN_STAGES} to {MAX_STAGES}")
         else:
             m["stages"] = [got[i] for i in numbers]
+            if m.get("subtype") == "combat":
+                no_cp = [i for i in numbers if "cp" not in got[i]]
+                if no_cp:
+                    rep.warn(tid, f"no recommended CP yet for stage(s) {no_cp}")
             levels = [s["level"] for s in m["stages"] if "level" in s]
             if any(b < a for a, b in zip(levels, levels[1:])):
                 rep.warn(tid, f"stage levels go down: {levels}")
