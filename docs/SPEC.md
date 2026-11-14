@@ -88,13 +88,15 @@ Normal chests are partitioned into entries, so `entry` is mandatory for `chest_n
 Nuoding: 20 normal-chest sets (sum 264), 16 decryption chests (4 cooperative, 6 Pillar of Empty Path, 6 Coffers,
 each an entry of size 1), 6 crystal sets (sum 28), 5 encounters, 2 "Other" entries (Light Up! Teleport 6, Enjoy
 the Scenery 4). Divine Trials are not in the game's list and have no entry. Tags: `grappling_hook`,
-`purple_demon_eye`, `guarded`, `hidden`; filtering by tag is post-MVP but the data carries it.
+`purple_demon_eye`, `guarded`, `hidden`; filtering by tag is post-MVP but the data carries it. A marker may add
+its own tags on top of its entry's (e.g. one Tang Sect Chest Two chest also needs the Grappling Hook); its
+effective tags are the union. The sidebar shows entry tags; the popup shows the effective tags of the marker.
 
 ### 4.4 Marker common fields
 
 `id` (immutable, assigned once, never reused, e.g. `nuoding-0142`; never derived from row, coordinate or type),
 `type`, `x`, `y` (game units), `entry`, `entry_index` (position in the in-game answer's `[Location N]` order),
-`links` (related marker ids, bidirectional in the UI), optional short `note` and `howto` (i18n texts from
+`links` (related marker ids, bidirectional in the UI), optional own `tags` (4.3), optional short `note` and `howto` (i18n texts from
 `marker_texts.csv`: the note is always shown, the howto sits behind a "show solution" button). Normal chests
 carry no reward; it comes from the category's default loot.
 
@@ -291,6 +293,7 @@ Open: final marker size/style per zoom (depends on real icons); official Chinese
 - Divine Trials: pipeline done (`marker_texts.csv` names, `stages.csv`, validation, `stages` in the marker JSON,
   name in the marker title).
 - Marker texts: `note` is shown in the popup; `howto` is built and validated but not shown yet. The stage sum is printed, not checked against the game counter (not stored anywhere yet).
+- Tags: carried by entries and markers in the data; not shown or filterable on the site yet.
 - Not yet: items/loot/rewards, Divine Trial popup stage list and progress, encounter points/howto, deep links,
   copy-link, bottom-sheet popup, pillar line for `chest_challenge`, species filter, real icons, disclaimer,
   GitHub Pages deploy, other regions.

@@ -74,6 +74,7 @@ uses it, and column order does not matter.
 | `species` | `boss` | e.g. `supreme-bear` |
 | `to` | `portal` | destination map id |
 | `links` | optional | related marker ids separated by `;` |
+| `tags` | optional | this marker's own requirements separated by `;`, on top of its entry's tags (e.g. `grappling_hook` on one chest of a `purple_demon_eye` entry) |
 
 An encounter with several points repeats its id on several rows (the first row is the primary
 point). No other type may repeat an id.
@@ -144,9 +145,11 @@ coordinates outside the image, more markers than an entry's `size`, `entry_index
 repeated, unknown link targets, ids whose type changed since the last build, and Divine Trials with stage
 gaps, repeated stages, fewer than 3 or more than 10 stages, stars outside 1 to 5, or `level`/`cp`
 missing on a combat trial (or filled in on a puzzle one), and marker texts with an unknown marker
-or field, a `name` on a type other than `divine_trial` or `book`, a repeated field or no `en`. Warnings: entries that are still
+or field, a `name` on a type other than `divine_trial` or `book`, a repeated field or no `en`, and malformed or
+repeated tags. Warnings: entries that are still
 incomplete, `entry_index` gaps, ids that disappeared since the last build, mechanisms and seeds that
-do not match, Divine Trials and books without a name, Divine Trials without stages, and stage levels that go down.
+do not match, Divine Trials and books without a name, Divine Trials without stages, marker tags already on the
+entry, and stage levels that go down.
 
 ## Filters and counters (step 2)
 

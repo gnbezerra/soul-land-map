@@ -36,6 +36,8 @@ markers.csv columns
     species      (boss)                    e.g. supreme-bear
     to           (portal)                  id of the destination map
     links                                  related marker ids separated by ';'
+    tags                                   this marker's own requirements, separated by ';'
+                                           (on top of its entry's tags)
 
 An encounter with several points repeats its id on several rows; the first row
 is the primary point and all rows end up in "points". No other type may repeat an id.
@@ -99,7 +101,7 @@ REQUIRED_EXTRAS = {
     "portal": ["to"],
 }
 ENUMS = {"subtype": {"puzzle", "combat"}, "contract": {"wood", "flame", "frost"}}
-MARKER_COLUMNS = {"id", "type", "x", "y", "entry", "entry_index", "links", *EXTRA_COLUMNS}
+MARKER_COLUMNS = {"id", "type", "x", "y", "entry", "entry_index", "links", "tags", *EXTRA_COLUMNS}
 ENTRY_COLUMNS = {"id", "type", "name_en", "size", "tags",
                  "name_pt", "name_zh", "desc_en", "desc_pt", "desc_zh"}
 LANGS = ("en", "pt", "zh")
@@ -177,6 +179,16 @@ def parse_int(value, where, name, rep, lo=None, hi=None):
     return n
 
 
+def parse_tags(value, where, rep):
+    tags = [t.strip() for t in value.split(";") if t.strip()]
+    for t in tags:
+        if not TAG.match(t):
+            rep.error(where, f"tag '{t}' must use lowercase letters, digits and underscores")
+    if len(set(tags)) < len(tags):
+        rep.error(where, f"repeated tag in '{value}'")
+    return tags
+
+
 def load_entries(rows, rep):
     entries, texts, by_name = {}, {}, {}
     for line, r in rows:
@@ -197,10 +209,7 @@ def load_entries(rows, rep):
         size = parse_int(r["size"], where, "size", rep, lo=1)
         if size is None:
             continue
-        tags = [t.strip() for t in r["tags"].split(";") if t.strip()]
-        for t in tags:
-            if not TAG.match(t):
-                rep.error(where, f"tag '{t}' must use lowercase letters, digits and underscores")
+        tags = parse_tags(r["tags"], where, rep)
         entry = {"type": r["type"], "size": size}
         if tags:
             entry["tags"] = tags
@@ -336,6 +345,15 @@ def load_markers(rows, map_id, entries, by_name, inside, rep):
                 m["pillar"] = {"x": px, "y": py}
         if r["links"]:
             m["links"] = [s.strip() for s in r["links"].split(";") if s.strip()]
+        if r["tags"]:
+            tags = parse_tags(r["tags"], where, rep)
+            inherited = set(entries[m["entry"]].get("tags", [])) if "entry" in m else set()
+            for t in tags:
+                if t in inherited:
+                    rep.warn(where, f"tag '{t}' is already on entry '{m['entry']}'")
+            own = [t for t in tags if t not in inherited]
+            if own:
+                m["tags"] = own
         markers[mid] = m
     return markers
 
