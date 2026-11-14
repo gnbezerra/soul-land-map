@@ -118,7 +118,9 @@ carry no reward; it comes from the category's default loot.
   `entry_index`; both are stored).
 - `mechanism`: magic mechanism near each seed that builds a bridge only with the right seed; `requires_seed`,
   linked to the seed; auxiliary group, outside counters.
-- `book`: lore book, extras group. `boss`, `arena`: Dragon Island (4.9).
+- `book`: lore book, extras group. No entry: its official title is a `name` in `marker_texts.csv` and is the
+  popup title.
+- `boss`, `arena`: Dragon Island (4.9).
 
 ### 4.6 Divine Trial
 

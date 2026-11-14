@@ -47,7 +47,7 @@ entries.csv columns
 
 marker_texts.csv columns (one row per marker and field)
     marker, field, en                      required
-                                           field: name (divine_trial only), note (always shown),
+                                           field: name (divine_trial, book), note (always shown),
                                            howto (solution, shown on request)
     pt, zh                                 optional
 
@@ -105,7 +105,7 @@ ENTRY_COLUMNS = {"id", "type", "name_en", "size", "tags",
 LANGS = ("en", "pt", "zh")
 TEXT_COLUMNS = {"marker", "field", *LANGS}
 # Text field -> the only marker types where it may be used (None: any type).
-TEXT_FIELDS = {"name": {"divine_trial"}, "note": None, "howto": None}
+TEXT_FIELDS = {"name": {"divine_trial", "book"}, "note": None, "howto": None}
 STAGE_COLUMNS = {"trial", "stage", "stars", "level", "cp"}
 MIN_STAGES, MAX_STAGES = 3, 10
 SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
@@ -363,10 +363,14 @@ def load_texts(rows, markers, rep):
             rep.error(where, "en is required (English is the fallback)")
             continue
         texts[mid][field] = {lang: r[lang] for lang in LANGS}
+    # Types that have no entry take their title from their own name.
+    for mid, m in markers.items():
+        if m["type"] in TEXT_FIELDS["name"] and "name" not in texts.get(mid, {}):
+            rep.warn(mid, f"{m['type']} has no name in marker_texts.csv")
     return texts
 
 
-def load_trials(stage_rows, markers, texts, rep):
+def load_trials(stage_rows, markers, rep):
     """Attach "stages" to divine_trial markers."""
     trials = {mid: m for mid, m in markers.items() if m["type"] == "divine_trial"}
     stages = defaultdict(dict)
@@ -400,8 +404,6 @@ def load_trials(stage_rows, markers, texts, rep):
         stages[tid][n] = stage
 
     for tid, m in trials.items():
-        if "name" not in texts.get(tid, {}):
-            rep.warn(tid, "divine trial has no name in marker_texts.csv")
         got = stages.get(tid)
         if not got:
             rep.warn(tid, "divine trial has no stages in stages.csv")
@@ -515,7 +517,7 @@ def main():
     inside = make_bounds_check(maps[map_id], rep)
     markers = load_markers(marker_rows, map_id, entries, by_name, inside, rep)
     marker_texts = load_texts(text_rows, markers, rep)
-    load_trials(stage_rows, markers, marker_texts, rep)
+    load_trials(stage_rows, markers, rep)
     cross_check(markers, entries, maps, rep)
     compare_with_previous(root / "data" / "markers" / f"{map_id}.json", markers, rep)
 

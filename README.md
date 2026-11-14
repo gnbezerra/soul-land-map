@@ -100,8 +100,8 @@ Texts that belong to one marker, one row per marker and field (rows may be in an
 | `en` | yes | English text (the fallback for every language) |
 | `pt`, `zh` | optional | translations |
 
-- `name`: the marker's own name, only for `divine_trial` (other markers take their title from the entry
-  or the type). Use the game's official names.
+- `name`: the marker's own name, used as the popup title, only for `divine_trial` and `book` (other
+  markers take their title from the entry or the type). Use the game's official names.
 - `note`: a short fact the player needs to find the point, always shown in the popup, e.g. "Inside the
   cave under the plains". Any marker type.
 - `howto`: the solution, for things the game's description does not say, e.g. "Talk to Andy five
@@ -144,9 +144,9 @@ coordinates outside the image, more markers than an entry's `size`, `entry_index
 repeated, unknown link targets, ids whose type changed since the last build, and Divine Trials with stage
 gaps, repeated stages, fewer than 3 or more than 10 stages, stars outside 1 to 5, or `level`/`cp`
 missing on a combat trial (or filled in on a puzzle one), and marker texts with an unknown marker
-or field, a `name` on a type other than `divine_trial`, a repeated field or no `en`. Warnings: entries that are still
+or field, a `name` on a type other than `divine_trial` or `book`, a repeated field or no `en`. Warnings: entries that are still
 incomplete, `entry_index` gaps, ids that disappeared since the last build, mechanisms and seeds that
-do not match, Divine Trials without a name or stages, and stage levels that go down.
+do not match, Divine Trials and books without a name, Divine Trials without stages, and stage levels that go down.
 
 ## Filters and counters (step 2)
 
