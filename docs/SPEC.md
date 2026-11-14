@@ -268,9 +268,10 @@ Plan B: colored circle with a letter (the current placeholders).
 ## 10. Hosting and legal
 
 GitHub Pages, public repo. Visible disclaimer: unofficial fansite, no affiliation with the game's rights
-holders (not added yet). Using game assets (map, icons) is a gray zone, common in fansites, with no guarantee:
-version only what is needed, no raw dumps, remove anything on request. No monetization, analytics or SEO in the
-MVP.
+holders (`ui.disclaimer`, a footnote at the bottom of the sidebar; the ZH text names both the Chinese title
+《斗罗大陆：史莱克学院》 and Soul Land: New World). Using game assets (map, icons) is a gray zone, common in
+fansites, with no guarantee: version only what is needed, no raw dumps, remove anything on request. No
+monetization, analytics or SEO in the MVP.
 
 ## 11. Reference data
 
@@ -305,7 +306,7 @@ Open: final marker size/style per zoom (depends on real icons); official Chinese
 - Tags: carried by entries and markers in the data; not shown or filterable on the site yet.
 - Not yet: items/loot/rewards, Divine Trial popup stage list and progress, howto button, tags on the site,
   `links` in the UI, the contract-consumed warning on `chest_contract`, deep links, copy-link, bottom-sheet
-  popup, pillar line for `chest_challenge`, species filter, real icons, disclaimer, favicon, GitHub Pages deploy,
+  popup, pillar line for `chest_challenge`, species filter, real icons, favicon, GitHub Pages deploy,
   other regions.
 - The exploration bar is count-based (found/total of countable groups, currently 333 in Nuoding with each
   trial counted once; 388 once trials count per stage), not points.

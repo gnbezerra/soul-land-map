@@ -19,6 +19,7 @@
   "ui.export": "Exportar",
   "ui.import": "Importar",
   "ui.backupHint": "O progresso fica salvo apenas neste navegador. Exporte um arquivo para guardar uma cópia ou levá-lo a outro dispositivo.",
+  "ui.disclaimer": "Mapa interativo não oficial de Soul Land: New World, feito por fãs. Não é afiliado, endossado nem patrocinado pelas desenvolvedoras ou distribuidoras do jogo. Todos os materiais, nomes e marcas do jogo pertencem aos seus respectivos proprietários.",
   "ui.exported": "{n} marcadores encontrados exportados.",
   "ui.importConfirm": "Substituir seu progresso pelo backup? Marcadores encontrados neste mapa: {current} agora, {incoming} no backup.",
   "ui.imported": "Importado: {n} marcadores encontrados neste mapa.",

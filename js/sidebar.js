@@ -103,6 +103,7 @@ export function createSidebar({
         fileInput),
       h("p", { class: "hint" }, t("ui.backupHint")),
       message),
+    h("p", { class: "disclaimer" }, t("ui.disclaimer")),
   );
 
   function refreshCounts() {

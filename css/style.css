@@ -415,6 +415,22 @@ body.sidebar-hidden #sidebar {
   color: var(--accent);
 }
 
+/* Footnote: a rule inset to the text margins, so it reads as a note rather than a new section.
+   #7f8fa3 on the panel is 5.25:1 (WCAG AA), one step below the hints' --muted. */
+.disclaimer {
+  margin: 16px 10px 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  color: #7f8fa3;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+/* CJK glyphs are hard to read at 11px */
+:lang(zh) .disclaimer {
+  font-size: 12px;
+}
+
 .message.error {
   color: #ff8a8a;
 }

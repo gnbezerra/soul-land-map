@@ -31,7 +31,7 @@ screenshots. These scripts are scratch files, not in the repo; adding them under
 
 ## Next steps (suggested order)
 
-1. **Deploy to GitHub Pages** (add the unofficial-fansite disclaimer first, see SPEC §10). The repo is already
+1. **Deploy to GitHub Pages** (the disclaimer is in place, see SPEC §10). The repo is already
    public at <https://github.com/gnbezerra/soul-land-map>; Pages is not enabled yet (the owner turns it on in the
    repo settings, serving `main` from the root). Add a favicon (the only request that fails today is `favicon.ico`).
 2. **Divine Trial UI.** Data and validation are done. Left: popup stage list (stars, level, CP when known),
