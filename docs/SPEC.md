@@ -141,9 +141,12 @@ Source data: the marker row in `markers.csv`, the name as a `name` row in `marke
 
 Hidden trigger quests. Answer formats in the game are not uniform (Andy's Dilemma gives one `[Location]` but the
 real trigger, talking to the NPC repeatedly, is not in the text; Animal Protection has no links and describes
-three rescue points: the trigger is the primary point and the three cages are extra points). Fields: `points`
-(list of x/y, counted once), i18n `hint` (the game's description, always
-visible) and `howto` (own text, behind a "show solution" button), `reward`. Progress is by marker id.
+three cages, freed in any order; freeing the third one starts the encounter wherever the player is, so the
+three cages are its points and the primary one is just where the pin sits). Fields: `points`
+(list of x/y, counted once), the entry description (`desc_*` in `entries.csv`, the game's own text, always
+visible), `howto` (own text in `marker_texts.csv`, behind a "show solution" button) and `reward`. The text of
+the game's Answer button is not stored: its locations are the markers themselves, and anything else worth
+keeping goes into the `howto`. Progress is by marker id.
 
 ### 4.8 Rewards, items and loot (not implemented yet)
 
