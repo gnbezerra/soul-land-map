@@ -49,7 +49,7 @@ entries.csv columns
 
 marker_texts.csv columns (one row per marker and field)
     marker, field, en                      required
-                                           field: name (divine_trial, book), note (always shown),
+                                           field: name (divine_trial, book, teleport, viewpoint), note (always shown),
                                            howto (solution, shown on request)
     pt, zh                                 optional
 
@@ -107,7 +107,7 @@ ENTRY_COLUMNS = {"id", "type", "name_en", "size", "tags",
 LANGS = ("en", "pt", "zh")
 TEXT_COLUMNS = {"marker", "field", *LANGS}
 # Text field -> the only marker types where it may be used (None: any type).
-TEXT_FIELDS = {"name": {"divine_trial", "book"}, "note": None, "howto": None}
+TEXT_FIELDS = {"name": {"divine_trial", "book", "teleport", "viewpoint"}, "note": None, "howto": None}
 STAGE_COLUMNS = {"trial", "stage", "stars", "level", "cp"}
 MIN_STAGES, MAX_STAGES = 3, 10
 SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")

@@ -1,1 +1,43 @@
 marker,field,en,pt,zh
+nuoding-0172,note,"Take the lower path, near the Divine Trial.","Vá pelo caminho de baixo, perto da Provação Divina.",走下方小路，在神意试炼附近。
+nuoding-0173,note,"Take the lower path, near the Divine Trial.","Vá pelo caminho de baixo, perto da Provação Divina.",走下方小路，在神意试炼附近。
+nuoding-0174,note,Take the route up the rock plateau.,Vá pela rota que sobe até o platô rochoso.,走上方岩台路线。
+nuoding-0175,note,Take the route up the rock plateau.,Vá pela rota que sobe até o platô rochoso.,走上方岩台路线。
+nuoding-0185,note,Grapple onto the roof using the grappling hook.,Suba no telhado usando o gancho.,使用飞天神爪登上屋顶。
+nuoding-0186,note,Grapple onto the roof using the grappling hook.,Suba no telhado usando o gancho.,使用飞天神爪登上屋顶。
+nuoding-0187,note,Grapple onto the roof using the grappling hook.,Suba no telhado usando o gancho.,使用飞天神爪登上屋顶。
+nuoding-0188,note,Grapple onto the balcony using the grappling hook.,Suba na varanda usando o gancho.,使用飞天神爪登上阳台。
+nuoding-0189,note,Grapple onto the top of the stone pillar using the grappling hook.,Suba no pilar de pedra usando o gancho.,使用飞天神爪登上石柱顶部。
+nuoding-0281,name,Trial of Strength: Shield of Stone,Provação da Força: Escudo de Pedra,力之试炼·岩之盾
+nuoding-0282,name,Trial of Strength: Feather of the Wind,Provação da Força: Pena do Vento,力之试炼·风之羽
+nuoding-0283,name,Trial of Wisdom: Path of No Regrets,Prova da Sabedoria: Caminho Sem Arrependimentos,智之试炼·无悔之路
+nuoding-0284,name,Trial of Strength: Balance of Ice and Fire,Provação da Força: Equilíbrio de Gelo e Fogo,力之试炼·冰火制衡
+nuoding-0285,name,Trial of Strength: Crystals of Ice and Fire,Provação da Força: Cristais de Gelo e Fogo,力之试炼·冰火结晶
+nuoding-0286,name,Trial of Wisdom: Reversing the Chessboard,Provação da Sabedoria: Virando o Tabuleiro,智之试炼·翻转棋局
+nuoding-0287,name,Trial of Wisdom: Totem of Mind Essence,Provação da Sabedoria: Totem da Mente Divina,智之试炼·神念图腾
+nuoding-0288,name,Trial of Strength: Wolf Pack,Provação da Força: Alcateia,力之试炼·狼群
+nuoding-0289,name,Trial of Wisdom: Memory Link,Provação da Sabedoria: Conexão de Memória,智之试炼·记忆链接
+nuoding-0290,name,Trial of Wisdom: Soul Sanctum,Provação da Sabedoria: Pilar do Santo Espiritual,智之试炼·魂圣石柱
+nuoding-0290,note,Stage 3 requires the Tang Sect skill Ghostly Trace to clear.,"O estágio 3 exige a habilidade Rastro Fantasmagórico, da Seita Tang, para ser concluído.",第3层需要使用鬼影迷踪才能通过。
+nuoding-0318,note,"At the top of the cliff, after crossing the Flower Sea.","No topo do penhasco, após atravessar o Mar de Flores.",穿过花海后，位于悬崖顶部。
+nuoding-0319,howto,"Free the animals in all three cages, in any order. The encounter starts when you free the third one.","Liberte os animais nas três jaulas, em qualquer ordem. O encontro começa quando você liberta o terceiro.",按任意顺序放出三个笼子里的动物，放出第三只后即可触发奇遇。
+nuoding-0320,howto,Get close to the Old Woman.,Chegue perto da Senhora Idosa.,靠近老妇人。
+nuoding-0321,howto,Speak with Andy 3 times.,Fale com o Andy 3 vezes.,与安迪交谈3次。
+nuoding-0322,howto,Speak with Old Barton 3 times.,Fale com o Velho Barton 3 vezes.,与老巴顿交谈3次。
+nuoding-0323,howto,Speak with Artum.,Fale com o Artum.,与阿图姆交谈。
+nuoding-0324,name,Entrance Teleport Point of Barren Stone Rift Valley,Ponto de Teletransporte de Entrada da Fenda da Pedra Desolada,荒石裂谷入口传送点
+nuoding-0325,name,Teleport Point of Nuoding Academy,Ponto de Teletransporte da Academia de Nuoding,诺丁学院传送点
+nuoding-0326,name,Teleport Point of Holy Soul Village,Ponto de Teletransporte da Vila do Espírito Sagrado,圣魂村传送点
+nuoding-0327,name,Teleport Point of Holy Soul Mountain,Ponto de Teletransporte da Montanha do Espírito Sagrado,圣魂山传送点
+nuoding-0328,name,Teleport Point of Radiant Light Forest,Ponto de Teletransporte da Floresta da Luz Radiante,曦光丛林传送点
+nuoding-0329,name,Entrance Teleport Point of Soul Hunting Forest,Ponto de Teletransporte de Entrada da Floresta de Caça Espiritual,猎魂森林入口传送点
+nuoding-0330,name,Nuoding Academy Scenic Spot,Ponto Panorâmico da Academia Nuoding,诺丁学院观景点
+nuoding-0331,name,Floating Gold Creek Beach Scenic Spot,Ponto Panorâmico do Riacho do Ouro Flutuante,浮金溪滩观景点
+nuoding-0332,name,Holy Soul Village Scenic Spot,Ponto Panorâmico da Vila do Espírito Sagrado,圣魂村观景点
+nuoding-0333,name,Flower Sea Scenic Spot,Ponto Panorâmico do Mar de Flores,花海观景点
+nuoding-0335,name,Legend of Soul Saint: The Legend of Luther,Lenda do Santo Espiritual: A Lenda de Luther,魂圣传说·卢瑟传
+nuoding-0335,note,"Volume 1 of the ""Historical Legends"" series","Volume 1 da série ""Lendas Históricas""",《历史传说》系列第1卷
+nuoding-0336,name,Nuoding City Local Records,Registros Locais da Cidade de Nuoding,诺丁城地方志
+nuoding-0336,note,"Volume 2 of the ""Historical Legends"" series","Volume 2 da série ""Lendas Históricas""",《历史传说》系列第2卷
+nuoding-0337,name,Nuoding Academy: A Chronicle of the School,Academia de Nuoding: Uma Crônica da Escola,诺丁学院·一段校史
+nuoding-0337,note,"Volume 3 of the ""Historical Legends"" series","Volume 3 da série ""Lendas Históricas""",《历史传说》系列第3卷

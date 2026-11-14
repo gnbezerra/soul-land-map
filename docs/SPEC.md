@@ -115,7 +115,9 @@ carry no reward; it comes from the category's default loot.
 - `crystal`: Divine Mind Crystal.
 - `divine_trial`: section 4.6.
 - `encounter`: section 4.7.
-- `teleport`, `viewpoint`; `portal`: whirlpool to another map, field `to` (map id), auxiliary group.
+- `teleport`, `viewpoint`: each has its official point name as a `name` in `marker_texts.csv`, shown as the
+  popup title instead of the entry name.
+- `portal`: whirlpool to another map, field `to` (map id), auxiliary group.
 - `seed`: Blue Silver Grass seed (Mixed Area), field `seed` = number the game shows on pickup (can differ from
   `entry_index`; both are stored).
 - `mechanism`: magic mechanism near each seed that builds a bridge only with the right seed; `requires_seed`,
@@ -190,10 +192,12 @@ The sidebar should filter by species; the popup lists the other locations of the
 - `en` is default and fallback per key. A manifest `i18n/languages.json` lists offered languages; only listed
   languages are detected (`?lang=`, saved setting, `navigator.languages`) or shown, so the UI is never half
   translated.
-- Data JSONs are language-neutral; all text is in i18n files keyed by id. Common marker titles come from the type.
+- Data JSONs are language-neutral; all text is in i18n files keyed by id. Marker titles: the marker's own
+  name (trials, books, teleports, viewpoints), else the entry name, else the type.
 - The game's official English is inconsistent (Norton/Nuoding, Fugold/Floating Gold, Sunset Forest/Radiant
   Light Forest), so ids are independent of names, Chinese is the source of truth when available, and the site
-  may correct official English.
+  may correct official English (e.g. a stray final period in a trial name). The official PT is
+  translated from Chinese and is not consistent with the English names; keep it as the game shows it.
 - Official game terms (categories, regions, entry names) vs unofficial site UI translations; the ZH UI needs
   review by a native speaker.
 

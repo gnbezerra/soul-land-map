@@ -53,9 +53,12 @@ export function createLayers({ L, map, markers, categories, calibration, nativeZ
     return L.divIcon({ html: dot, className: "mk", iconSize: [24, 24] });
   }
 
+  // Own name (trials, books, teleports, viewpoints) first, then the entry name, then the type.
   function titleOf(m) {
+    const own = i18n.marker(m.id).name;
+    if (own) return own;
     if (m.entry) return i18n.entry(m.entry).name + (m.entryIndex ? ` #${m.entryIndex}` : "");
-    return i18n.marker(m.id).name || i18n.t(`type.${m.type}`);
+    return i18n.t(`type.${m.type}`);
   }
 
   function makeTooltip(m, point) {

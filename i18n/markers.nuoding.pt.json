@@ -1,1 +1,120 @@
-{}
+{
+  "nuoding-0172": {
+    "note": "Vá pelo caminho de baixo, perto da Provação Divina."
+  },
+  "nuoding-0173": {
+    "note": "Vá pelo caminho de baixo, perto da Provação Divina."
+  },
+  "nuoding-0174": {
+    "note": "Vá pela rota que sobe até o platô rochoso."
+  },
+  "nuoding-0175": {
+    "note": "Vá pela rota que sobe até o platô rochoso."
+  },
+  "nuoding-0185": {
+    "note": "Suba no telhado usando o gancho."
+  },
+  "nuoding-0186": {
+    "note": "Suba no telhado usando o gancho."
+  },
+  "nuoding-0187": {
+    "note": "Suba no telhado usando o gancho."
+  },
+  "nuoding-0188": {
+    "note": "Suba na varanda usando o gancho."
+  },
+  "nuoding-0189": {
+    "note": "Suba no pilar de pedra usando o gancho."
+  },
+  "nuoding-0281": {
+    "name": "Provação da Força: Escudo de Pedra"
+  },
+  "nuoding-0282": {
+    "name": "Provação da Força: Pena do Vento"
+  },
+  "nuoding-0283": {
+    "name": "Prova da Sabedoria: Caminho Sem Arrependimentos"
+  },
+  "nuoding-0284": {
+    "name": "Provação da Força: Equilíbrio de Gelo e Fogo"
+  },
+  "nuoding-0285": {
+    "name": "Provação da Força: Cristais de Gelo e Fogo"
+  },
+  "nuoding-0286": {
+    "name": "Provação da Sabedoria: Virando o Tabuleiro"
+  },
+  "nuoding-0287": {
+    "name": "Provação da Sabedoria: Totem da Mente Divina"
+  },
+  "nuoding-0288": {
+    "name": "Provação da Força: Alcateia"
+  },
+  "nuoding-0289": {
+    "name": "Provação da Sabedoria: Conexão de Memória"
+  },
+  "nuoding-0290": {
+    "name": "Provação da Sabedoria: Pilar do Santo Espiritual",
+    "note": "O estágio 3 exige a habilidade Rastro Fantasmagórico, da Seita Tang, para ser concluído."
+  },
+  "nuoding-0318": {
+    "note": "No topo do penhasco, após atravessar o Mar de Flores."
+  },
+  "nuoding-0319": {
+    "howto": "Liberte os animais nas três jaulas, em qualquer ordem. O encontro começa quando você liberta o terceiro."
+  },
+  "nuoding-0320": {
+    "howto": "Chegue perto da Senhora Idosa."
+  },
+  "nuoding-0321": {
+    "howto": "Fale com o Andy 3 vezes."
+  },
+  "nuoding-0322": {
+    "howto": "Fale com o Velho Barton 3 vezes."
+  },
+  "nuoding-0323": {
+    "howto": "Fale com o Artum."
+  },
+  "nuoding-0324": {
+    "name": "Ponto de Teletransporte de Entrada da Fenda da Pedra Desolada"
+  },
+  "nuoding-0325": {
+    "name": "Ponto de Teletransporte da Academia de Nuoding"
+  },
+  "nuoding-0326": {
+    "name": "Ponto de Teletransporte da Vila do Espírito Sagrado"
+  },
+  "nuoding-0327": {
+    "name": "Ponto de Teletransporte da Montanha do Espírito Sagrado"
+  },
+  "nuoding-0328": {
+    "name": "Ponto de Teletransporte da Floresta da Luz Radiante"
+  },
+  "nuoding-0329": {
+    "name": "Ponto de Teletransporte de Entrada da Floresta de Caça Espiritual"
+  },
+  "nuoding-0330": {
+    "name": "Ponto Panorâmico da Academia Nuoding"
+  },
+  "nuoding-0331": {
+    "name": "Ponto Panorâmico do Riacho do Ouro Flutuante"
+  },
+  "nuoding-0332": {
+    "name": "Ponto Panorâmico da Vila do Espírito Sagrado"
+  },
+  "nuoding-0333": {
+    "name": "Ponto Panorâmico do Mar de Flores"
+  },
+  "nuoding-0335": {
+    "name": "Lenda do Santo Espiritual: A Lenda de Luther",
+    "note": "Volume 1 da série \"Lendas Históricas\""
+  },
+  "nuoding-0336": {
+    "name": "Registros Locais da Cidade de Nuoding",
+    "note": "Volume 2 da série \"Lendas Históricas\""
+  },
+  "nuoding-0337": {
+    "name": "Academia de Nuoding: Uma Crônica da Escola",
+    "note": "Volume 3 da série \"Lendas Históricas\""
+  }
+}
