@@ -31,15 +31,17 @@ screenshots. These scripts are scratch files, not in the repo; adding them under
 
 ## Next steps (suggested order)
 
-1. **Deploy to GitHub Pages** (the disclaimer is in place, see SPEC §10). The repo is already
+1. **Deploy to GitHub Pages** (the disclaimer and the favicon are in place, see SPEC §10). The repo is already
    public at <https://github.com/gnbezerra/soul-land-map>; Pages is not enabled yet (the owner turns it on in the
-   repo settings, serving `main` from the root). Add a favicon (the only request that fails today is `favicon.ico`).
+   repo settings, serving `main` from the root).
 2. **Divine Trial UI.** Data and validation are done. Left: popup stage list (stars, level, CP when known),
    integer progress control (`trials` in the progress store; bump the storage version only if the format
    breaks), badge on the marker, counter by stage (sum of stages, 65 in Nuoding; today the bar counts each
    trial once, 333 instead of 388).
-3. **Real icons.** Owner supplies the game's small map-marker sprites; write a Pillow script in `tools/` that
-   crops/resizes to 48–64 px and outputs WebP/PNG into `icons/`; reference them from `data/categories.json`.
+3. **Real icons.** The colored circles are a temporary placeholder to test the site; the real marker design is
+   still to be discussed with the owner. Owner supplies the game's small map-marker sprites; write a Pillow
+   script in `tools/` that crops/resizes to 48–64 px and outputs WebP/PNG into `icons/`; reference them from
+   `data/categories.json`.
    Then settle marker sizes per zoom (SPEC §12): at the whole-map zoom the markers overlap heavily (some
    books sit under chests), especially on mobile.
 4. **Exploration value in points** with reward milestones (formula and milestones in SPEC §11). Needs the PT and

@@ -26,6 +26,9 @@ the history. Leaflet lives in `vendor/leaflet` (`leaflet.js`, `leaflet.css`, `LI
 not needed for now). To update it, download the same files for the new version from
 `https://unpkg.com/leaflet@<version>/dist/` and `https://unpkg.com/leaflet@<version>/LICENSE`.
 
+The site icon is `favicon.svg`; after changing it, update the same geometry in `tools/make_favicon.py` and
+run `python tools/make_favicon.py` (Pillow) to rebuild `favicon.ico` and `apple-touch-icon.png`.
+
 ## Calibration
 
 `data/maps.json` holds `scaleX`/`scaleY` (±25/7; game Y grows upwards, image pixel Y grows downwards) and

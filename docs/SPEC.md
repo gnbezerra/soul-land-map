@@ -31,6 +31,7 @@ the obligation of listing all of them at launch.
 
 ```text
 index.html
+favicon.svg, favicon.ico, apple-touch-icon.png   site icon (the .ico and .png from tools/make_favicon.py)
 js/            ES modules: app, layers, model, sidebar, storage, i18n, geo, util
 vendor/leaflet Leaflet 1.9.4 (committed, with its LICENSE)
 css/
@@ -50,7 +51,7 @@ i18n/
   (planned: items.<lang>.json)
 tiles/<map>/{z}/{x}/{y}.webp   generated offline by tools/make_tiles.py (committed)
 maps/<map>.png  source map image, local only (ignored by git)
-tools/         Python: build_data.py, check_calibration.py, make_tiles.py
+tools/         Python: build_data.py, check_calibration.py, make_tiles.py, make_favicon.py
 docs/          SPEC.md, ROADMAP.md
 ```
 
@@ -306,7 +307,7 @@ Open: final marker size/style per zoom (depends on real icons); official Chinese
 - Tags: carried by entries and markers in the data; not shown or filterable on the site yet.
 - Not yet: items/loot/rewards, Divine Trial popup stage list and progress, howto button, tags on the site,
   `links` in the UI, the contract-consumed warning on `chest_contract`, deep links, copy-link, bottom-sheet
-  popup, pillar line for `chest_challenge`, species filter, real icons, favicon, GitHub Pages deploy,
+  popup, pillar line for `chest_challenge`, species filter, real icons, GitHub Pages deploy,
   other regions.
 - The exploration bar is count-based (found/total of countable groups, currently 333 in Nuoding with each
   trial counted once; 388 once trials count per stage), not points.

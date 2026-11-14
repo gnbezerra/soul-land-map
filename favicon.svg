@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Map pin. Keep the geometry in sync with tools/make_favicon.py. -->
+  <path d="M16 30.5C16 30.5 6.5 20.8 6.5 12.8A9.5 9.5 0 0 1 25.5 12.8C25.5 20.8 16 30.5 16 30.5Z"
+    fill="#f5a524" stroke="#0f1418" stroke-width="1.6" stroke-linejoin="round"/>
+  <circle cx="16" cy="12.8" r="3.6" fill="#0f1418"/>
+</svg>
