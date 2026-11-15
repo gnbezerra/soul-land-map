@@ -88,14 +88,6 @@ L.tileLayer(`tiles/${mapId}/{z}/{x}/{y}.webp`, {
   noWrap: true,
   bounds,
 }).addTo(map);
-// TEMPORARY experiment (pinch stutter on phones, ROADMAP "Known gaps"); remove once decided.
-// ?fx=nofilter turns off the icons' CSS filters; ?fx=pinchhide hides the markers while a pinch is under way.
-const fx = new URLSearchParams(location.search).get("fx");
-if (fx === "nofilter") map.getContainer().classList.add("fx-nofilter");
-if (fx === "pinchhide") {
-  map.on("zoom", (e) => { if (e.pinch) map.getContainer().classList.add("fx-pinching"); });
-  map.on("zoomend moveend", () => map.getContainer().classList.remove("fx-pinching"));
-}
 // The +/- buttons and keyboard keys land on multiples of zoomDelta (e.g. 2, 2.5, 3...) instead
 // of adding it to the fractional "fit" zoom, so whole levels hit the crisp native tiles.
 // The mouse wheel is not affected and keeps its finer, continuous steps.

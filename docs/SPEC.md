@@ -257,7 +257,8 @@ with the exploration bar, "hide found" toggle and filter tree; each group/type h
 markers; extras and auxiliary groups are outside the exploration bar. Map: the game's sprites as markers, sized
 by importance (§9); found markers turn grey with a check (or vanish with hide-found), coordinate readout
 bottom-left, zoom control top-right. Markers shrink below the native zoom; under a threshold their badges are
-hidden.
+hidden. While a pinch is under way the markers are hidden (moving a few hundred of them every frame stutters
+on phones); they come back when the fingers lift.
 
 Mobile (< 700 px): the sidebar is a drawer that starts closed; `100dvh`; `pointer: coarse` enlarges touch
 targets (≥ 44 px). Planned: popup as bottom sheet.

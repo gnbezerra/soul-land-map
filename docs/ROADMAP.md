@@ -26,7 +26,8 @@ Working, and verified by the owner in a real browser (Chrome, DevTools mobile em
   (howto), extra fields (contract names and warning, pillar with a dashed line and "show on map") and a
   "found" button; deep links (`#map/marker`, the address bar follows the open popup) and copy-link.
 - Markers: the game's own sprites (`tools/make_icons.py`, SPEC §9), sized by importance (big with a colored
-  glow for what the player hunts for, small for chests, smallest for what the game's minimap already shows);
+  glow for what the player hunts for, small and without glow for chests and for what the game's minimap already shows;
+  the thin teleport and scenic spot sprites get a larger box, 26 px, to weigh about as much as a chest);
   found = grey with a green check. Encounters with several points show a marker on each point.
 - Divine Trials: popup layer list (stars, min. level, recommended rating or "—"), click-to-set progress,
   "mark all", `4/10` badge on started trials, counters per layer (Divine Trials 65; 10 points per layer in the exploration value).
@@ -44,8 +45,9 @@ outputs and deterministic rebuilds) and `node tests/browser.mjs`, a dependency-f
 headless Chrome test over the DevTools protocol (real vendored Leaflet): it checks that every icon sits on
 its image pixel (measured against the tiles, at two zooms), clicks every marker in en and pt,
 checks the found button, Divine Trial progress, reloads, migration, backup import, popup placement on
-desktop/mobile/landscape and console errors, and can save screenshots. Real wheel, pinch and double-click
-zoom are not covered (synthetic input does not zoom headless Chrome).
+desktop/mobile/landscape, that a pinch (through Leaflet's touch handler) hides the markers until it ends,
+and console errors, and can save screenshots. Real wheel and double-click zoom and the browser's native pinch
+are not covered (synthetic input does not zoom headless Chrome).
 
 ## Next steps (suggested order)
 
@@ -81,12 +83,13 @@ zoom are not covered (synthetic input does not zoom headless Chrome).
 - Mixed Area's 240 exploration points reconcile only if a seed counts +5 (unconfirmed). Seeds are in no
   `explorationRules` entry until it is: add `seed` to the chests rule (or a rule of its own) once confirmed.
 - Marker scale tunables: `MARKER_SHRINK_PER_ZOOM` 0.25, `MARKER_MIN_SCALE` 0.35 (at 0.5 the whole-map view on a phone was a blur of halos), `TIER_SIZE` in
-  `js/layers.js`; the glyph and the icon badges are hidden below 0.65 scale.
+  `js/layers.js`, per-type `size` in `data/categories.json`; the glyph and the icon badges are hidden below 0.65 scale.
 - The source sprites are 43–57 px and the major markers are drawn at 38 px, so on 2x screens they may look
   slightly soft; the owner accepted fixing that later (sharpen or redraw larger) if it shows.
 - The book's category color is grey, so its glow is faint.
-- Pinch zoom stutters on a mid-range phone (Samsung A55) while markers are shown; the +/- buttons and pinch
-  with "Hide all" are smooth (screen recording, 2026-11-15). Leaflet moves every marker on each pinch frame
-  (the buttons animate the whole pane once). In headless Chrome with the CPU slowed 4x, a simulated pinch
-  takes ~133 ms per frame with the icons, ~60 ms with the old circles and 17 ms with no markers; turning off
-  the CSS filters or the per-frame scale update made no difference there (no GPU). Being tested on the phone.
+- Markers are hidden while a pinch is under way. Leaflet moves every marker on each pinch frame (the +/-
+  buttons and the wheel animate the whole pane once), and pinch stuttered on a mid-range phone (Samsung A55,
+  2026-11-15). In headless Chrome with the CPU slowed 4x a simulated pinch took ~133 ms per frame with the
+  icons, ~60 ms with the old circles and 17 ms with no markers. On the phone, dropping the CSS filters helped a
+  little and hiding the markers during the pinch made it fully smooth, so the filters stay. If markers must
+  stay visible while pinching, the way is drawing them on a canvas (large rewrite).

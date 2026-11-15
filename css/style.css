@@ -970,11 +970,7 @@ body.sidebar-hidden #sidebar {
   }
 }
 
-/* TEMPORARY experiment switches (?fx=..., see js/app.js); remove once decided. */
-.fx-nofilter .mk-ic img {
-  filter: none !important;
-}
-
-.fx-pinching .leaflet-marker-pane {
+/* Hidden while a pinch is under way (js/layers.js). */
+.mk-pinching .leaflet-marker-pane {
   display: none;
 }

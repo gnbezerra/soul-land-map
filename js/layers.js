@@ -43,6 +43,12 @@ export function createLayers({
   map.on("zoom zoomend", updateScale);
   updateScale();
 
+  // A pinch makes Leaflet move every marker on each frame (the buttons and the wheel animate the whole
+  // pane once instead), which stutters on phones with a few hundred markers; hiding the pane until the
+  // pinch ends keeps it smooth (measured on a Samsung A55).
+  map.on("zoom", (e) => { if (e.pinch) container.classList.add("mk-pinching"); });
+  map.on("zoomend moveend", () => container.classList.remove("mk-pinching"));
+
   const stagesOf = stageCount;
   const doneOf = (m) => stagesDone(trialDone(m.id), stagesOf(m));
   const isComplete = (m) => (stagesOf(m) ? isTrialComplete(doneOf(m), stagesOf(m)) : isFound(m.id));
@@ -87,7 +93,8 @@ export function createLayers({
       return L.divIcon({ html: dot, className: "mk", iconSize: [24, 24] });
     }
     const tier = meta.tier ?? "common";
-    const size = TIER_SIZE[tier] ?? TIER_SIZE.common;
+    // `size` overrides the tier for thin sprites, which look smaller than a chest in the same box.
+    const size = meta.size ?? TIER_SIZE[tier] ?? TIER_SIZE.common;
     const box = document.createElement("span");
     box.className = `mk-ic${meta.iconFound ? " has-found" : ""}`;
     box.dataset.type = type;

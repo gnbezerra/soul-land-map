@@ -7,7 +7,8 @@
 //
 // It is not part of `node --test tests/` (slower, needs Chrome). Expected values come from the generated
 // data and js/model.js, so adding markers does not break it. Exit code 1 if a check fails.
-// Not covered: real wheel, pinch and double-click zoom (synthetic input does not zoom headless Chrome).
+// Not covered: real wheel and double-click zoom (synthetic input does not zoom headless Chrome). Pinch is
+// driven through Leaflet's own touch handler (DevTools touch events), not the browser's native gesture.
 //
 // Gotchas when extending it:
 // - Navigating to the URL already open, or to one that differs only in the hash, does not reload the
@@ -15,6 +16,8 @@
 // - Click marker icons with dispatchEvent (they may be off screen), and wait for each popup to appear
 //   instead of sleeping a fixed time.
 // - Popups pan into view with an animation: wait for it before measuring a popup's position.
+// - Input.dispatchTouchEvent is silently dropped until the page has drawn a frame: wait for two
+//   animation frames after a load before touching.
 // - Chrome's first start on a fresh machine (a CI runner) can take over 10 s: keep the startup waits generous.
 import { spawn } from "node:child_process";
 import { createServer } from "node:http";
@@ -488,7 +491,7 @@ try {
       if (!meta.icon) { equal(o.dots, o.n, `${type}: dot`); continue; }
       equal(o.srcs, [meta.icon], `${type}: sprite`);
       equal(o.broken, 0, `${type}: sprite loaded`);
-      equal(o.widths, [`${tierPx[meta.tier]}px`], `${type}: size`);
+      equal(o.widths, [`${meta.size ?? tierPx[meta.tier]}px`], `${type}: size`);
     }
     // The sidebar legend shows the same sprites as the map, loaded.
     const legend = await ev(`(() => { const imgs = [...document.querySelectorAll("#sidebar .dot-ic img")];
@@ -573,6 +576,28 @@ try {
     const layers = 2 + puzzle.stages.length;
     equal(lastDialog, i18nEn.tf("ui.importConfirmLayers", { current: 0, currentLayers: 0, incoming: 1, incomingLayers: layers }), "confirmation");
     equal(message, i18nEn.tf("ui.importedLayers", { n: 1, layers }), "message");
+  });
+
+  await check("pinch zoom hides the markers until the fingers lift", async () => {
+    await viewport(390, 844, true);
+    await freshLoad("?lang=en");
+    await ev(`new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))`); // see the header
+    const paneShown = () => ev(`getComputedStyle(document.querySelector(".leaflet-marker-pane")).display !== "none"`);
+    // The screen distance between two markers grows with the zoom.
+    const spread = () => ev(`(() => { const [a, b] = ${TRIAL_ICONS}.slice(0, 2).map((e) => e.getBoundingClientRect());
+      return Math.hypot(a.x - b.x, a.y - b.y); })()`);
+    const before = await spread();
+    equal(await paneShown(), true, "shown before");
+    const touch = (type, d) => send("Input.dispatchTouchEvent", { type, touchPoints: d == null ? [] :
+      [{ x: 195 - d, y: 420, id: 0 }, { x: 195 + d, y: 420, id: 1 }] });
+    await touch("touchStart", 40);
+    for (let d = 50; d <= 120; d += 10) { await touch("touchMove", d); await wait(30); }
+    equal(await paneShown(), false, "hidden during the pinch");
+    await touch("touchEnd");
+    await until(`getComputedStyle(document.querySelector(".leaflet-marker-pane")).display !== "none"`, "markers back after the pinch");
+    const after = await spread();
+    if (!(after > before * 1.5)) throw new Error(`the pinch did not zoom in: ${before.toFixed(0)} -> ${after.toFixed(0)} px`);
+    await viewport(1280, 800, false);
   });
 
   const layouts = [["desktop", 1280, 800, false], ["mobile", 390, 844, true], ["landscape", 844, 390, true]];
