@@ -30,11 +30,11 @@ Working, and verified by the owner in a real browser (Chrome, DevTools mobile em
 How it was tested: early work was built in a sandbox without network, against a minimal Leaflet stub, with node
 unit tests for `model.js` and `storage.js`; real-Leaflet behavior was verified manually by the owner. Since
 then, changes are checked on the owner's machine with `node --check js/*.js`, the unit tests in `tests/`
-(`node --test tests/`, model and storage, made-up data) and a headless Chrome driven over the DevTools
-protocol by a dependency-free Node script (real vendored Leaflet): it clicks markers and popup buttons, checks
-counters, storage, reloads and backup import, collects console errors and failed requests, and takes desktop
-and mobile screenshots. The browser scripts are scratch files, not in the repo; adding one under `tests/` is
-an open option.
+(`node --test tests/`, model and storage, made-up data) and `node tests/browser.mjs`, a dependency-free
+headless Chrome test over the DevTools protocol (real vendored Leaflet): it clicks every marker in en and pt,
+checks the found button, Divine Trial progress, reloads, migration, backup import, popup placement on
+desktop/mobile/landscape and console errors, and can save screenshots. Real wheel, pinch and double-click
+zoom are not covered (synthetic input does not zoom headless Chrome).
 
 ## Next steps (suggested order)
 

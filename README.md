@@ -15,7 +15,9 @@ what comes next.
 Tiles and Leaflet 1.9.4 are committed, so a fresh checkout runs as is:
 `python -m http.server 8000` and open http://localhost:8000
 
-Unit tests (Node's built-in runner, nothing to install): `node --test tests/`
+Unit tests (Node's built-in runner, nothing to install): `node --test tests/`.
+Browser test (needs Chrome; about 15 s): `node tests/browser.mjs`, with `--shots <dir>` to save screenshots
+and `CHROME=<path>` if Chrome is not in a standard place.
 
 Map images are not committed (`maps/` is ignored; only the generated tiles are published). To regenerate
 the tiles after the map image changes (341 files, ~5.6 MB for a 4096x4096 image):

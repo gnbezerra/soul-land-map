@@ -45,8 +45,11 @@ JS ES modules, Leaflet 1.9.4 vendored, no build step. Start with `README.md`, th
   it can be tested, and add tests there instead of throwaway scripts.
 - Tiles and `vendor/leaflet` are committed (GitHub Pages serves the repo as is). Map images under `maps/`
   are not: never commit them. Regenerate tiles only when a map image changes; see README "Running it".
-- Real Leaflet behavior (zoom, popups, touch) must be checked in a real browser. Chrome is installed, so a
-  headless Chrome driven over the DevTools protocol from a dependency-free Node script works (Node has a
-  built-in `WebSocket`); keep such scripts in a scratch directory. Click icons with `dispatchEvent` and wait a
-  few tens of ms between clicks, or popups lag behind. If you test with a Leaflet stub, say so explicitly, and
-  say what was not covered (e.g. drag, wheel and pinch zoom).
+- Real Leaflet behavior (zoom, popups, touch) must be checked in a real browser: `node tests/browser.mjs`
+  (`--shots <dir>` saves screenshots; `CHROME=<path>` for another binary) drives a headless Chrome over the
+  DevTools protocol, dependency-free, with its own static server. It clicks every marker in en and pt and
+  checks the found button, Divine Trial progress, reloads, migration, backup import, popup placement on
+  desktop/mobile/landscape, and console errors. Extend it for new UI instead of writing throwaway scripts.
+  Gotchas: navigating to the URL already open (or one differing only in the hash) does not reload the page;
+  click icons with `dispatchEvent`; wait for the autopan before measuring a popup. Synthetic wheel, pinch and
+  double-click input does not zoom headless Chrome, so say that real zoom was not covered.
