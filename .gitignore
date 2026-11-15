@@ -4,8 +4,9 @@ maps/
 # IDE files
 .vscode/
 
-# Personal agent instructions (see CLAUDE.md)
+# Personal agent instructions and permissions (see CLAUDE.md)
 CLAUDE.local.md
+.claude/settings.local.json
 
 # Python bytecode (pipeline tests)
 __pycache__/
