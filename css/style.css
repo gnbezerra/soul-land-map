@@ -450,6 +450,11 @@ body.sidebar-hidden #sidebar {
 .mk-popup-wrap .leaflet-popup-content {
   margin: 12px 14px;
   font: 14px/1.4 system-ui, sans-serif;
+  /* Tall popups (Divine Trials) scroll on short screens instead of leaving the window. */
+  /* Window minus the top bar, the autopan padding (110px above, see layers.js) and the tip. */
+  max-height: calc(100vh - 230px);
+  max-height: calc(100dvh - 230px);
+  overflow-y: auto;
 }
 
 .mk-popup-wrap a.leaflet-popup-close-button {
@@ -517,8 +522,143 @@ body.sidebar-hidden #sidebar {
   font-weight: 600;
 }
 
+/* Divine Trial popup: progress, stage list (click a stage to mark it and the earlier ones) */
+.trial-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.trial-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.trial-bar i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width .2s;
+}
+
+.trial-cols,
+.trial-stage {
+  display: grid;
+  grid-template-columns: 14px 18px 1fr;
+  align-items: center;
+  gap: 6px;
+}
+
+.trial-cols.combat,
+.trial-stage.combat {
+  grid-template-columns: 14px 18px 62px 1fr auto;
+  min-width: 250px;
+}
+
+.trial-cols {
+  padding: 0 8px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.trial-cols span[title] {
+  cursor: help;
+}
+
+.trial-stages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.trial-stage {
+  width: 100%;
+  padding: 3px 6px;
+  border: 0;
+  border-left: 2px solid transparent;
+  border-radius: 6px;
+  background: none;
+  color: var(--text);
+  font: 13px/1.4 system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  text-align: left;
+  cursor: pointer;
+}
+
+.trial-stage:hover {
+  background: var(--panel-hover);
+}
+
+.trial-stage.done {
+  color: var(--muted);
+}
+
+.trial-stage .check {
+  color: var(--accent);
+}
+
+/* The next stage to play */
+.trial-stage.next {
+  background: #f5a52414;
+  border-left-color: var(--accent);
+}
+
+.trial-stage .stars {
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.trial-stage.done .stars {
+  opacity: .55;
+}
+
+.trial-cols .num,
+.trial-stage .num {
+  text-align: right;
+}
+
+.trial-stage .unknown {
+  color: #5d6b7c;
+}
+
+.trial-hint {
+  margin: 0;
+  font-size: 11px;
+  color: #7f8fa3;
+}
+
+/* Stages done on a started trial, next to its marker; follows the marker's scale. */
+.mk-badge {
+  --s: calc(var(--mk-scale, 1) * var(--mk-touch, 1));
+  position: absolute;
+  left: calc(50% + 5px * var(--s));
+  top: calc(50% - 19px * var(--s));
+  padding: 0 4px;
+  border: 1px solid var(--accent);
+  border-radius: 7px;
+  background: var(--panel);
+  color: var(--accent);
+  font: 700 10px/13px system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.mk-tiny .mk-badge {
+  display: none;
+}
+
 @media (pointer: coarse) {
   .found-btn {
     min-height: 44px;
+  }
+
+  .trial-stage {
+    min-height: 36px;
   }
 }

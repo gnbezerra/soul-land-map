@@ -6,6 +6,13 @@ export function formatCount(found, total) {
   return `${found}/${total}`;
 }
 
+// Divine Trial layers are played in order, so progress is the number of layers done. Clicking a layer
+// that is not done marks it and the ones before it; clicking a done layer unmarks it and the ones after.
+//   nextTrialProgress(8, 5) -> 4      nextTrialProgress(4, 7) -> 7
+export function nextTrialProgress(done, clicked) {
+  return clicked <= done ? clicked - 1 : clicked;
+}
+
 export function buildModel(categories, entries, markers) {
   const types = new Map();
   const unknownTypes = new Set();
@@ -16,7 +23,8 @@ export function buildModel(categories, entries, markers) {
       return null;
     }
     if (!types.has(id)) {
-      types.set(id, { id, ...categories.types[id], loaded: 0, expected: null, total: 0, found: 0, markerIds: [], entries: [] });
+      // stagesById: markers that count per stage (Divine Trials), id -> number of stages.
+      types.set(id, { id, ...categories.types[id], loaded: 0, expected: null, total: 0, found: 0, markerIds: [], stagesById: new Map(), entries: [] });
     }
     return types.get(id);
   }
@@ -32,11 +40,14 @@ export function buildModel(categories, entries, markers) {
   }
 
   // A marker counts once, even if it has several points (e.g. some encounters).
+  // A Divine Trial counts once per stage, like the game's counter.
   for (const m of markers) {
     const type = getType(m.type);
     if (!type) continue;
-    type.loaded++;
+    const stages = m.stages?.length ?? 0;
+    type.loaded += stages || 1;
     type.markerIds.push(m.id);
+    if (stages) type.stagesById.set(m.id, stages);
     if (m.entry && entryById.has(m.entry)) {
       const entry = entryById.get(m.entry);
       entry.loaded++;
@@ -56,15 +67,21 @@ export function buildModel(categories, entries, markers) {
     groups.push({ id: g.id, countsForExploration: g.countsForExploration, types: groupTypes, found: 0, total: 0 });
   }
   const model = { groups, types, entryById, unknownTypes: [...unknownTypes] };
-  applyProgress(model, new Set());
+  applyProgress(model, new Set(), {});
   return model;
 }
 
-// Recomputes every `found` and group counter from the set of found marker ids.
+// Recomputes every `found` and group counter from the set of found marker ids and the
+// Divine Trial progress (id -> stages done; a trial counts its done stages, never more than it has).
 // Ids that no longer exist in the data are ignored, so stale progress never inflates counts.
-export function applyProgress(model, foundIds) {
-  const countFound = (ids) => ids.reduce((n, id) => n + (foundIds.has(id) ? 1 : 0), 0);
+export function applyProgress(model, foundIds, trials) {
   for (const type of model.types.values()) {
+    const done = (id) => {
+      const stages = type.stagesById.get(id);
+      if (stages) return Math.min(trials[id] ?? 0, stages);
+      return foundIds.has(id) ? 1 : 0;
+    };
+    const countFound = (ids) => ids.reduce((n, id) => n + done(id), 0);
     type.found = countFound(type.markerIds);
     for (const entry of type.entries) entry.found = countFound(entry.markerIds);
   }

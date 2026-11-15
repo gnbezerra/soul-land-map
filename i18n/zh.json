@@ -56,5 +56,19 @@
   "field.species": "种类",
   "field.seed": "种子",
   "field.requiresSeed": "需要种子",
-  "field.to": "目的地"
+  "field.to": "目的地",
+  "trial.combat": "循环挑战",
+  "trial.puzzle": "解密玩法",
+  "trial.progress": "已完成层数",
+  "trial.difficulty": "难度",
+  "trial.stars": "难度 {n}/5",
+  "trial.level": "等级要求",
+  "trial.levelHint": "进入该层所需的等级",
+  "trial.rating": "推荐评分",
+  "trial.ratingHint": "推荐评分（战斗力）",
+  "trial.ratingUnknown": "尚未收集",
+  "trial.layer": "第 {n} 层",
+  "trial.hint": "点击未完成的层，可将该层及之前各层标记为已完成；点击已完成的层，可取消该层及之后各层的标记。",
+  "trial.completeAll": "将所有层标记为已完成",
+  "trial.completed": "已完成（点击重置）"
 }

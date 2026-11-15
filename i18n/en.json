@@ -61,5 +61,19 @@
   "field.species": "Species",
   "field.seed": "Seed",
   "field.requiresSeed": "Requires seed",
-  "field.to": "Destination"
+  "field.to": "Destination",
+  "trial.combat": "Combat",
+  "trial.puzzle": "Puzzle",
+  "trial.progress": "Layers done",
+  "trial.difficulty": "Difficulty",
+  "trial.stars": "Difficulty {n} of 5",
+  "trial.level": "Min. level",
+  "trial.levelHint": "Level required to enter the layer",
+  "trial.rating": "Rec. rating",
+  "trial.ratingHint": "Recommended rating (combat power)",
+  "trial.ratingUnknown": "Not collected yet",
+  "trial.layer": "Layer {n}",
+  "trial.hint": "Click a layer to mark it and the earlier ones as done. Click a done layer to unmark it and the later ones.",
+  "trial.completeAll": "Mark all layers as done",
+  "trial.completed": "Completed (click to reset)"
 }

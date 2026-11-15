@@ -42,19 +42,61 @@ export function saveProgress(mapId, ids) {
   }
 }
 
+// --- Divine Trial progress ----------------------------------------------------------------
+// Stages are played in order, so a trial's progress is one number: how many stages are done.
+// Stored per map as { "<markerId>": <stages done> }; trials at 0 are left out.
+const trialsKey = (mapId) => `slmap:v1:trials:${mapId}`;
+
+// Keeps only positive integer values, so damaged or hand-edited data cannot break the counts.
+function cleanTrials(value) {
+  const trials = {};
+  if (!value || typeof value !== "object" || Array.isArray(value)) return trials;
+  for (const [id, n] of Object.entries(value)) {
+    if (Number.isInteger(n) && n > 0) trials[id] = n;
+  }
+  return trials;
+}
+
+export function loadTrials(mapId) {
+  try {
+    return cleanTrials(JSON.parse(localStorage.getItem(trialsKey(mapId))));
+  } catch {
+    return {};
+  }
+}
+
+// Returns false when the browser refused to store it (private mode, quota).
+export function saveTrials(mapId, trials) {
+  try {
+    localStorage.setItem(trialsKey(mapId), JSON.stringify(cleanTrials(trials)));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 // --- Backup file --------------------------------------------------------------------------
-// { "app": "soul-land-map", "version": 1, "exportedAt": "<ISO date>", "progress": { "<mapId>": ["<markerId>", ...] } }
+// { "app": "soul-land-map", "version": 1, "exportedAt": "<ISO date>",
+//   "progress": { "<mapId>": ["<markerId>", ...] },
+//   "trials": { "<mapId>": { "<markerId>": <stages done> } } }
+// `trials` is optional (older backups do not have it), so the version stays 1.
 // Only progress is exported; settings (language, filters) are per device and not worth moving.
 export const BACKUP_APP = "soul-land-map";
 export const BACKUP_VERSION = 1;
 
-export function buildBackup(progressByMap, now = new Date()) {
+export function buildBackup(progressByMap, trialsByMap = {}, now = new Date()) {
   const progress = {};
   for (const [mapId, ids] of Object.entries(progressByMap)) progress[mapId] = [...ids].sort();
-  return { app: BACKUP_APP, version: BACKUP_VERSION, exportedAt: now.toISOString(), progress };
+  const trials = {};
+  for (const [mapId, value] of Object.entries(trialsByMap)) {
+    const clean = cleanTrials(value);
+    if (Object.keys(clean).length) trials[mapId] = clean;
+  }
+  return { app: BACKUP_APP, version: BACKUP_VERSION, exportedAt: now.toISOString(), progress, trials };
 }
 
-// Validates untrusted file text. Returns { progress: { mapId: Set } } or { error: "<reason>" }.
+// Validates untrusted file text.
+// Returns { progress: { mapId: Set }, trials: { mapId: { markerId: n } } } or { error: "<reason>" }.
 export function parseBackup(text) {
   let data;
   try {
@@ -70,5 +112,15 @@ export function parseBackup(text) {
     if (!Array.isArray(ids) || !ids.every((id) => typeof id === "string")) return { error: "malformed" };
     progress[mapId] = new Set(ids);
   }
-  return { progress };
+  const trials = {};
+  if (data.trials !== undefined) {
+    if (!data.trials || typeof data.trials !== "object" || Array.isArray(data.trials)) return { error: "malformed" };
+    for (const [mapId, value] of Object.entries(data.trials)) {
+      const ok = value && typeof value === "object" && !Array.isArray(value) &&
+        Object.values(value).every((n) => Number.isInteger(n) && n >= 0);
+      if (!ok) return { error: "malformed" };
+      trials[mapId] = cleanTrials(value);
+    }
+  }
+  return { progress, trials };
 }

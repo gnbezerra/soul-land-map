@@ -1,4 +1,5 @@
 import { gameToPixel, pixelToLatLng } from "./geo.js";
+import { nextTrialProgress } from "./model.js";
 
 // Markers shrink when zoomed out so they do not pile up. Full size from the native zoom up;
 // each level below it removes MARKER_SHRINK_PER_ZOOM, down to MARKER_MIN_SCALE.
@@ -8,12 +9,15 @@ const MARKER_MIN_SCALE = 0.5;
 const MARKER_TINY_SCALE = 0.65;
 
 // Extra marker fields shown in the popup when present (other types will fill these in).
+// A Divine Trial shows its subtype in the type line instead.
 const POPUP_FIELDS = ["subtype", "players", "contract", "species", "seed", "requiresSeed", "to"];
 
 // Creates one Leaflet layer group per marker type and handles marker state:
 // visibility per type, highlight, found (faded) and "hide found".
 //   isFound(markerId) -> boolean          onSetFound(markerId, found)
-export function createLayers({ L, map, markers, categories, calibration, nativeZoom, i18n, isFound, onSetFound }) {
+//   trialDone(markerId) -> stages done    onSetTrial(markerId, stagesDone)   (Divine Trials)
+// A Divine Trial counts as found once all its stages are done.
+export function createLayers({ L, map, markers, categories, calibration, nativeZoom, i18n, isFound, onSetFound, trialDone, onSetTrial }) {
   const layerByType = new Map();
   const recordsByEntry = new Map();
   const recordsById = new Map();
@@ -31,13 +35,29 @@ export function createLayers({ L, map, markers, categories, calibration, nativeZ
   map.on("zoom zoomend", updateScale);
   updateScale();
 
-  // Applies highlight, found and "hide found" to one marker.
+  const stagesOf = (m) => m.stages?.length ?? 0;
+  const doneOf = (m) => Math.min(trialDone(m.id), stagesOf(m));
+  const isComplete = (m) => (stagesOf(m) ? doneOf(m) === stagesOf(m) : isFound(m.id));
+
+  // Applies highlight, found, the trial badge and "hide found" to one marker.
   function applyState(record) {
     const el = record.marker.getElement();
-    const found = isFound(record.id);
+    const found = isComplete(record.m);
     if (el) {
       el.classList.toggle("hl", record.entry != null && record.entry === highlighted);
       el.classList.toggle("found", found);
+      if (stagesOf(record.m)) {
+        // Badge with the stages done, only while the trial is started but not complete.
+        let badge = el.querySelector(".mk-badge");
+        if (!badge) {
+          badge = document.createElement("span");
+          badge.className = "mk-badge";
+          el.append(badge);
+        }
+        const done = doneOf(record.m);
+        badge.textContent = `${done}/${stagesOf(record.m)}`;
+        badge.hidden = done === 0 || found;
+      }
     }
     record.marker.setZIndexOffset(record.entry != null && record.entry === highlighted ? 1000 : found ? -500 : 0);
     const shouldShow = !(hideFound && found);
@@ -80,6 +100,7 @@ export function createLayers({ L, map, markers, categories, calibration, nativeZ
     const kind = document.createElement("div");
     kind.className = "muted";
     kind.textContent = i18n.t(`type.${m.type}`);
+    if (stagesOf(m) && m.subtype) kind.textContent += ` · ${i18n.t(`trial.${m.subtype}`, m.subtype)}`;
     root.append(title, kind);
 
     const description = m.entry ? i18n.entry(m.entry).description : "";
@@ -98,7 +119,7 @@ export function createLayers({ L, map, markers, categories, calibration, nativeZ
       root.append(p);
     }
 
-    const fields = POPUP_FIELDS.filter((f) => m[f] != null && m[f] !== "");
+    const fields = POPUP_FIELDS.filter((f) => m[f] != null && m[f] !== "" && !(f === "subtype" && stagesOf(m)));
     if (fields.length) {
       const dl = document.createElement("dl");
       for (const f of fields) {
@@ -109,6 +130,14 @@ export function createLayers({ L, map, markers, categories, calibration, nativeZ
         dl.append(dt, dd);
       }
       root.append(dl);
+    }
+
+    const coords = document.createElement("div");
+    coords.className = "muted small";
+    coords.textContent = `${m.id} · X ${point.x}, Y ${point.y}`;
+    if (stagesOf(m)) {
+      root.append(...makeTrialSection(m), coords);
+      return root;
     }
 
     const button = document.createElement("button");
@@ -125,12 +154,92 @@ export function createLayers({ L, map, markers, categories, calibration, nativeZ
       sync();
     });
     sync();
-
-    const coords = document.createElement("div");
-    coords.className = "muted small";
-    coords.textContent = `${m.id} · X ${point.x}, Y ${point.y}`;
     root.append(button, coords);
     return root;
+  }
+
+  // Divine Trial: progress, stage list and a "mark all" button (click rule: nextTrialProgress).
+  // The elements are built once and updated in place, so keyboard focus stays where it is.
+  function makeTrialSection(m) {
+    const total = stagesOf(m);
+    const combat = m.subtype === "combat";
+    const numbers = new Intl.NumberFormat(i18n.lang);
+    const el = (tag, className, text) => {
+      const node = document.createElement(tag);
+      if (className) node.className = className;
+      if (text != null) node.textContent = text;
+      return node;
+    };
+    const set = (n) => {
+      onSetTrial(m.id, n);
+      sync();
+    };
+
+    const doneText = el("b");
+    const head = el("div", "trial-head");
+    head.append(el("span", "muted", i18n.t("trial.progress")), doneText);
+    const barFill = el("i");
+    const bar = el("div", "trial-bar");
+    bar.append(barFill);
+
+    const columns = el("div", `trial-cols${combat ? " combat" : ""}`);
+    columns.setAttribute("aria-hidden", "true");
+    columns.append(el("span"), el("span", "", "#"), el("span", "", i18n.t("trial.difficulty")));
+    if (combat) {
+      columns.append(el("span", "", i18n.t("trial.level")), el("span", "num", i18n.t("trial.rating")));
+      columns.children[3].title = i18n.t("trial.levelHint");
+      columns.children[4].title = i18n.t("trial.ratingHint");
+    }
+
+    const list = el("ol", "trial-stages");
+    const rows = m.stages.map((stage, i) => {
+      const k = i + 1;
+      const row = el("button", `trial-stage${combat ? " combat" : ""}`);
+      row.type = "button";
+      const check = el("span", "check");
+      const stars = el("span", "stars", "✦".repeat(stage.stars));
+      stars.title = i18n.tf("trial.stars", { n: stage.stars });
+      row.append(check, el("span", "", String(k)), stars);
+      if (combat) {
+        row.append(el("span", "", String(stage.level)));
+        const rating = el("span", "num");
+        if (stage.cp != null) rating.textContent = numbers.format(stage.cp);
+        else {
+          rating.textContent = "—";
+          rating.classList.add("unknown");
+          rating.title = i18n.t("trial.ratingUnknown");
+        }
+        row.append(rating);
+      }
+      row.addEventListener("click", () => set(nextTrialProgress(doneOf(m), k)));
+      const li = el("li");
+      li.append(row);
+      list.append(li);
+      return { row, check, k };
+    });
+
+    const hint = el("p", "trial-hint", i18n.t("trial.hint"));
+    const button = el("button", "found-btn");
+    button.type = "button";
+    button.addEventListener("click", () => set(doneOf(m) === total ? 0 : total));
+
+    function sync() {
+      const done = doneOf(m);
+      doneText.textContent = `${done}/${total}`;
+      barFill.style.width = `${((100 * done) / total).toFixed(1)}%`;
+      for (const { row, check, k } of rows) {
+        row.classList.toggle("done", k <= done);
+        row.classList.toggle("next", k === done + 1);
+        row.setAttribute("aria-pressed", String(k <= done));
+        row.setAttribute("aria-label", i18n.tf("trial.layer", { n: k }));
+        check.textContent = k <= done ? "✓" : "";
+      }
+      button.textContent = i18n.t(done === total ? "trial.completed" : "trial.completeAll");
+      button.classList.toggle("is-found", done === total);
+      button.setAttribute("aria-pressed", String(done === total));
+    }
+    sync();
+    return [head, bar, columns, list, hint, button];
   }
 
   for (const m of markers) {
@@ -147,8 +256,12 @@ export function createLayers({ L, map, markers, categories, calibration, nativeZ
       const [px, py] = gameToPixel(calibration, p.x, p.y);
       const marker = L.marker(pixelToLatLng(map, nativeZoom, px, py), { icon: makeIcon(meta) });
       if (canHover) marker.bindTooltip(makeTooltip(m, p));
-      marker.bindPopup(() => makePopup(m, p), { className: "mk-popup-wrap", closeButton: true, autoPanPadding: [24, 24] });
-      const record = { id: m.id, marker, group, entry: m.entry ?? null };
+      // The larger top padding keeps the popup below the zoom buttons, which are drawn above it.
+      marker.bindPopup(() => makePopup(m, p), {
+        className: "mk-popup-wrap", closeButton: true,
+        autoPanPaddingTopLeft: [24, 110], autoPanPaddingBottomRight: [24, 24],
+      });
+      const record = { id: m.id, m, marker, group, entry: m.entry ?? null };
       marker.on("add", () => applyState(record));
       group.addLayer(marker);
       if (!recordsById.has(m.id)) recordsById.set(m.id, []);

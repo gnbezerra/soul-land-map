@@ -52,6 +52,7 @@ i18n/
 tiles/<map>/{z}/{x}/{y}.webp   generated offline by tools/make_tiles.py (committed)
 maps/<map>.png  source map image, local only (ignored by git)
 tools/         Python: build_data.py, check_calibration.py, make_tiles.py, make_favicon.py
+tests/         unit tests for js/model.js and js/storage.js (node --test tests/)
 docs/          SPEC.md, ROADMAP.md
 ```
 
@@ -135,6 +136,27 @@ entered directly by the user. `stars` 1–5; `level` and `cp` only for combat (p
 each stage has its own reward of 2–4 items; the pillar's theme name lives in marker i18n; stages have no name.
 The popup highlights the next stage. Filtering by player level is post-MVP.
 
+The site calls a stage a **layer**, as the game's exploration rules do (EN "layer", PT "camada", ZH 层). The
+game's trial window says "Level 3 Reward" / "Recompensa do Nível 3" / 3层奖励 instead, but "level" would
+clash with the player level. The trial window shows one stage at a time, and the texts it uses are a
+reference, not the source of truth (several are poor translations):
+
+| Concept | EN (game) | PT (game) | ZH (game) | Site EN / PT / ZH |
+|---|---|---|---|---|
+| Subtype, combat | Cycle Challenge | Desafio Cíclico | 循环挑战 | Combat / Combate / 循环挑战 |
+| Subtype, puzzle | Decryption Gameplay | Mecânica de (cut off) | 解密玩法 | Puzzle / Quebra-cabeça / 解密玩法 |
+| Required level | Level Requirement: 29 | Nível Atingir29 | 等级达到29解锁 | Min. level / Nível mín. / 等级要求 |
+| Recommended CP | Recommended Rating: 24000 | Pontuação Rec.:24000 | 推荐评分:24000 | Rec. rating / Pont. rec. / 推荐评分 |
+
+Difficulty has no name in the game: it is a row of four-pointed stars (✦), which the site shows as well.
+The ZH terms are kept as they are; EN and PT use the site's own wording where the official one is unclear.
+
+UI: the popup shows the layers done (e.g. 4/10) with a bar, and one row per layer (number, stars, and for
+combat trials the minimum level and the recommended rating, "—" while unknown). Clicking a layer that is not
+done marks it and the earlier ones (8 done, click 10: 10 done); clicking a done layer unmarks it and the later
+ones (8 done, click 5: 4 done); a button marks all of them done (or resets a complete trial). A started trial shows a "4/10" badge next to its marker (hidden when zoomed out,
+like the glyph); a complete trial counts as found (faded, removed by "hide found").
+
 Source data: the marker row in `markers.csv`, the name as a `name` row in `marker_texts.csv` (built into
 `i18n/markers.<map>.<lang>.json`) and the stages in `stages.csv` (one row per stage, columns `trial`, `stage`,
 `stars`, `level`, `cp`; `cp` stays optional until it is collected). Rewards will be extra `stages.csv` columns once items exist (4.8).
@@ -206,11 +228,15 @@ The sidebar should filter by species; the popup lists the other locations of the
 
 ## 6. Progress and localStorage
 
-- Keys are prefixed and versioned: `slmap:v1:progress:<map>` (set of found marker ids; planned: `trials`,
-  id → completed stages) and `slmap:v1:settings` (lang, current map, hidden types per map, hide-found per map).
+- Keys are prefixed and versioned: `slmap:v1:progress:<map>` (set of found marker ids),
+  `slmap:v1:trials:<map>` (Divine Trial id → layers done, positive integers only) and `slmap:v1:settings`
+  (lang, current map, hidden types per map, hide-found per map).
+- Divine Trials are never in the found set. A trial id found there (marked found before layer progress
+  existed) is moved to `trials` as complete when the map loads or a backup is imported.
 - All reads/writes in try/catch; the site works with empty or unavailable storage.
-- Backup JSON `{ app: "soul-land-map", version: 1, exportedAt, progress }` with validation (not-json,
-  not-a-backup, unsupported-version, malformed); import replaces after confirmation.
+- Backup JSON `{ app: "soul-land-map", version: 1, exportedAt, progress, trials }` with validation (not-json,
+  not-a-backup, unsupported-version, malformed); import replaces after confirmation. `trials` (map → id →
+  layers done) is optional, so older backups still import and the version stays 1.
 - Stable ids make progress survive data updates; removed ids are ignored when reading. Format changes require
   bumping the version and a migration.
 
@@ -231,8 +257,9 @@ bottom-left, zoom control top-right. Markers shrink below the native zoom; under
 Mobile (< 700 px): the sidebar is a drawer that starts closed; `100dvh`; `pointer: coarse` enlarges touch
 targets (≥ 44 px). Planned: popup as bottom sheet.
 
-Popup: title, type, description, note, type-specific fields, "found" button, coordinates; planned: tags,
-rewards with icons, copy-link, trial stages with progress control, howto behind a "show solution" button.
+Popup: title, type, description, note, type-specific fields, "found" button (or the layer list on Divine
+Trials, 4.6), coordinates; planned: tags, rewards with icons, copy-link, howto behind a "show solution" button.
+Popups open below the zoom buttons and scroll inside on short screens.
 
 Deep link by simple hash, `#nuoding/nuoding-0142` (only a bare `#name` works on GitHub Pages; no routes or
 query strings). Not implemented yet.
@@ -282,15 +309,28 @@ monetization, analytics or SEO in the MVP.
 - Planned regions: Nuoding City Area, Suotuo City Area, Xing Dou Great Forest, Tian Dou City Area, Sunset
   Forest, Mixed Area of Xing Dou Forest, City of Slaughter, Dragon Island. The first seven follow the same
   category pattern. Each region is fully separate, linked by portals with loading screens.
-- Exploration value (game rules popup): chest +5, teleport +35, viewpoint +35, crystal +10, divine trial +10 per
-  layer/stage, encounter +80. Nuoding totals 3080 exactly; the Mixed Area's 240 reconciles only if a seed is +5.
-  Reward milestones: 250/500/1000/1500/2000/2500 (Nuoding), 75/150/300/600/900/1200 (Mixed Area).
+- Exploration value, from the game's rules popup (EN "Area Exploration", PT "Exploração da Área", ZH 区域探索;
+  the points are EN "exploration points" / "exploration value", PT "valor de exploração", ZH 探索值). The
+  popup's own wording for each item is in brackets; "essences" are the Divine Mind Crystals and "scenic spots"
+  the viewpoints:
+
+  | Item | Points | EN | PT | ZH |
+  |---|---|---|---|---|
+  | Chest (any) | +5 each | Opening treasure chests | Abrir baús de tesouro | 开启宝箱 |
+  | Teleport point | +35 each | Activating Teleport Points | Ativar Pontos de Teletransporte | 激活传送点 |
+  | Viewpoint | +35 each | Activating scenic spots | Ativar pontos panorâmicos | 激活观景点 |
+  | Divine Mind Crystal | +10 each | Collecting essences | Coletar essências | 收集精粹 |
+  | Divine Trial | +10 per layer | Completing divine trials (each layer counts as 1 trial in multi-layer challenges) | Concluir Provações Divinas (em desafios com várias camadas, cada camada conta como 1 provação) | 完成神意试炼（多层挑战时，每层算作1个试炼） |
+  | Encounter | +80 each | Completing encounters | Concluir encontros | 完成奇遇 |
+
+  Seeds are not in the list. Nuoding totals 3080 exactly; the Mixed Area's 240 reconciles only if a seed is
+  +5. Reward milestones: 250/500/1000/1500/2000/2500 (Nuoding), 75/150/300/600/900/1200 (Mixed Area).
 
 ## 12. Decisions and open points
 
 Decided: books in the MVP without completeness; equipment level cut-offs irrelevant; community data via GitHub
 PR when there is interest; Leaflet vendored, no CDN or framework; the exploration bar counts only countable
-categories; trial progress is a user-entered integer.
+categories; trial progress is a user-entered integer; a trial stage is called a "layer" on the site (4.6).
 
 Open: final marker size/style per zoom (depends on real icons); official Chinese texts as source of truth
 (later, non-blocking); Dragon Island positions (in-game collection).
@@ -300,16 +340,16 @@ Open: final marker size/style per zoom (depends on real icons); official Chinese
 - Done: tiles + calibrated map + readout; pipeline; sidebar with counters and entry lists; popups with found
   button; progress, hide-found and backup/restore; en/pt/zh with selector; responsive drawer layout; Nuoding
   fully mapped (337 markers); encounters with several points draw an icon on each point.
-- Divine Trials: pipeline done (`marker_texts.csv` names, `stages.csv`, validation, `stages` in the marker JSON,
-  name in the marker title). The stage sum is printed, not checked against the game counter (not stored
-  anywhere yet). Most combat stages have no recommended CP yet.
+- Divine Trials: pipeline and UI done (4.6): layer list and progress in the popup, badge, counters per layer
+  (65 in Nuoding). The build prints the stage sum but does not check it against the game counter (not stored
+  anywhere yet). Most combat stages have no recommended CP yet. Stage rewards wait for items (4.8).
 - Marker texts: `note` is shown in the popup; `howto` is built and validated but not shown yet.
 - Tags: carried by entries and markers in the data; not shown or filterable on the site yet.
-- Not yet: items/loot/rewards, Divine Trial popup stage list and progress, howto button, tags on the site,
+- Not yet: items/loot/rewards, howto button, tags on the site,
   `links` in the UI, the contract-consumed warning on `chest_contract`, deep links, copy-link, bottom-sheet
   popup, pillar line for `chest_challenge`, species filter, real icons,
   other regions.
-- The exploration bar is count-based (found/total of countable groups, currently 333 in Nuoding with each
-  trial counted once; 388 once trials count per stage), not points.
-- Backup contains `progress` only (no settings).
+- The exploration bar is count-based (found/total of countable groups, 388 in Nuoding with trials counted per
+  layer), not points.
+- Backup contains `progress` and `trials` (no settings).
 - Entry order follows the CSV row order, not alphabetical.

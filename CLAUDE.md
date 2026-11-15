@@ -40,6 +40,9 @@ JS ES modules, Leaflet 1.9.4 vendored, no build step. Start with `README.md`, th
 - `python tools/build_data.py nuoding --check` validates data without writing. The expected warnings today:
   the portal to `suotuo` (map not added yet) and combat trial stages without a recommended CP yet.
 - `node --check js/<file>.js` checks JS syntax (Node is installed on the owner's machine).
+- `node --test tests/` runs the unit tests (Node's built-in runner, no dependencies) for the DOM-free modules
+  (`js/model.js`, `js/storage.js`). They use made-up data, not the CSVs. Keep pure logic in those modules so
+  it can be tested, and add tests there instead of throwaway scripts.
 - Tiles and `vendor/leaflet` are committed (GitHub Pages serves the repo as is). Map images under `maps/`
   are not: never commit them. Regenerate tiles only when a map image changes; see README "Running it".
 - Real Leaflet behavior (zoom, popups, touch) must be checked in a real browser. Chrome is installed, so a

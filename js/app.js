@@ -1,6 +1,8 @@
 import { isCalibrated, pixelToGame, pixelToLatLng, latLngToPixel } from "./geo.js";
 import { fetchJson } from "./util.js";
-import { loadSettings, saveSettings, loadProgress, saveProgress, buildBackup, parseBackup } from "./storage.js";
+import {
+  loadSettings, saveSettings, loadProgress, saveProgress, loadTrials, saveTrials, buildBackup, parseBackup,
+} from "./storage.js";
 import { detectLang, loadI18n, loadLanguages } from "./i18n.js";
 import { buildModel, applyProgress } from "./model.js";
 import { createLayers } from "./layers.js";
@@ -105,7 +107,15 @@ function fitWholeMap() {
   map.fitBounds(bounds, { animate: false });
 }
 fitWholeMap();
-map.setMaxBounds(bounds.pad(0.1));
+const maxBounds = bounds.pad(0.1);
+map.setMaxBounds(maxBounds);
+// A popup near the edge of the map needs room to pan into view, which the max bounds would undo
+// at once. They are lifted while a popup is open (the popup then pans again) and restored on close.
+map.on("popupopen", (e) => {
+  map.setMaxBounds(null);
+  e.popup.update();
+});
+map.on("popupclose", () => map.setMaxBounds(maxBounds));
 window.addEventListener("resize", fitWholeMapIfMinimal);
 
 // Coordinate readout: validates the calibration and helps debugging data.
@@ -166,35 +176,67 @@ if (!calibrated) {
   const model = buildModel(categories, entries, markers);
   for (const type of model.unknownTypes) console.warn(`Type '${type}' is missing from categories.json`);
 
-  // Progress: the set of found marker ids. Every change is saved at once.
+  // Progress: the set of found marker ids, plus the stages done per Divine Trial.
+  // Every change is saved at once.
   let found = loadProgress(mapId);
+  let trials = loadTrials(mapId);
   let hideFound = settings.hideFound?.[mapId] === true;
   let storageWarned = false;
   // Counts in messages only include markers that exist in the data (backups may carry stale ids).
   const knownIds = new Set(markers.map((m) => m.id));
   const countKnown = (ids) => [...ids].filter((id) => knownIds.has(id)).length;
+  const stagesById = new Map(markers.filter((m) => m.stages?.length).map((m) => [m.id, m.stages.length]));
 
-  function persistProgress() {
-    if (saveProgress(mapId, found) || storageWarned) return;
+  // Before stage progress existed, a trial could only be marked found as a whole: a trial id in
+  // the found set means all its stages are done. Moves those ids into `trials`.
+  function migrateTrials(foundIds, trialProgress) {
+    let changed = false;
+    for (const [id, stages] of stagesById) {
+      if (!foundIds.has(id)) continue;
+      foundIds.delete(id);
+      trialProgress[id] = Math.max(trialProgress[id] ?? 0, stages);
+      changed = true;
+    }
+    return changed;
+  }
+
+  function persist() {
+    const savedFound = saveProgress(mapId, found);
+    const savedTrials = saveTrials(mapId, trials);
+    if ((savedFound && savedTrials) || storageWarned) return;
     storageWarned = true; // warn once, not on every click
     sidebar.showMessage(t("ui.storageError"), true);
+  }
+
+  function refreshProgress(markerId) {
+    applyProgress(model, found, trials);
+    layers.refreshFound(markerId);
+    sidebar.refreshCounts();
   }
 
   function setFound(markerId, value) {
     if (value) found.add(markerId);
     else found.delete(markerId);
-    persistProgress();
-    applyProgress(model, found);
-    layers.refreshFound(markerId);
-    sidebar.refreshCounts();
+    persist();
+    refreshProgress(markerId);
+  }
+
+  function setTrial(markerId, stagesDone) {
+    if (stagesDone > 0) trials[markerId] = stagesDone;
+    else delete trials[markerId];
+    persist();
+    refreshProgress(markerId);
   }
 
   const layers = createLayers({
     L, map, markers, categories, calibration: cfg.calibration, nativeZoom: nz, i18n,
     isFound: (id) => found.has(id),
     onSetFound: setFound,
+    trialDone: (id) => trials[id] ?? 0,
+    onSetTrial: setTrial,
   });
-  applyProgress(model, found);
+  const migrated = migrateTrials(found, trials);
+  applyProgress(model, found, trials);
   layers.setHideFound(hideFound);
   // Hidden types are stored (not visible ones), so new types default to visible.
   const hidden = new Set(settings.hidden?.[mapId] ?? []);
@@ -214,8 +256,12 @@ if (!calibrated) {
   function exportBackup() {
     // Other maps' progress is included so one file carries everything.
     const progress = {};
-    for (const id of Object.keys(maps)) progress[id] = id === mapId ? found : loadProgress(id);
-    const backup = buildBackup(progress);
+    const trialsByMap = {};
+    for (const id of Object.keys(maps)) {
+      progress[id] = id === mapId ? found : loadProgress(id);
+      trialsByMap[id] = id === mapId ? trials : loadTrials(id);
+    }
+    const backup = buildBackup(progress, trialsByMap);
     const url = URL.createObjectURL(new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" }));
     const link = document.createElement("a");
     link.href = url;
@@ -233,14 +279,17 @@ if (!calibrated) {
     }
     const incoming = result.progress[mapId] ?? new Set();
     if (!window.confirm(i18n.tf("ui.importConfirm", { current: countKnown(found), incoming: countKnown(incoming) }))) return;
+    // Other maps' trial ids in their found set are migrated when that map is opened.
     for (const [id, ids] of Object.entries(result.progress)) {
-      if (id !== mapId && maps[id]) saveProgress(id, ids);
+      if (id === mapId || !maps[id]) continue;
+      saveProgress(id, ids);
+      saveTrials(id, result.trials[id] ?? {});
     }
     found = new Set(incoming);
-    persistProgress();
-    applyProgress(model, found);
-    layers.refreshFound();
-    sidebar.refreshCounts();
+    trials = { ...(result.trials[mapId] ?? {}) };
+    migrateTrials(found, trials);
+    persist();
+    refreshProgress();
     sidebar.showMessage(i18n.tf("ui.imported", { n: countKnown(found) }));
   }
 
@@ -265,6 +314,7 @@ if (!calibrated) {
     onExport: exportBackup,
     onImport: importBackup,
   });
+  if (migrated) persist();
   map.on("click", () => {
     layers.highlight(null);
     closeDrawerIfNarrow();

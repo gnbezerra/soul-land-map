@@ -15,6 +15,8 @@ what comes next.
 Tiles and Leaflet 1.9.4 are committed, so a fresh checkout runs as is:
 `python -m http.server 8000` and open http://localhost:8000
 
+Unit tests (Node's built-in runner, nothing to install): `node --test tests/`
+
 Map images are not committed (`maps/` is ignored; only the generated tiles are published). To regenerate
 the tiles after the map image changes (341 files, ~5.6 MB for a 4096x4096 image):
 
@@ -182,12 +184,20 @@ Warnings:
 - Clicking a marker opens a popup with its title (the marker's own name, else the entry name, else the type),
   the entry description, the marker's note and a "Mark as found" button. Found markers are faded on the map;
   "Hide found markers" removes them instead. Extra popup fields (`subtype`, `players`, `contract`, `species`,
-  `seed`, `requiresSeed`, `to`) appear automatically when a marker has them. Tags, Divine Trial stages and
-  howtos are in the data but not shown yet.
-- Progress is the set of found marker ids, saved per map in `localStorage` (`slmap:v1:progress:<map>`). Ids
-  are permanent, so progress survives data updates, and ids that no longer exist are ignored in the counts.
-  "Export"/"Import" in the sidebar save and restore a JSON backup (`{ app, version, exportedAt, progress }`);
-  importing replaces the saved progress after a confirmation.
+  `seed`, `requiresSeed`, `to`) appear automatically when a marker has them. Tags and howtos are in the data
+  but not shown yet.
+- Divine Trials count per stage (a "layer" on the site), like the game: 65 in Nuoding. Their popup lists the
+  layers (stars, and for combat trials the minimum level and the recommended rating) instead of the "found"
+  button: clicking a layer that is not done marks it and the earlier ones, clicking a done layer unmarks it
+  and the later ones, and a button marks all of them done. A started trial shows a `4/10` badge next to its marker; a complete one
+  counts as found. Game terms vs the site's wording: SPEC §4.6.
+- Progress is the set of found marker ids, saved per map in `localStorage` (`slmap:v1:progress:<map>`), plus
+  the layers done per Divine Trial (`slmap:v1:trials:<map>`). Ids are permanent, so progress survives data
+  updates, and ids that no longer exist are ignored in the counts. "Export"/"Import" in the sidebar save and
+  restore a JSON backup (`{ app, version, exportedAt, progress, trials }`; `trials` is optional, so older
+  backups still import); importing replaces the saved progress after a confirmation.
+- Popups pan into view even at the edges of the map (the pan limits are lifted while a popup is open), open
+  below the zoom buttons, and scroll inside on short screens.
 - Entry lists (for example the chest sets) expand under their type. Clicking an entry frames and highlights
   its markers on the map, and shows the type again if it was hidden.
 - UI texts live in `i18n/<lang>.json` (flat keys), entry names in `i18n/entries.<map>.<lang>.json` and

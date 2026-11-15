@@ -56,5 +56,19 @@
   "field.species": "Espécie",
   "field.seed": "Semente",
   "field.requiresSeed": "Requer semente",
-  "field.to": "Destino"
+  "field.to": "Destino",
+  "trial.combat": "Combate",
+  "trial.puzzle": "Quebra-cabeça",
+  "trial.progress": "Camadas concluídas",
+  "trial.difficulty": "Dificuldade",
+  "trial.stars": "Dificuldade {n} de 5",
+  "trial.level": "Nível mín.",
+  "trial.levelHint": "Nível necessário para entrar na camada",
+  "trial.rating": "Pont. rec.",
+  "trial.ratingHint": "Pontuação recomendada (poder de combate)",
+  "trial.ratingUnknown": "Ainda não coletada",
+  "trial.layer": "Camada {n}",
+  "trial.hint": "Clique numa camada para marcá-la como concluída, junto com as anteriores. Clique numa camada concluída para desmarcá-la, junto com as seguintes.",
+  "trial.completeAll": "Marcar todas as camadas como concluídas",
+  "trial.completed": "Concluída (clique para zerar)"
 }
