@@ -3,7 +3,7 @@
 Interactive maps with filterable markers for Soul Land: New World (unofficial fan project).
 Live site: <https://gnbezerra.github.io/soul-land-map/>. Repository: <https://github.com/gnbezerra/soul-land-map>.
 
-Documentation for contributors and agents: [`CLAUDE.md`](CLAUDE.md) (conventions),
+Documentation for contributors and agents: [`CLAUDE.md`](CLAUDE.md) (rules and current decisions),
 [`docs/SPEC.md`](docs/SPEC.md) (design) and [`docs/ROADMAP.md`](docs/ROADMAP.md) (current state, next steps).
 
 Current state: the Nuoding map is calibrated and fully mapped (337 markers); data pipeline, filter sidebar

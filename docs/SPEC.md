@@ -9,10 +9,12 @@ Where the implementation differs from this spec, the section "Implementation sta
 ## 1. Principles
 
 - 100% static site on GitHub Pages, open repository (portfolio).
-- Plain HTML + JS ES modules + Leaflet 1.9.4 (vendored, no CDN). No build step, no framework.
+- Plain HTML + JS ES modules + Leaflet 1.9.4 (vendored, no CDN), no framework or bundler for now. These
+  are today's choices, each with the trigger to revisit it, in "Current decisions" in `CLAUDE.md`.
 - Per-map JSON data, versioned in git. The collection spreadsheet (exported as CSV) is the source until the
   MVP is done; the JSON is generated from it by `tools/build_data.py`.
-- No overengineering: add infrastructure only when there is real pain.
+- YAGNI with honest trade-offs: add a tool or infrastructure when it makes the work easier or safer than it
+  costs, not before.
 - i18n from day one: `en` (default and fallback), `pt`, `zh`.
 - Everything in the repo (code, comments, strings, docs) is in English, for future contributors.
 
@@ -237,8 +239,8 @@ The sidebar should filter by species; the popup lists the other locations of the
 - Backup JSON `{ app: "soul-land-map", version: 1, exportedAt, progress, trials }` with validation (not-json,
   not-a-backup, unsupported-version, malformed); import replaces after confirmation. `trials` (map → id →
   layers done) is optional, so older backups still import and the version stays 1.
-- Stable ids make progress survive data updates; removed ids are ignored when reading. Format changes require
-  bumping the version and a migration.
+- Stable ids make progress survive data updates; removed ids are ignored when reading. A breaking format
+  change requires bumping the version and a migration; an optional new field does not.
 
 ## 7. Interface
 

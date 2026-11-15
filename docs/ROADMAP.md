@@ -1,6 +1,6 @@
 # Roadmap and handoff
 
-Read order for a new agent: `README.md` (run it, data pipeline) → `CLAUDE.md` (conventions) →
+Read order for a new agent: `README.md` (run it, data pipeline) → `CLAUDE.md` (rules) →
 `docs/SPEC.md` (design) → this file (state and next steps). Last updated: 2026-11-14.
 
 ## Current state
@@ -29,7 +29,7 @@ Working, and verified by the owner in a real browser (Chrome, DevTools mobile em
 
 How it was tested: early work was built in a sandbox without network, against a minimal Leaflet stub, with node
 unit tests for `model.js` and `storage.js`; real-Leaflet behavior was verified manually by the owner. Since
-then, changes are checked on the owner's machine with `node --check js/*.js`, the unit tests in `tests/`
+then, changes are checked on the owner's machine with the unit tests in `tests/`
 (`node --test tests/`, model and storage, made-up data) and `node tests/browser.mjs`, a dependency-free
 headless Chrome test over the DevTools protocol (real vendored Leaflet): it clicks every marker in en and pt,
 checks the found button, Divine Trial progress, reloads, migration, backup import, popup placement on
@@ -78,7 +78,6 @@ zoom are not covered (synthetic input does not zoom headless Chrome).
   the combat trial stages without a recommended CP yet.
 - `type.book/mechanism/portal/boss/arena` UI keys exist only in `en.json` on purpose (fallback to English).
 - Unused leftover PT/ZH strings were cut off in the game UI ("Rec.", "Adicionar"); do not rely on them.
-- `data/maps.json` offsets and the CSVs under `data/src/` are the owner's data: do not change without asking.
 - The official PT texts are translated from Chinese and are not consistent with the English names; keep them
   as the game shows them (SPEC §5).
 - Backup carries `progress` and `trials`; settings are not included. The export/import messages count found
