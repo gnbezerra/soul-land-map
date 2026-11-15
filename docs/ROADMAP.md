@@ -30,7 +30,9 @@ Working, and verified by the owner in a real browser (Chrome, DevTools mobile em
 How it was tested: early work was built in a sandbox without network, against a minimal Leaflet stub, with node
 unit tests for `model.js` and `storage.js`; real-Leaflet behavior was verified manually by the owner. Since
 then, changes are checked on the owner's machine with the unit tests in `tests/`
-(`node --test tests/`, model and storage, made-up data) and `node tests/browser.mjs`, a dependency-free
+(`node --test tests/`, model and storage, made-up data), the pipeline tests
+(`python -m unittest discover -s tests`: `tools/build_data.py` run on made-up CSVs, every error and warning,
+outputs and deterministic rebuilds) and `node tests/browser.mjs`, a dependency-free
 headless Chrome test over the DevTools protocol (real vendored Leaflet): it clicks every marker in en and pt,
 checks the found button, Divine Trial progress, reloads, migration, backup import, popup placement on
 desktop/mobile/landscape and console errors, and can save screenshots. Real wheel, pinch and double-click
@@ -70,7 +72,6 @@ zoom are not covered (synthetic input does not zoom headless Chrome).
 - **CI (GitHub Actions):** on every push, run `build_data.py --check`, rebuild the data and fail if the
   committed JSON differs from the CSVs, then `node --test tests/` and `node tests/browser.mjs` (Ubuntu runners
   ship Chrome). Every push to `main` deploys, and the CSVs can be edited without an agent.
-- **Pipeline tests** with Python's `unittest` in `tests/`, replacing the manual `--root <temp dir>` check.
 
 ## Known gaps and notes
 

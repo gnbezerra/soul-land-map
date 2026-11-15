@@ -454,7 +454,8 @@ def cross_check(markers, entries, maps, rep):
         for target in m.get("links", []):
             if target not in ids:
                 rep.error(m["id"], f"links to unknown marker '{target}'")
-        if m["type"] == "portal" and m["to"] not in maps:
+        # A portal without "to" was already reported by load_markers.
+        if m["type"] == "portal" and "to" in m and m["to"] not in maps:
             rep.warn(m["id"], f"portal destination '{m['to']}' is not in maps.json yet")
 
     by_entry = defaultdict(list)

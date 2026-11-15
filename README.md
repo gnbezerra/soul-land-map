@@ -16,6 +16,8 @@ Tiles and Leaflet 1.9.4 are committed, so a fresh checkout runs as is:
 `python -m http.server 8000` and open http://localhost:8000
 
 Unit tests (Node's built-in runner, nothing to install): `node --test tests/`.
+Pipeline tests (Python's `unittest`, made-up CSVs in a temporary directory; about 10 s):
+`python -m unittest discover -s tests`.
 Browser test (needs Chrome; about 15 s): `node tests/browser.mjs`, with `--shots <dir>` to save screenshots
 and `CHROME=<path>` if Chrome is not in a standard place.
 

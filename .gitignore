@@ -6,3 +6,6 @@ maps/
 
 # Personal agent instructions (see CLAUDE.md)
 CLAUDE.local.md
+
+# Python bytecode (pipeline tests)
+__pycache__/
