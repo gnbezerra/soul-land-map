@@ -34,7 +34,7 @@ Working, and verified by the owner in a real browser (Chrome, DevTools mobile em
 - Progress per map in localStorage (found ids, layers done per trial), in the backup too; settings
   (language, map, hidden types, hide-found) saved.
 - i18n: en/pt/zh UI, top-bar language selector, English fallback per key.
-- Responsive: drawer sidebar under 700 px, touch-sized targets, pinch zoom.
+- Responsive: drawer sidebar under 700 px, touch-sized targets, pinch zoom (markers hidden while pinching).
 
 How it was tested: early work was built in a sandbox without network, against a minimal Leaflet stub, with node
 unit tests for `model.js` and `storage.js`; real-Leaflet behavior was verified manually by the owner. Since
@@ -51,17 +51,21 @@ are not covered (synthetic input does not zoom headless Chrome).
 
 ## Next steps (suggested order)
 
-1. **Icon follow-ups.** Co-op chests show their number of players (1 to 4, the `players` field; Nuoding has
-   1-player "tutorial" co-op chests). Challenge chests have no badge: the game has no sprite for the pillar
-   (`dt_icon_sj` is the Asura Statue's), and the old letter "J" meant nothing. Sprites for `seed`, `mechanism`
-   and `arena` when those regions arrive.
-2. **More popup and sidebar extras**: tags in the sidebar (and later a tag filter), `links` between related
-   markers (none in the data yet), bottom-sheet popup on mobile (after the real icons).
-3. **Rewards/items/loot** (SPEC §4.8), popup rewards with icons, including the Divine Trial layer rewards.
-4. **Other regions**, one at a time, each needing a map image, tiles, calibration points (~10), `maps.json`
+Order agreed with the owner on 2026-11-15: the next region comes before rewards, because a new map helps
+players more and rewards need a lot of data collected in-game.
+
+1. **Bottom-sheet popup on mobile.** On a phone the floating popup covers much of the map and sometimes its
+   own marker; a sheet at the bottom shows more text and keeps the map visible. Preview the options first.
+2. **Other regions**, one at a time, each needing a map image, tiles, calibration points (~10), `maps.json`
    entry, and CSVs. Region ids/names still to be fixed with the owner. Suotuo first (Nuoding already has a
-   portal to it).
-5. Dragon Island (Combat/Safe toggle, species filter) last.
+   portal to it); the site side (tiles, `maps.json`, pipeline and test changes) can start while the owner
+   collects the data.
+3. **Tags in the sidebar**, then a tag filter (e.g. only the chests that need the grappling hook; the tags
+   are in the data already). Needs a preview. Later: `links` between related markers (none in the data yet).
+4. **Rewards/items/loot** (SPEC §4.8), popup rewards with icons, including the Divine Trial layer rewards.
+5. **Icon leftovers**, when they come up: sprites for `seed` (candidate `dt_icon_cz`), `mechanism` and `arena`
+   when those regions arrive; sharper major icons on 2x screens if the softness shows (see "Known gaps").
+6. Dragon Island (Combat/Safe toggle, species filter) last.
 
 ## Waiting on the owner
 
@@ -93,3 +97,9 @@ are not covered (synthetic input does not zoom headless Chrome).
   icons, ~60 ms with the old circles and 17 ms with no markers. On the phone, dropping the CSS filters helped a
   little and hiding the markers during the pinch made it fully smooth, so the filters stay. If markers must
   stay visible while pinching, the way is drawing them on a canvas (large rewrite).
+- Co-op chests show their number of players (the `players` field, 1 to 4; Nuoding has 1-player "tutorial"
+  co-op chests). Challenge chests have no badge: the game has no sprite for the pillar (`dt_icon_sj` is the
+  Asura Statue's).
+- The browser test's zoomed-in placement check measures again for up to 3 s: right after a zoom Leaflet can
+  still be swapping tile levels (it failed about one run in three before; settled, the icons were always on
+  their pixel). If it fails again, look there first.

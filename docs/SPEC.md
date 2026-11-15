@@ -295,7 +295,8 @@ sum is printed) and the item/loot checks, which arrive with those features. The 
 
 The 4096² map image is extracted from game assets; `tools/make_tiles.py` (Pillow) makes 256 px WebP tiles at
 zooms 0–4 (341 tiles). One ImageOverlay would be ~64 MB decoded on mobile and blurry beyond native zoom.
-Markers: a few hundred per map, no clustering; switch to the canvas renderer only if slow. Icons: the game's
+Markers: a few hundred per map, no clustering, hidden while a pinch is under way (moving them every frame
+stuttered on a phone); the canvas renderer only if markers must stay visible then, or a map gets far more. Icons: the game's
 own sprites (atlases exported with AssetRipper), cut by `tools/make_icons.py` into `icons/` (PNG, trimmed
 square, at most 64 px) and referenced from `categories.json` so they can be swapped without touching the rest.
 Chosen with the owner in a preview against other styles (sprite in a disc, mixed):
@@ -304,7 +305,8 @@ Chosen with the owner in a preview against other styles (sprite in a disc, mixed
 - the game does not show chests, crystals, encounters or books on its map; those use the sprite the game
   ties to them elsewhere (crystal: the Purple Demon Eye indicator; encounter: the icon over the next NPC);
 - size by importance to the player, not rarity (tiers in README): what is hunted for is big and glows in its
-  category color, chests are small, what the game's minimap already shows is smallest;
+  category color; chests and what the game's minimap already shows are small, without glow (the thin
+  teleport and scenic spot sprites get a larger box so they weigh about as much as a chest);
 - found: grey, faded, green check; the contract chest swaps to the game's "opened" sprite.
 Types without a sprite keep the colored circle with a letter.
 
