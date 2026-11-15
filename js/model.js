@@ -1,6 +1,7 @@
 // Builds the filter/sidebar model from categories, entries and markers.
 // Pure data logic: no DOM and no Leaflet, so it is easy to test.
 import { stageCount, stagesDone } from "./trials.js";
+import { explorationValue } from "./exploration.js";
 
 // Counter text for a type, entry or group: found / total.
 export function formatCount(found, total) {
@@ -58,9 +59,10 @@ export function buildModel(categories, entries, markers) {
       .map((id) => types.get(id))
       .filter((t) => t && (t.expected != null || t.loaded > 0));
     if (groupTypes.length === 0) continue;
-    groups.push({ id: g.id, countsForExploration: g.countsForExploration, types: groupTypes, found: 0, total: 0 });
+    groups.push({ id: g.id, types: groupTypes, found: 0, total: 0 });
   }
-  const model = { groups, types, entryById, unknownTypes: [...unknownTypes] };
+  const explorationRules = categories.explorationRules ?? [];
+  const model = { groups, types, entryById, explorationRules, unknownTypes: [...unknownTypes] };
   applyProgress(model, new Set(), {});
   return model;
 }
@@ -83,10 +85,6 @@ export function applyProgress(model, foundIds, trials) {
     g.found = g.types.reduce((n, t) => n + t.found, 0);
     g.total = g.types.reduce((n, t) => n + t.total, 0);
   }
-  // Overall exploration: only the categories the game counts towards exploration.
-  const counted = model.groups.filter((g) => g.countsForExploration);
-  model.exploration = {
-    found: counted.reduce((n, g) => n + g.found, 0),
-    total: counted.reduce((n, g) => n + g.total, 0),
-  };
+  // Overall exploration value, in the game's points (js/exploration.js).
+  model.exploration = explorationValue(model, model.explorationRules);
 }

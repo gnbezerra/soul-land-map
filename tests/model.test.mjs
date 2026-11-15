@@ -6,10 +6,16 @@ import { buildModel, applyProgress, formatCount } from "../js/model.js";
 
 const categories = {
   groups: [
-    { id: "normal_chest", types: ["chest_normal"], countsForExploration: true },
-    { id: "divine_trial", types: ["divine_trial"], countsForExploration: true },
-    { id: "extras", types: ["book"], countsForExploration: false },
-    { id: "empty", types: ["boss"], countsForExploration: true },
+    { id: "normal_chest", types: ["chest_normal"] },
+    { id: "divine_trial", types: ["divine_trial"] },
+    { id: "extras", types: ["book"] },
+    { id: "empty", types: ["boss"] },
+  ],
+  // Books give no points; bosses would, but there is no data for them.
+  explorationRules: [
+    { id: "chests", types: ["chest_normal"], points: 5 },
+    { id: "trials", types: ["divine_trial"], points: 10 },
+    { id: "bosses", types: ["boss"], points: 80 },
   ],
   types: {
     chest_normal: { color: "#000", glyph: "C" },
@@ -39,7 +45,9 @@ test("totals: entry sizes, stages per trial, mapped count otherwise", () => {
   assert.equal(model.types.get("chest_normal").total, 5, "sum of entry sizes, not the 3 mapped markers");
   assert.equal(model.types.get("divine_trial").total, 13, "a trial counts once per stage");
   assert.equal(model.types.get("book").total, 1);
-  assert.deepEqual(model.exploration, { found: 0, total: 18 }, "only groups that count for exploration");
+  // Exploration value in points: 5 chests x 5 + 13 layers x 10; books and the bosses without data add nothing.
+  assert.deepEqual([model.exploration.found, model.exploration.total], [0, 155]);
+  assert.deepEqual(model.exploration.rules.map((r) => r.id), ["chests", "trials"]);
 });
 
 test("groups without data are hidden; unknown types are reported", () => {
@@ -55,7 +63,7 @@ test("found markers count per type, entry and group; stale ids are ignored", () 
   assert.equal(model.entryById.get("set-a").found, 1);
   assert.equal(model.entryById.get("set-b").found, 1);
   assert.equal(model.types.get("book").found, 1);
-  assert.deepEqual(model.exploration, { found: 2, total: 18 });
+  assert.deepEqual([model.exploration.found, model.exploration.total], [10, 155], "two chests; the book gives no points");
 });
 
 test("trials count their done stages, capped at the stage count", () => {
@@ -63,6 +71,7 @@ test("trials count their done stages, capped at the stage count", () => {
   applyProgress(model, new Set(), { "m-0004": 4, "m-0005": 99, "gone-0001": 5 });
   assert.equal(model.types.get("divine_trial").found, 4 + 3);
   assert.equal(model.groups.find((g) => g.id === "divine_trial").found, 7);
+  assert.equal(model.exploration.found, 70, "10 points per layer");
 });
 
 test("a trial id in the found set does not count (stage progress is the only source)", () => {
@@ -75,7 +84,12 @@ test("applyProgress recomputes from scratch", () => {
   const model = build();
   applyProgress(model, new Set(["m-0001"]), { "m-0004": 2 });
   applyProgress(model, new Set(), {});
-  assert.deepEqual(model.exploration, { found: 0, total: 18 });
+  assert.deepEqual([model.exploration.found, model.exploration.total], [0, 155]);
+});
+
+test("no exploration rules: the exploration value is empty", () => {
+  const model = buildModel({ ...categories, explorationRules: undefined }, entries, markers);
+  assert.deepEqual(model.exploration, { found: 0, total: 0, rules: [] });
 });
 
 test("formatCount", () => {

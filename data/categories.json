@@ -1,14 +1,22 @@
 {
   "groups": [
-    { "id": "normal_chest",        "types": ["chest_normal"],                                   "countsForExploration": true },
-    { "id": "decryption_chest",    "types": ["chest_coop", "chest_challenge", "chest_contract"], "countsForExploration": true },
-    { "id": "divine_trial",        "types": ["divine_trial"],                                   "countsForExploration": true },
-    { "id": "divine_mind_crystal", "types": ["crystal"],                                        "countsForExploration": true },
-    { "id": "encounter",           "types": ["encounter"],                                      "countsForExploration": true },
-    { "id": "other",               "types": ["teleport", "viewpoint", "seed"],                  "countsForExploration": true },
-    { "id": "extras",              "types": ["book"],                                           "countsForExploration": false },
-    { "id": "auxiliary",           "types": ["mechanism", "portal"],                            "countsForExploration": false },
-    { "id": "dragon_island",       "types": ["boss", "arena"],                                  "countsForExploration": false }
+    { "id": "normal_chest",        "types": ["chest_normal"] },
+    { "id": "decryption_chest",    "types": ["chest_coop", "chest_challenge", "chest_contract"] },
+    { "id": "divine_trial",        "types": ["divine_trial"] },
+    { "id": "divine_mind_crystal", "types": ["crystal"] },
+    { "id": "encounter",           "types": ["encounter"] },
+    { "id": "other",               "types": ["teleport", "viewpoint", "seed"] },
+    { "id": "extras",              "types": ["book"] },
+    { "id": "auxiliary",           "types": ["mechanism", "portal"] },
+    { "id": "dragon_island",       "types": ["boss", "arena"] }
+  ],
+  "explorationRules": [
+    { "id": "chests",     "types": ["chest_normal", "chest_coop", "chest_challenge", "chest_contract"], "points": 5 },
+    { "id": "teleports",  "types": ["teleport"],     "points": 35 },
+    { "id": "viewpoints", "types": ["viewpoint"],    "points": 35 },
+    { "id": "crystals",   "types": ["crystal"],      "points": 10 },
+    { "id": "trials",     "types": ["divine_trial"], "points": 10 },
+    { "id": "encounters", "types": ["encounter"],    "points": 80 }
   ],
   "types": {
     "chest_normal":    { "color": "#5aa9ff", "glyph": "C" },

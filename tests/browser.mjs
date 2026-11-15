@@ -41,7 +41,10 @@ const markerNames = json(`i18n/markers.${MAP}.en.json`);
 const markerNamesPt = json(`i18n/markers.${MAP}.pt.json`);
 const trialColor = categories.types.divine_trial.color;
 const trialTotal = model.types.get("divine_trial").total;
-const barTotal = model.exploration.total;
+const barTotal = model.exploration.total; // exploration value, in points
+// Points of one marker of a type (one layer, for a Divine Trial), from data/categories.json.
+const pointsOf = (type) => categories.explorationRules.find((r) => r.types.includes(type))?.points ?? 0;
+const milestones = [...(json("data/maps.json")[MAP].exploration?.milestones ?? [])].sort((a, b) => a - b);
 const trials = markers.filter((m) => m.type === "divine_trial" && m.stages?.length);
 const longTrial = trials.filter((m) => m.subtype === "combat").sort((a, b) => b.stages.length - a.stages.length)[0];
 const puzzle = trials.find((m) => m.subtype === "puzzle");
@@ -308,6 +311,30 @@ try {
     equal(await ev(`document.querySelector(".disclaimer")?.textContent`), ui.en["ui.disclaimer"], "disclaimer");
   });
 
+  await check("exploration value: milestone marks, next reward and the rules behind (i)", async () => {
+    const xp = () => ev(`(() => {
+      const info = document.querySelector(".xp-info");
+      const rules = document.getElementById(info.getAttribute("aria-controls"));
+      return { marks: document.querySelectorAll(".xp-bar .xp-tick").length,
+        reached: document.querySelectorAll(".xp-bar .xp-tick.reached").length,
+        next: document.querySelector(".xp-next").textContent, expanded: info.getAttribute("aria-expanded"),
+        open: !rules.hidden && rules.offsetHeight > 0, rows: rules.querySelectorAll("tr").length,
+        first: rules.querySelector("tr")?.textContent };
+    })()`);
+    const tf = (key, vars) => ui.en[key].replace(/\{(\w+)\}/g, (m, k) => String(vars[k]));
+    const chestRule = model.exploration.rules.find((r) => r.id === "chests");
+    equal(await xp(), {
+      marks: milestones.filter((m) => m <= barTotal).length, reached: 0,
+      next: tf("xp.nextReward", { points: milestones[0], left: milestones[0] }), expanded: "false", open: false,
+      rows: model.exploration.rules.length, first: `+${chestRule.points}${ui.en["xp.rule.chests"]}0/${chestRule.total}`,
+    }, "closed");
+    await ev(`document.querySelector(".xp-info").click()`);
+    const open = await xp();
+    equal([open.expanded, open.open], ["true", true], "after clicking (i)");
+    await ev(`document.querySelector(".xp-info").click()`);
+    equal((await xp()).open, false, "after clicking (i) again");
+  });
+
   await check("?lang accepts upper-case codes", async () => {
     for (const lang of ["en", "pt", "zh"]) {
       await load(`?lang=${lang.toUpperCase()}`);
@@ -354,10 +381,10 @@ try {
     const icons = `${ICONS}.filter((e) => e.querySelector(".mk-dot")?.style.getPropertyValue("--c") === "${categories.types.chest_normal.color}")`;
     await openIcon(icons, 0);
     await clickPopupButton();
-    equal((await counts()).bar, `1/${barTotal}`, "bar after marking");
+    equal((await counts()).bar, `${pointsOf("chest_normal")}/${barTotal}`, "bar after marking");
     equal((await stored("progress")).length, 1, "stored ids");
     await load();
-    equal((await counts()).bar, `1/${barTotal}`, "bar after reload");
+    equal((await counts()).bar, `${pointsOf("chest_normal")}/${barTotal}`, "bar after reload");
   });
 
   await check("Divine Trial: layer clicks, mark all, reset, badge", async () => {
@@ -405,7 +432,7 @@ try {
     await load();
     equal(await stored("trials"), { [puzzle.id]: puzzle.stages.length }, "trials");
     equal(await stored("progress"), [chest.id], "found ids");
-    equal(await counts(), { trial: `${puzzle.stages.length}/${trialTotal}`, bar: `${puzzle.stages.length + 1}/${barTotal}` }, "counters");
+    equal(await counts(), { trial: `${puzzle.stages.length}/${trialTotal}`, bar: `${puzzle.stages.length * pointsOf("divine_trial") + pointsOf(chest.type)}/${barTotal}` }, "counters");
   });
 
   await check("backup import replaces progress and migrates trial ids", async () => {

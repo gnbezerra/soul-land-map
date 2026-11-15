@@ -375,6 +375,115 @@ body.sidebar-hidden #sidebar {
   transition: width .2s;
 }
 
+/* Exploration value: reward milestones as marks on the bar; a reached mark cuts the fill. */
+.xp-bar {
+  position: relative;
+  height: 8px;
+  border-radius: 4px;
+}
+
+.xp-tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--muted);
+  opacity: .55;
+}
+
+.xp-tick.reached {
+  background: var(--panel);
+  opacity: .9;
+}
+
+.xp-next {
+  margin-top: 5px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.xp-next b {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.xp-info {
+  position: relative;
+  margin-left: 6px;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font: 600 11px/16px system-ui, sans-serif;
+  cursor: pointer;
+  vertical-align: 1px;
+}
+
+.xp-info:hover,
+.xp-info[aria-expanded="true"] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.xp-rules {
+  margin-top: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.xp-rules[hidden] {
+  display: none;
+}
+
+.xp-rules strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.xp-rules table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.xp-rules td {
+  padding: 2px 0;
+  vertical-align: top;
+}
+
+.xp-rules .pts {
+  padding-right: 8px;
+  color: var(--accent);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.xp-rules .got {
+  padding-left: 8px;
+  color: var(--muted);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.xp-rules .foot {
+  margin-top: 6px;
+  color: var(--muted);
+}
+
+/* A 44 px touch target around the small (i) button, without changing the layout. */
+@media (pointer: coarse) {
+  .xp-info::after {
+    content: "";
+    position: absolute;
+    inset: -13px;
+  }
+}
+
 /* Found markers are faded, not removed (unless "hide found" is on). */
 .mk.found .mk-dot {
   background: #7d8b9c;

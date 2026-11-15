@@ -1,5 +1,6 @@
 import { h } from "./util.js";
 import { formatCount } from "./model.js";
+import { milestoneMarks, milestoneStatus } from "./exploration.js";
 
 // Renders the filter sidebar: one row per game category (group), nested rows for its
 // types when it has several, and an optional expandable list of exploration entries.
@@ -7,9 +8,11 @@ import { formatCount } from "./model.js";
 //   isHideFound() -> boolean             onHideFound(hide)
 //   onFocusEntry(entryId, typeId)
 //   onExport()                           onImport(file)
+// `milestones`: the map's exploration reward milestones (data/maps.json), drawn on the exploration bar.
 // Call refresh() after visibility changes and refreshCounts() after progress changes.
 export function createSidebar({
-  container, model, i18n, isVisible, onToggle, isHideFound, onHideFound, onFocusEntry, onExport, onImport,
+  container, model, milestones = [], i18n, isVisible, onToggle, isHideFound, onHideFound, onFocusEntry, onExport,
+  onImport,
 }) {
   const typeInputs = new Map();
   const groupInputs = [];
@@ -68,12 +71,57 @@ export function createSidebar({
     return h("div", { class: "block" }, head, ...group.types.map((type) => typeBlock(type, t(`type.${type.id}`), true)));
   }
 
-  // Overall progress bar. Only categories with data contribute to the total.
+  // Exploration value in the game's points, with the reward milestones as marks on the bar, the next
+  // reward below it and the scoring rules behind the (i) button (js/exploration.js). Only categories
+  // with data contribute to the total.
   const barFill = h("div", { class: "bar-fill" });
   const barText = h("span", { class: "count" });
-  const bar = h("div", { class: "exploration", title: t("ui.explorationHint") },
-    h("div", { class: "exploration-head" }, h("span", {}, t("ui.exploration")), barText),
-    h("div", { class: "bar", role: "presentation" }, barFill));
+  const barTrack = h("div", { class: "bar xp-bar", role: "presentation" }, barFill);
+  const nextReward = h("div", { class: "xp-next" });
+  const rulesRows = h("tbody");
+  const sortedMilestones = [...milestones].sort((a, b) => a - b);
+  const rules = h("div", { class: "xp-rules", id: "xp-rules", hidden: true },
+    h("strong", {}, t("xp.title")),
+    h("table", {}, rulesRows),
+    ...(sortedMilestones.length
+      ? [h("div", { class: "foot" }, i18n.tf("xp.rewardsAt", { list: sortedMilestones.join(" · ") }))]
+      : []));
+  const info = h("button", {
+    type: "button", class: "xp-info", "aria-expanded": "false", "aria-controls": "xp-rules",
+    title: t("xp.rulesHint"), "aria-label": t("xp.rulesHint"),
+  }, "i");
+  info.addEventListener("click", () => {
+    rules.hidden = !rules.hidden;
+    info.setAttribute("aria-expanded", String(!rules.hidden));
+  });
+  const bar = h("div", { class: "exploration" },
+    h("div", { class: "exploration-head" }, h("span", {}, t("ui.exploration"), info), barText),
+    barTrack, nextReward, rules);
+
+  // Fills {placeholders} like i18n.tf, wrapping the ones listed in `bold` in <b>.
+  function fill(text, vars, bold) {
+    return text.split(/(\{\w+\})/).filter(Boolean).map((part) => {
+      const name = part.match(/^\{(\w+)\}$/)?.[1];
+      if (!name || !(name in vars)) return part;
+      return bold.includes(name) ? h("b", {}, String(vars[name])) : String(vars[name]);
+    });
+  }
+
+  function refreshExploration() {
+    const { found, total } = model.exploration;
+    barText.textContent = formatCount(found, total);
+    barFill.style.width = total ? `${((100 * found) / total).toFixed(1)}%` : "0%";
+    barTrack.replaceChildren(barFill, ...milestoneMarks(milestones, found, total).map((m) =>
+      h("i", { class: m.reached ? "xp-tick reached" : "xp-tick", style: `left:${m.percent.toFixed(2)}%` })));
+    const status = milestoneStatus(found, milestones);
+    nextReward.hidden = status.none;
+    if (status.next == null) nextReward.textContent = t("xp.allRewards");
+    else nextReward.replaceChildren(...fill(t("xp.nextReward"), { points: status.next, left: status.left }, ["points"]));
+    rulesRows.replaceChildren(...model.exploration.rules.map((r) => h("tr", {},
+      h("td", { class: "pts" }, `+${r.points}`),
+      h("td", {}, t(`xp.rule.${r.id}`)),
+      h("td", { class: "got" }, formatCount(r.found, r.total)))));
+  }
 
   const hideFoundInput = h("input", { type: "checkbox" });
   hideFoundInput.addEventListener("change", () => onHideFound(hideFoundInput.checked));
@@ -108,9 +156,7 @@ export function createSidebar({
 
   function refreshCounts() {
     for (const { el, read } of counters) el.textContent = formatCount(...read());
-    const { found, total } = model.exploration;
-    barText.textContent = formatCount(found, total);
-    barFill.style.width = total ? `${((100 * found) / total).toFixed(1)}%` : "0%";
+    refreshExploration();
   }
 
   function refresh() {

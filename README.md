@@ -190,8 +190,13 @@ Warnings:
   the choice is saved per map in `localStorage` (`slmap:v1:settings`), and types missing from the saved list
   default to visible.
 - Counters read `found / total in the game`: the total is the sum of the `size` of the entries of that type
-  (or the number of mapped markers when a type has no entries yet). The bar at the top of the sidebar sums the
-  categories with `countsForExploration`; categories with no data yet are not part of its total.
+  (or the number of mapped markers when a type has no entries yet).
+- The bar at the top of the sidebar is the game's exploration value, in points: `explorationRules` in
+  `data/categories.json` give the points of each rule of the game's "Area Exploration" popup (e.g. every chest
+  type +5, a Divine Trial +10 per layer; seeds are in no rule yet), and each rule counts its types' counters.
+  Types with no data yet are not part of the total (3080 in Nuoding). The map's reward milestones
+  (`exploration.milestones` in `data/maps.json`) are marks on the bar, with the next reward and the points left
+  below it; the (i) button opens the rules with the official texts and the counts done of each.
 - Clicking a marker opens a popup with its title (the marker's own name, else the entry name, else the type),
   the entry description, the marker's note and a "Mark as found" button. Found markers are faded on the map;
   "Hide found markers" removes them instead. Extra popup fields (`subtype`, `players`, `contract`, `species`,

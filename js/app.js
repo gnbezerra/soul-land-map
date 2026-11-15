@@ -287,6 +287,7 @@ if (!calibrated) {
   const sidebar = createSidebar({
     container: document.getElementById("sidebar"),
     model,
+    milestones: cfg.exploration?.milestones ?? [],
     i18n,
     isVisible: (type) => !hidden.has(type),
     onToggle: setTypes,

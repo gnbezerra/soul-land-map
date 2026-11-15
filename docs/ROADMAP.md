@@ -1,7 +1,7 @@
 # Roadmap and handoff
 
 Read order for a new agent: `README.md` (run it, data pipeline) → `CLAUDE.md` (rules) →
-`docs/SPEC.md` (design) → this file (state and next steps). Last updated: 2026-11-14.
+`docs/SPEC.md` (design) → this file (state and next steps). Last updated: 2026-11-15.
 
 ## Current state
 
@@ -20,11 +20,12 @@ Working, and verified by the owner in a real browser (Chrome, DevTools mobile em
   en/pt/zh names. Marker names, notes and howtos in `marker_texts.csv`; marker tags (e.g. `grappling_hook`).
   The recommended CP of most combat trial stages is not collected yet (see "Waiting on the owner").
 - Sidebar: groups/types with checkboxes and live `found/total` counters, entry lists with frame-and-highlight,
-  exploration bar (count-based), hide-found toggle, backup export/import.
+  exploration value in points with reward milestones and the rules behind an (i) button, hide-found toggle,
+  backup export/import.
 - Popups with title (own name, else entry name, else type), type, description, note, extra fields and a
   "found" button. Found = gray dot with a check. Encounters with several points show a marker on each point.
 - Divine Trials: popup layer list (stars, min. level, recommended rating or "—"), click-to-set progress,
-  "mark all", `4/10` badge on started trials, counters per layer (Divine Trials 65, exploration bar 388).
+  "mark all", `4/10` badge on started trials, counters per layer (Divine Trials 65; 10 points per layer in the exploration value).
 - Progress per map in localStorage (found ids, layers done per trial), in the backup too; settings
   (language, map, hidden types, hide-found) saved.
 - i18n: en/pt/zh UI, top-bar language selector, English fallback per key.
@@ -50,17 +51,14 @@ zoom are not covered (synthetic input does not zoom headless Chrome).
    `data/categories.json`.
    Then settle marker sizes per zoom (SPEC §12): at the whole-map zoom the markers overlap heavily (some
    books sit under chests), especially on mobile.
-2. **Exploration value in points** with reward milestones (formula, milestones and the rules popup's official
-   texts in en/pt/zh in SPEC §11). Currently the bar counts markers; its label ("Exploration progress")
-   should then follow the official term (EN "exploration value", PT "valor de exploração", ZH 探索值).
-3. **Popup extras**: "show solution" button for `howto` (texts already in `marker_texts.csv`), tags in the
+2. **Popup extras**: "show solution" button for `howto` (texts already in `marker_texts.csv`), tags in the
    popup and sidebar (data already carried), `links` between related markers, the contract-consumed warning
    on `chest_contract`, pillar line for `chest_challenge`, deep links, copy-link, bottom-sheet popup on mobile.
-4. **Rewards/items/loot** (SPEC §4.8), popup rewards with icons, including the Divine Trial layer rewards.
-5. **Other regions**, one at a time, each needing a map image, tiles, calibration points (~10), `maps.json`
+3. **Rewards/items/loot** (SPEC §4.8), popup rewards with icons, including the Divine Trial layer rewards.
+4. **Other regions**, one at a time, each needing a map image, tiles, calibration points (~10), `maps.json`
    entry, and CSVs. Region ids/names still to be fixed with the owner. Suotuo first (Nuoding already has a
    portal to it).
-6. Dragon Island (Combat/Safe toggle, species filter) last.
+5. Dragon Island (Combat/Safe toggle, species filter) last.
 
 ## Waiting on the owner
 
@@ -81,6 +79,7 @@ zoom are not covered (synthetic input does not zoom headless Chrome).
   as the game shows them (SPEC §5).
 - Backup carries `progress` and `trials`; settings are not included. The export/import messages count found
   markers only, not trial layers.
-- Mixed Area's 240 exploration points reconcile only if a seed counts +5 (unconfirmed).
+- Mixed Area's 240 exploration points reconcile only if a seed counts +5 (unconfirmed). Seeds are in no
+  `explorationRules` entry until it is: add `seed` to the chests rule (or a rule of its own) once confirmed.
 - Marker scale tunables: `MARKER_SHRINK_PER_ZOOM` 0.25, `MARKER_MIN_SCALE` 0.5 in `js/layers.js`; the glyph is
   hidden below 0.65 scale.

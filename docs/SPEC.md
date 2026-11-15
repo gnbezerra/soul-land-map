@@ -39,8 +39,8 @@ vendor/leaflet Leaflet 1.9.4 (committed, with its LICENSE)
 css/
 icons/         only the icons actually used (not created yet)
 data/
-  maps.json            image size, tile zooms, calibration
-  categories.json      groups, types, placeholder color/glyph, countsForExploration
+  maps.json            image size, tile zooms, calibration, exploration reward milestones
+  categories.json      groups, types, placeholder color/glyph, exploration rules (points)
   entries/<map>.json   exploration-list entries (generated, CSV row order)
   markers/<map>.json   markers (generated)
   src/<map>/{markers,entries,marker_texts,stages}.csv   hand-collected source data
@@ -78,9 +78,9 @@ points at the same X/Y; rare vertical areas (a cave under a plain) are disambigu
 The game's exploration UI has 6 categories, mirrored as top-level groups: Normal Chest (`chest_normal`),
 Decryption Chest (`chest_coop`, `chest_challenge`, `chest_contract`), Divine Trial (`divine_trial`, counted per
 stage), Divine Mind Crystal (`crystal`), Encounter (`encounter`), Other (`teleport`, `viewpoint`, `seed`).
-Outside the game's checksum and the exploration bar: extras (`book`), auxiliary (`mechanism`, `portal`) and
-Dragon Island (`boss`, `arena`). `categories.json` defines group → types, color, glyph and
-`countsForExploration`.
+Outside the game's checksum and the exploration value: extras (`book`), auxiliary (`mechanism`, `portal`) and
+Dragon Island (`boss`, `arena`). `categories.json` defines group → types, color and glyph, and the exploration
+rules (§11): one per line of the game's rules popup, with its types and points.
 
 ### 4.3 Entries
 
@@ -331,8 +331,8 @@ monetization, analytics or SEO in the MVP.
 ## 12. Decisions and open points
 
 Decided: books in the MVP without completeness; equipment level cut-offs irrelevant; community data via GitHub
-PR when there is interest; Leaflet vendored, no CDN or framework; the exploration bar counts only countable
-categories; trial progress is a user-entered integer; a trial stage is called a "layer" on the site (4.6).
+PR when there is interest; Leaflet vendored, no CDN or framework; the exploration bar shows the game's exploration
+value in points, with the map's reward milestones (§11); trial progress is a user-entered integer; a trial stage is called a "layer" on the site (4.6).
 
 Open: final marker size/style per zoom (depends on real icons); official Chinese texts as source of truth
 (later, non-blocking); Dragon Island positions (in-game collection).
@@ -351,7 +351,5 @@ Open: final marker size/style per zoom (depends on real icons); official Chinese
   `links` in the UI, the contract-consumed warning on `chest_contract`, deep links, copy-link, bottom-sheet
   popup, pillar line for `chest_challenge`, species filter, real icons,
   other regions.
-- The exploration bar is count-based (found/total of countable groups, 388 in Nuoding with trials counted per
-  layer), not points.
 - Backup contains `progress` and `trials` (no settings).
 - Entry order follows the CSV row order, not alphabetical.
