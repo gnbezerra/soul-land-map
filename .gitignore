@@ -3,3 +3,6 @@ maps/
 
 # IDE files
 .vscode/
+
+# Personal agent instructions (see CLAUDE.md)
+CLAUDE.local.md

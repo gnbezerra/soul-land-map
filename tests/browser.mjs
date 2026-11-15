@@ -8,6 +8,13 @@
 // It is not part of `node --test tests/` (slower, needs Chrome). Expected values come from the generated
 // data and js/model.js, so adding markers does not break it. Exit code 1 if a check fails.
 // Not covered: real wheel, pinch and double-click zoom (synthetic input does not zoom headless Chrome).
+//
+// Gotchas when extending it:
+// - Navigating to the URL already open, or to one that differs only in the hash, does not reload the
+//   page. Use load(), which reloads in that case and waits for the new document.
+// - Click marker icons with dispatchEvent (they may be off screen), and wait for each popup to appear
+//   instead of sleeping a fixed time.
+// - Popups pan into view with an animation: wait for it before measuring a popup's position.
 import { spawn } from "node:child_process";
 import { createServer } from "node:http";
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync, mkdirSync } from "node:fs";

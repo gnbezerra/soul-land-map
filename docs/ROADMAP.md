@@ -65,8 +65,18 @@ zoom are not covered (synthetic input does not zoom headless Chrome).
 - Two Mixed Area PT descriptions that were cut off in screenshots.
 - Native review of the ZH UI strings.
 
+## Proposed tooling (not decided yet)
+
+- **CI (GitHub Actions):** on every push, run `build_data.py --check`, rebuild the data and fail if the
+  committed JSON differs from the CSVs, then `node --test tests/` and `node tests/browser.mjs` (Ubuntu runners
+  ship Chrome). Every push to `main` deploys, and the CSVs can be edited without an agent.
+- **`.gitattributes`** (`* text=auto eol=lf`): working files currently mix CRLF and LF.
+- **Pipeline tests** with Python's `unittest` in `tests/`, replacing the manual `--root <temp dir>` check.
+
 ## Known gaps and notes
 
+- Expected `build_data.py nuoding --check` warnings today: the portal to `suotuo` (map not added yet) and
+  the combat trial stages without a recommended CP yet.
 - `type.book/mechanism/portal/boss/arena` UI keys exist only in `en.json` on purpose (fallback to English).
 - Unused leftover PT/ZH strings were cut off in the game UI ("Rec.", "Adicionar"); do not rely on them.
 - `data/maps.json` offsets and the CSVs under `data/src/` are the owner's data: do not change without asking.
