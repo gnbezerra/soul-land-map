@@ -227,7 +227,8 @@ async function shot(name) {
 }
 
 const ICONS = `[...document.querySelectorAll(".leaflet-marker-icon")]`;
-const TRIAL_ICONS = `${ICONS}.filter((e) => e.querySelector(".mk-dot")?.style.getPropertyValue("--c") === "${trialColor}")`;
+const iconsOf = (type) => `${ICONS}.filter((e) => e.querySelector("[data-type]")?.dataset.type === "${type}")`;
+const TRIAL_ICONS = iconsOf("divine_trial");
 const POPUP = `document.querySelector(".leaflet-popup .mk-popup")`;
 const popupTitle = () => ev(`${POPUP}?.querySelector("strong")?.textContent ?? null`);
 
@@ -457,13 +458,52 @@ try {
 
   await check("found button: counts, saves and survives a reload", async () => {
     await freshLoad("?lang=en");
-    const icons = `${ICONS}.filter((e) => e.querySelector(".mk-dot")?.style.getPropertyValue("--c") === "${categories.types.chest_normal.color}")`;
+    const icons = iconsOf("chest_normal");
     await openIcon(icons, 0);
     await clickPopupButton();
     equal((await counts()).bar, `${pointsOf("chest_normal")}/${barTotal}`, "bar after marking");
     equal((await stored("progress")).length, 1, "stored ids");
     await load();
     equal((await counts()).bar, `${pointsOf("chest_normal")}/${barTotal}`, "bar after reload");
+  });
+
+  await check("marker icons: sprite per type, size per tier, contract sprite once found", async () => {
+    await freshLoad("?lang=en");
+    // Every marker of a type with an icon shows that sprite, loaded, in its tier's box; the rest keep the dot.
+    const seen = await ev(`(() => {
+      const out = {};
+      for (const e of ${ICONS}) {
+        const box = e.querySelector("[data-type]");
+        const img = box.querySelector(".ic-main");
+        const o = (out[box.dataset.type] ??= { n: 0, srcs: new Set(), broken: 0, widths: new Set(), dots: 0 });
+        o.n++;
+        if (img) { o.srcs.add(img.getAttribute("src")); if (!img.complete || !img.naturalWidth) o.broken++; o.widths.add(e.style.width); }
+        else o.dots++;
+      }
+      return Object.fromEntries(Object.entries(out).map(([k, o]) => [k, { ...o, srcs: [...o.srcs], widths: [...o.widths] }]));
+    })()`);
+    const tierPx = { common: 22, major: 38, minor: 20 };
+    for (const [type, o] of Object.entries(seen)) {
+      const meta = categories.types[type];
+      if (!meta.icon) { equal(o.dots, o.n, `${type}: dot`); continue; }
+      equal(o.srcs, [meta.icon], `${type}: sprite`);
+      equal(o.broken, 0, `${type}: sprite loaded`);
+      equal(o.widths, [`${tierPx[meta.tier]}px`], `${type}: size`);
+    }
+    // A co-op chest's badge is its number of players; a challenge chest's is the fixed text.
+    const badges = (type) => ev(`${iconsOf(type)}.map((e) => e.querySelector(".mk-type-badge")?.textContent ?? null).sort()`);
+    equal(await badges("chest_coop"), markers.filter((m) => m.type === "chest_coop").map((m) => String(m.players)).sort(), "co-op badges");
+    equal(new Set(await badges("chest_challenge")).size === 1 && (await badges("chest_challenge"))[0],
+      categories.types.chest_challenge.badge, "challenge badges");
+    // The contract chest swaps to the "opened" sprite when found, as the game leaves it on its map.
+    const contracts = iconsOf("chest_contract");
+    const shown = () => ev(`(() => { const b = ${contracts}[0].querySelector(".mk-ic");
+      return [...b.querySelectorAll("img")].filter((i) => getComputedStyle(i).display !== "none").map((i) => i.getAttribute("src")); })()`);
+    equal(await shown(), [categories.types.chest_contract.icon], "contract before");
+    await openIcon(contracts, 0);
+    await clickPopupButton();
+    equal(await shown(), [categories.types.chest_contract.iconFound], "contract once found");
+    await shot("icons-found-contract");
   });
 
   await check("Divine Trial: layer clicks, mark all, reset, badge", async () => {

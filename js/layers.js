@@ -8,8 +8,13 @@ import { markerTitle, effectiveTags, popupFields, consumesContract } from "./pop
 // each level below it removes MARKER_SHRINK_PER_ZOOM, down to MARKER_MIN_SCALE.
 const MARKER_SHRINK_PER_ZOOM = 0.25;
 const MARKER_MIN_SCALE = 0.5;
-// Below this scale the glyph is unreadable, so only the colored dot is shown.
+// Below this scale the glyph is unreadable, so only the colored dot is shown (and icons lose their badges).
 const MARKER_TINY_SCALE = 0.65;
+// Icon box per tier (categories.json), in px at full scale: the hundreds of chests stay small, the types
+// worth hunting for are big, and the ones the game's own minimap already shows (teleports, scenic spots,
+// portals, visited once) are the smallest. Major icons are drawn above the chests around them.
+const TIER_SIZE = { common: 22, major: 38, minor: 20 };
+const TIER_Z = { major: 250 };
 
 // Creates one Leaflet layer group per marker type and handles marker state:
 // visibility per type, highlight, found (faded) and "hide found".
@@ -61,18 +66,50 @@ export function createLayers({
         badge.hidden = !isTrialStarted(done, stagesOf(record.m));
       }
     }
-    record.marker.setZIndexOffset(record.entry != null && record.entry === highlighted ? 1000 : found ? -500 : 0);
+    record.marker.setZIndexOffset(record.entry != null && record.entry === highlighted ? 1000 : found ? -500
+      : TIER_Z[categories.types[record.m.type].tier] ?? 0);
     const shouldShow = !(hideFound && found);
     if (shouldShow && !record.group.hasLayer(record.marker)) record.group.addLayer(record.marker);
     else if (!shouldShow && record.group.hasLayer(record.marker)) record.group.removeLayer(record.marker);
   }
 
-  function makeIcon(meta) {
-    const dot = document.createElement("span");
-    dot.className = "mk-dot";
-    dot.style.setProperty("--c", meta.color);
-    dot.textContent = meta.glyph;
-    return L.divIcon({ html: dot, className: "mk", iconSize: [24, 24] });
+  // A game sprite when the type has one (an optional second sprite replaces it once found, and an
+  // optional badge tells chests with the same sprite apart: a fixed text, or a field of the marker such
+  // as a co-op chest's number of players); otherwise the colored dot with a letter.
+  function makeIcon(m, meta) {
+    const type = m.type;
+    if (!meta.icon) {
+      const dot = document.createElement("span");
+      dot.className = "mk-dot";
+      dot.dataset.type = type;
+      dot.style.setProperty("--c", meta.color);
+      dot.textContent = meta.glyph;
+      return L.divIcon({ html: dot, className: "mk", iconSize: [24, 24] });
+    }
+    const tier = meta.tier ?? "common";
+    const size = TIER_SIZE[tier] ?? TIER_SIZE.common;
+    const box = document.createElement("span");
+    box.className = `mk-ic${meta.iconFound ? " has-found" : ""}`;
+    box.dataset.type = type;
+    box.style.setProperty("--c", meta.color);
+    box.style.setProperty("--sz", `${size}px`);
+    for (const [src, cls] of [[meta.icon, "ic-main"], [meta.iconFound, "ic-found"]]) {
+      if (!src) continue;
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = "";
+      img.className = cls;
+      img.draggable = false;
+      box.append(img);
+    }
+    const badgeText = meta.badgeField ? m[meta.badgeField] : meta.badge;
+    if (badgeText != null && badgeText !== "") {
+      const badge = document.createElement("span");
+      badge.className = "mk-type-badge";
+      badge.textContent = badgeText;
+      box.append(badge);
+    }
+    return L.divIcon({ html: box, className: `mk mk-${tier}`, iconSize: [size, size] });
   }
 
   const titleOf = (m) => markerTitle(m, i18n);
@@ -316,7 +353,7 @@ export function createLayers({
     // Most markers have one position; some encounters have several `points`.
     const points = m.points ?? [{ x: m.x, y: m.y }];
     for (const p of points) {
-      const marker = L.marker(latLngOf(p.x, p.y), { icon: makeIcon(meta) });
+      const marker = L.marker(latLngOf(p.x, p.y), { icon: makeIcon(m, meta) });
       if (canHover) marker.bindTooltip(makeTooltip(m, p));
       // The larger top padding keeps the popup below the zoom buttons, which are drawn above it.
       marker.bindPopup(() => makePopup(m, p), {

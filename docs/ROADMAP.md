@@ -24,7 +24,10 @@ Working, and verified by the owner in a real browser (Chrome, DevTools mobile em
   backup export/import.
 - Popups with title (own name, else entry name, else type), type, tags, description, note, "show solution"
   (howto), extra fields (contract names and warning, pillar with a dashed line and "show on map") and a
-  "found" button; deep links (`#map/marker`, the address bar follows the open popup) and copy-link. Found = gray dot with a check. Encounters with several points show a marker on each point.
+  "found" button; deep links (`#map/marker`, the address bar follows the open popup) and copy-link.
+- Markers: the game's own sprites (`tools/make_icons.py`, SPEC §9), sized by importance (big with a colored
+  glow for what the player hunts for, small for chests, smallest for what the game's minimap already shows);
+  found = grey with a green check. Encounters with several points show a marker on each point.
 - Divine Trials: popup layer list (stars, min. level, recommended rating or "—"), click-to-set progress,
   "mark all", `4/10` badge on started trials, counters per layer (Divine Trials 65; 10 points per layer in the exploration value).
 - Progress per map in localStorage (found ids, layers done per trial), in the backup too; settings
@@ -46,12 +49,10 @@ zoom are not covered (synthetic input does not zoom headless Chrome).
 
 ## Next steps (suggested order)
 
-1. **Real icons.** The colored circles are a temporary placeholder to test the site; the real marker design is
-   still to be discussed with the owner. Owner supplies the game's small map-marker sprites; write a Pillow
-   script in `tools/` that crops/resizes to 48–64 px and outputs WebP/PNG into `icons/`; reference them from
-   `data/categories.json`.
-   Then settle marker sizes per zoom (SPEC §12): at the whole-map zoom the markers overlap heavily (some
-   books sit under chests), especially on mobile.
+1. **Icon follow-ups.** Co-op chests show their number of players (1 to 4, the `players` field; Nuoding has
+   1-player "tutorial" co-op chests). Challenge chests still show the placeholder letter "J" (the old glyph,
+   no meaning in the game): find a better mark, or drop it. Consider the sprites in the sidebar instead of
+   the colored dots (needs a preview). Sprites for `seed`, `mechanism` and `arena` when those regions arrive.
 2. **More popup and sidebar extras**: tags in the sidebar (and later a tag filter), `links` between related
    markers (none in the data yet), bottom-sheet popup on mobile (after the real icons).
 3. **Rewards/items/loot** (SPEC §4.8), popup rewards with icons, including the Divine Trial layer rewards.
@@ -65,7 +66,6 @@ zoom are not covered (synthetic input does not zoom headless Chrome).
 - Recommended CP of the combat trial stages. It needs a new character leveled to each stage's requirement,
   so it takes days of play. `cp` is optional in `stages.csv` meanwhile and the build lists the missing stages.
 - Map images and calibration points for other regions.
-- Real icon sprites.
 - Two Mixed Area PT descriptions that were cut off in screenshots.
 - Native review of the ZH UI strings.
 
@@ -80,5 +80,8 @@ zoom are not covered (synthetic input does not zoom headless Chrome).
 - Backup carries `progress` and `trials`; settings are not included.
 - Mixed Area's 240 exploration points reconcile only if a seed counts +5 (unconfirmed). Seeds are in no
   `explorationRules` entry until it is: add `seed` to the chests rule (or a rule of its own) once confirmed.
-- Marker scale tunables: `MARKER_SHRINK_PER_ZOOM` 0.25, `MARKER_MIN_SCALE` 0.5 in `js/layers.js`; the glyph is
-  hidden below 0.65 scale.
+- Marker scale tunables: `MARKER_SHRINK_PER_ZOOM` 0.25, `MARKER_MIN_SCALE` 0.5, `TIER_SIZE` in
+  `js/layers.js`; the glyph and the icon badges are hidden below 0.65 scale.
+- The source sprites are 43–57 px and the major markers are drawn at 38 px, so on 2x screens they may look
+  slightly soft; the owner accepted fixing that later (sharpen or redraw larger) if it shows.
+- The book's category color is grey, so its glow is faint.

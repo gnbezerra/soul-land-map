@@ -228,6 +228,91 @@ body.sidebar-hidden #sidebar {
   font-size: 0;
 }
 
+/* Marker icons: the game's sprites (categories.json "icon"), sized by tier in js/layers.js.
+   A dark outline keeps the white sprites readable on light terrain; the major tier gets a glow
+   in its category color so the types worth finding stand out among the chests. */
+.mk-ic {
+  position: relative;
+  display: block;
+  width: var(--sz);
+  height: var(--sz);
+  transform: scale(calc(var(--mk-scale, 1) * var(--mk-touch, 1)));
+  transition: transform .1s;
+}
+
+.mk-ic img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 1.5px #000) drop-shadow(0 1px 2px #000c);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.mk-major .mk-ic img {
+  filter: drop-shadow(0 0 1px #000) drop-shadow(0 0 4px var(--c)) drop-shadow(0 0 3px var(--c)) drop-shadow(0 0 2px var(--c));
+}
+
+.mk-ic .ic-found,
+.mk.found .mk-ic.has-found .ic-main {
+  display: none;
+}
+
+.mk.found .mk-ic.has-found .ic-found {
+  display: block;
+}
+
+.mk.hl .mk-ic {
+  transform: scale(calc(var(--mk-scale, 1) * var(--mk-touch, 1) * 1.35));
+}
+
+.mk.hl .mk-ic img {
+  filter: drop-shadow(0 0 1px #000) drop-shadow(0 0 4px #fff) drop-shadow(0 0 2px #fff);
+}
+
+/* Found: grey, faded, with a green check in the corner. */
+.mk.found .mk-ic img {
+  filter: grayscale(1) brightness(.75) drop-shadow(0 0 1.5px #000);
+  opacity: .7;
+}
+
+.mk.found .mk-ic::after {
+  content: "\2713";
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #5ad17a;
+  color: #10151b;
+  font: 700 10px/13px system-ui, sans-serif;
+  text-align: center;
+  box-shadow: 0 0 0 1.5px #10151b;
+}
+
+/* Tells chests that share a sprite apart (categories.json "badge"). */
+.mk-type-badge {
+  position: absolute;
+  left: -4px;
+  top: -4px;
+  min-width: 13px;
+  height: 13px;
+  padding: 0 2px;
+  box-sizing: border-box;
+  border-radius: 7px;
+  background: var(--c);
+  color: #10151b;
+  font: 700 9px/13px system-ui, sans-serif;
+  text-align: center;
+  box-shadow: 0 0 0 1.5px #10151b;
+}
+
+.mk-tiny .mk-type-badge,
+.mk-tiny .mk.found .mk-ic::after {
+  display: none;
+}
+
 /* Coordinate readout */
 .hud {
   position: absolute;
@@ -829,12 +914,21 @@ body.sidebar-hidden #sidebar {
   color: #7f8fa3;
 }
 
-/* Stages done on a started trial, next to its marker; follows the marker's scale. */
+/* Stages done on a started trial, by its marker's top-right corner; follows the marker's scale.
+   --half is half the marker's box (the 24 px dot, or the icon tier's size in js/layers.js). */
+.mk {
+  --half: 12px;
+}
+
+.mk-major {
+  --half: 19px;
+}
+
 .mk-badge {
   --s: calc(var(--mk-scale, 1) * var(--mk-touch, 1));
   position: absolute;
-  left: calc(50% + 5px * var(--s));
-  top: calc(50% - 19px * var(--s));
+  left: calc(50% + (var(--half) - 7px) * var(--s));
+  top: calc(50% - (var(--half) + 7px) * var(--s));
   padding: 0 4px;
   border: 1px solid var(--accent);
   border-radius: 7px;

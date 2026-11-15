@@ -39,6 +39,13 @@ the history. Leaflet lives in `vendor/leaflet` (`leaflet.js`, `leaflet.css`, `LI
 not needed for now). To update it, download the same files for the new version from
 `https://unpkg.com/leaflet@<version>/dist/` and `https://unpkg.com/leaflet@<version>/LICENSE`.
 
+Marker icons (`icons/*.png`) are sprites from the game's UI atlases. To regenerate them, export each atlas
+with AssetRipper ("Export project") into `maps/icons/raw/<atlas>/` (ignored, like the map images: currently
+`worldmappanel`, `worlduipanel` and `commonui`) and run `python tools/make_icons.py` (Pillow). Which sprite
+becomes which icon is the `ICONS` table at the top of the script; it reads each sprite's rectangle from its
+`.asset` file, trims it to the drawing and centers it on a square. Like the tiles, rerun it only when a sprite
+changes.
+
 The site icon is `favicon.svg`; after changing it, update the same geometry in `tools/make_favicon.py` and
 run `python tools/make_favicon.py` (Pillow) to rebuild `favicon.ico` and `apple-touch-icon.png`.
 
@@ -184,8 +191,15 @@ Warnings:
 ## Site behavior
 
 - `data/categories.json` defines the sidebar groups (the game's own exploration categories plus a few
-  extra groups), their marker types, and each type's placeholder color and glyph. Real icons will replace
-  the glyphs later.
+  extra groups), their marker types, and per type: `color` (sidebar dot, glow, pillar line), `glyph`
+  (letter in the colored dot used when a type has no icon: `seed`, `mechanism`, `arena` today), `icon`
+  (path in `icons/`), optional `iconFound` (replaces the icon once found: the opened contract chest),
+  `tier`, and optional `badge` (short text on the icon's corner, for chests that share a sprite) or
+  `badgeField` (the badge shows that marker field instead: a co-op chest shows its `players`, 1 to 4).
+- Marker size follows the tier (`TIER_SIZE` in `js/layers.js`): `common` 22 px (chests), `major` 38 px with
+  a glow in the category color (Divine Trials, crystals, encounters, books, bosses: what the player hunts
+  for), `minor` 20 px (teleports, scenic spots, portals, which the game's own minimap already shows). Major
+  markers are drawn above the chests. Found markers turn grey with a green check.
 - A group or type shows up only when the map has entries or markers for it. Checkboxes toggle visibility,
   the choice is saved per map in `localStorage` (`slmap:v1:settings`), and types missing from the saved list
   default to visible.
