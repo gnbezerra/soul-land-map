@@ -2,6 +2,7 @@ import { gameToPixel, pixelToLatLng } from "./geo.js";
 import {
   stageCount, stagesDone, isTrialComplete, isTrialStarted, nextTrialProgress, markAllProgress,
 } from "./trials.js";
+import { markerTitle, effectiveTags, popupFields, consumesContract } from "./popup.js";
 
 // Markers shrink when zoomed out so they do not pile up. Full size from the native zoom up;
 // each level below it removes MARKER_SHRINK_PER_ZOOM, down to MARKER_MIN_SCALE.
@@ -10,16 +11,16 @@ const MARKER_MIN_SCALE = 0.5;
 // Below this scale the glyph is unreadable, so only the colored dot is shown.
 const MARKER_TINY_SCALE = 0.65;
 
-// Extra marker fields shown in the popup when present (other types will fill these in).
-// A Divine Trial shows its subtype in the type line instead.
-const POPUP_FIELDS = ["subtype", "players", "contract", "species", "seed", "requiresSeed", "to"];
-
 // Creates one Leaflet layer group per marker type and handles marker state:
 // visibility per type, highlight, found (faded) and "hide found".
 //   isFound(markerId) -> boolean          onSetFound(markerId, found)
 //   trialDone(markerId) -> stages done    onSetTrial(markerId, stagesDone)   (Divine Trials)
+//   linkFor(markerId) -> link to share    onPopupOpen(markerId)   onPopupClose(markerId)
 // A Divine Trial counts as found once all its stages are done.
-export function createLayers({ L, map, markers, categories, calibration, nativeZoom, i18n, isFound, onSetFound, trialDone, onSetTrial }) {
+export function createLayers({
+  L, map, markers, entries, categories, calibration, nativeZoom, i18n, isFound, onSetFound, trialDone, onSetTrial,
+  linkFor, onPopupOpen, onPopupClose,
+}) {
   const layerByType = new Map();
   const recordsByEntry = new Map();
   const recordsById = new Map();
@@ -74,13 +75,8 @@ export function createLayers({ L, map, markers, categories, calibration, nativeZ
     return L.divIcon({ html: dot, className: "mk", iconSize: [24, 24] });
   }
 
-  // Own name (trials, books, teleports, viewpoints) first, then the entry name, then the type.
-  function titleOf(m) {
-    const own = i18n.marker(m.id).name;
-    if (own) return own;
-    if (m.entry) return i18n.entry(m.entry).name + (m.entryIndex ? ` #${m.entryIndex}` : "");
-    return i18n.t(`type.${m.type}`);
-  }
+  const titleOf = (m) => markerTitle(m, i18n);
+  const latLngOf = (x, y) => pixelToLatLng(map, nativeZoom, ...gameToPixel(calibration, x, y));
 
   function makeTooltip(m, point) {
     const box = document.createElement("div");
@@ -92,52 +88,99 @@ export function createLayers({ L, map, markers, categories, calibration, nativeZ
     return box;
   }
 
+  const el = (tag, className, text) => {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text != null) node.textContent = text;
+    return node;
+  };
+
+  // "Show solution": the howto stays hidden until asked for, so it does not spoil the search.
+  function makeHowto(text) {
+    const toggle = el("button", "howto-btn");
+    toggle.type = "button";
+    const body = el("p", "howto", text);
+    const set = (open) => {
+      body.hidden = !open;
+      toggle.textContent = `${open ? "▾" : "▸"} ${i18n.t(open ? "popup.hideSolution" : "popup.showSolution")}`;
+      toggle.setAttribute("aria-expanded", String(open));
+    };
+    toggle.addEventListener("click", () => set(body.hidden));
+    set(false);
+    return [toggle, body];
+  }
+
+  // Marker id and position, and a button that copies the marker's link (clipboard, else a prompt).
+  function makeFooter(m, point) {
+    const foot = el("div", "mk-foot");
+    const button = el("button", "copy-link", `🔗 ${i18n.t("popup.copyLink")}`);
+    button.type = "button";
+    button.addEventListener("click", async () => {
+      const link = linkFor(m.id);
+      try {
+        await navigator.clipboard.writeText(link);
+      } catch {
+        window.prompt(i18n.t("popup.copyPrompt"), link);
+        return;
+      }
+      button.textContent = `✓ ${i18n.t("popup.linkCopied")}`;
+      button.classList.add("done");
+      setTimeout(() => {
+        button.textContent = `🔗 ${i18n.t("popup.copyLink")}`;
+        button.classList.remove("done");
+      }, 2000);
+    });
+    foot.append(el("span", "muted small", `${m.id} · X ${point.x}, Y ${point.y}`), button);
+    return foot;
+  }
+
   // Popup content is built on every open, so it always reflects the current state.
   function makePopup(m, point) {
-    const root = document.createElement("div");
-    root.className = "mk-popup";
-    const title = document.createElement("strong");
-    title.textContent = titleOf(m);
-    const kind = document.createElement("div");
-    kind.className = "muted";
-    kind.textContent = i18n.t(`type.${m.type}`);
+    const root = el("div", "mk-popup");
+    const kind = el("div", "muted", i18n.t(`type.${m.type}`));
     if (stagesOf(m) && m.subtype) kind.textContent += ` · ${i18n.t(`trial.${m.subtype}`, m.subtype)}`;
-    root.append(title, kind);
+    root.append(el("strong", "", titleOf(m)), kind);
+
+    const tags = effectiveTags(m, entries);
+    if (tags.length) {
+      const list = el("div", "mk-tags");
+      for (const tag of tags) {
+        const chip = el("span", "mk-tag", i18n.t(`tag.${tag}`, tag));
+        const hint = i18n.t(`tag.${tag}.hint`, "");
+        if (hint) chip.title = hint;
+        list.append(chip);
+      }
+      root.append(list);
+    }
 
     const description = m.entry ? i18n.entry(m.entry).description : "";
-    if (description) {
-      const p = document.createElement("p");
-      p.className = "desc";
-      p.textContent = description;
-      root.append(p);
-    }
-    // Own note (e.g. "inside the cave under the plains"); howto is not shown yet.
-    const note = i18n.marker(m.id).note;
-    if (note) {
-      const p = document.createElement("p");
-      p.className = "note";
-      p.textContent = note;
-      root.append(p);
-    }
+    if (description) root.append(el("p", "desc", description));
+    // Own note (e.g. "inside the cave under the plains"), always shown.
+    const { note, howto } = i18n.marker(m.id);
+    if (note) root.append(el("p", "note", note));
+    if (howto) root.append(...makeHowto(howto));
 
-    const fields = POPUP_FIELDS.filter((f) => m[f] != null && m[f] !== "" && !(f === "subtype" && stagesOf(m)));
+    const fields = popupFields(m, i18n);
     if (fields.length) {
-      const dl = document.createElement("dl");
-      for (const f of fields) {
-        const dt = document.createElement("dt");
-        dt.textContent = i18n.t(`field.${f}`, f);
-        const dd = document.createElement("dd");
-        dd.textContent = String(m[f]);
-        dl.append(dt, dd);
+      const dl = el("dl");
+      for (const { field, value } of fields) {
+        const dd = el("dd", "", value);
+        // The popup may cover the pillar (it opens above the chest), so the pillar can be framed on its own.
+        if (field === "pillar" && pillars.has(m.id)) {
+          const show = el("button", "show-on-map", i18n.t("popup.showOnMap"));
+          show.type = "button";
+          show.addEventListener("click", () => showPillar(m.id));
+          dd.append(" ", show);
+        }
+        dl.append(el("dt", "", i18n.t(`field.${field}`, field)), dd);
       }
       root.append(dl);
     }
+    if (consumesContract(m)) root.append(el("div", "warn", `⚠ ${i18n.t("popup.contractWarning")}`));
 
-    const coords = document.createElement("div");
-    coords.className = "muted small";
-    coords.textContent = `${m.id} · X ${point.x}, Y ${point.y}`;
+    const footer = makeFooter(m, point);
     if (stagesOf(m)) {
-      root.append(...makeTrialSection(m), coords);
+      root.append(...makeTrialSection(m), footer);
       return root;
     }
 
@@ -155,7 +198,7 @@ export function createLayers({ L, map, markers, categories, calibration, nativeZ
       sync();
     });
     sync();
-    root.append(button, coords);
+    root.append(button, footer);
     return root;
   }
 
@@ -243,6 +286,25 @@ export function createLayers({ L, map, markers, categories, calibration, nativeZ
     return [head, bar, columns, list, hint, button];
   }
 
+  // Challenge chests' pillar layers by marker id, and the one kept on the map by "Show on map".
+  const pillars = new Map();
+  let pinnedPillar = null;
+  function unpinPillar() {
+    pinnedPillar?.remove();
+    pinnedPillar = null;
+  }
+  // Closes the popup and frames the chest and its pillar, keeping the pin and the line on the map.
+  function showPillar(markerId) {
+    const { layer, marker } = pillars.get(markerId);
+    pinnedPillar = layer;
+    layer.addTo(map);
+    map.closePopup();
+    const bounds = L.latLngBounds(layer.getLayers().map((l) => l.getLatLngs?.() ?? [l.getLatLng()]).flat())
+      .extend(marker.getLatLng());
+    map.fitBounds(bounds.pad(0.6), { maxZoom: nativeZoom });
+  }
+  map.on("click", unpinPillar);
+
   for (const m of markers) {
     const meta = categories.types[m.type];
     if (!meta) {
@@ -254,8 +316,7 @@ export function createLayers({ L, map, markers, categories, calibration, nativeZ
     // Most markers have one position; some encounters have several `points`.
     const points = m.points ?? [{ x: m.x, y: m.y }];
     for (const p of points) {
-      const [px, py] = gameToPixel(calibration, p.x, p.y);
-      const marker = L.marker(pixelToLatLng(map, nativeZoom, px, py), { icon: makeIcon(meta) });
+      const marker = L.marker(latLngOf(p.x, p.y), { icon: makeIcon(meta) });
       if (canHover) marker.bindTooltip(makeTooltip(m, p));
       // The larger top padding keeps the popup below the zoom buttons, which are drawn above it.
       marker.bindPopup(() => makePopup(m, p), {
@@ -264,6 +325,27 @@ export function createLayers({ L, map, markers, categories, calibration, nativeZ
       });
       const record = { id: m.id, m, marker, group, entry: m.entry ?? null };
       marker.on("add", () => applyState(record));
+      // A challenge chest's pillar (where the jumping puzzle starts): a pin tied to the chest by a dashed
+      // line, shown while the chest's popup is open, or after "Show on map" until the next map click.
+      const pillar = m.pillar && L.layerGroup([
+        L.polyline([latLngOf(m.pillar.x, m.pillar.y), marker.getLatLng()], {
+          className: "pillar-line", color: meta.color, weight: 2.5, dashArray: "7 6", interactive: false,
+        }),
+        L.circleMarker(latLngOf(m.pillar.x, m.pillar.y), {
+          className: "pillar-pin", radius: 6, color: meta.color, weight: 2, fillColor: "#10151b", fillOpacity: 1,
+          interactive: false,
+        }),
+      ]);
+      if (pillar && !pillars.has(m.id)) pillars.set(m.id, { layer: pillar, marker });
+      marker.on("popupopen", () => {
+        unpinPillar();
+        pillar?.addTo(map);
+        onPopupOpen?.(m.id);
+      });
+      marker.on("popupclose", () => {
+        if (pillar !== pinnedPillar) pillar?.remove();
+        onPopupClose?.(m.id);
+      });
       group.addLayer(marker);
       if (!recordsById.has(m.id)) recordsById.set(m.id, []);
       recordsById.get(m.id).push(record);
@@ -294,6 +376,19 @@ export function createLayers({ L, map, markers, categories, calibration, nativeZ
     highlight(entryId) {
       highlighted = entryId;
       allRecords().forEach(applyState);
+    },
+    // Centers a marker (its first point) and opens its popup, e.g. from a deep link. A marker removed by
+    // "hide found" is put back on the map for it. Returns false for an unknown id.
+    openMarker(markerId) {
+      const record = recordsById.get(markerId)?.[0];
+      if (!record) return false;
+      if (!record.group.hasLayer(record.marker)) record.group.addLayer(record.marker);
+      map.setView(record.marker.getLatLng(), Math.max(map.getZoom(), nativeZoom - 1), { animate: false });
+      record.marker.openPopup();
+      return true;
+    },
+    typeOf(markerId) {
+      return recordsById.get(markerId)?.[0]?.m.type ?? null;
     },
     // Frames all markers of an entry and highlights them. Returns false if it has none.
     focusEntry(entryId) {

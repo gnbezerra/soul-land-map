@@ -8,6 +8,19 @@ export function formatCount(found, total) {
   return `${found}/${total}`;
 }
 
+// Progress of one map as the backup messages report it: found markers (Divine Trials not included) and
+// Divine Trial layers done. Ids that are not in `markers` are ignored, like in the counters.
+export function countProgress(markers, foundIds, trials) {
+  let found = 0;
+  let layers = 0;
+  for (const m of markers) {
+    const stages = stageCount(m);
+    if (stages) layers += stagesDone(trials[m.id], stages);
+    else if (foundIds.has(m.id)) found++;
+  }
+  return { markers: found, layers };
+}
+
 export function buildModel(categories, entries, markers) {
   const types = new Map();
   const unknownTypes = new Set();

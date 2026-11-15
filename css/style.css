@@ -631,6 +631,94 @@ body.sidebar-hidden #sidebar {
   font-weight: 600;
 }
 
+/* Popup extras: requirement tags, the solution behind a toggle, the contract warning, the footer */
+.mk-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.mk-tag {
+  padding: 1px 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel-hover);
+  color: #c3cfdd;
+  font-size: 11px;
+}
+
+.howto-btn {
+  align-self: flex-start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.show-on-map {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-size: 13px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.mk-popup .howto {
+  margin: 0;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: var(--panel-hover);
+  font-size: 13px;
+}
+
+.mk-popup .howto[hidden] {
+  display: none;
+}
+
+.mk-popup .warn {
+  padding: 6px 8px;
+  border: 1px solid #6b4a12;
+  border-radius: 6px;
+  background: #2a2010;
+  color: #f5c66b;
+  font-size: 12px;
+}
+
+.mk-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.copy-link {
+  padding: 2px 9px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: none;
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.copy-link:hover,
+.copy-link.done {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+@media (pointer: coarse) {
+  .howto-btn,
+  .copy-link {
+    min-height: 32px;
+  }
+}
+
 /* Divine Trial popup: progress, stage list (click a stage to mark it and the earlier ones) */
 .trial-head {
   display: flex;

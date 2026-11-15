@@ -2,7 +2,7 @@
 // Uses small made-up data, so editing the real CSVs never breaks them.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { buildModel, applyProgress, formatCount } from "../js/model.js";
+import { buildModel, applyProgress, formatCount, countProgress } from "../js/model.js";
 
 const categories = {
   groups: [
@@ -90,6 +90,14 @@ test("applyProgress recomputes from scratch", () => {
 test("no exploration rules: the exploration value is empty", () => {
   const model = buildModel({ ...categories, explorationRules: undefined }, entries, markers);
   assert.deepEqual(model.exploration, { found: 0, total: 0, rules: [] });
+});
+
+test("countProgress: found markers without trials, and trial layers, ignoring stale ids", () => {
+  const found = new Set(["m-0001", "m-0003", "m-0006", "gone-0001"]);
+  assert.deepEqual(countProgress(markers, found, { "m-0004": 4, "m-0005": 99, "gone-0002": 5 }), { markers: 3, layers: 4 + 3 });
+  assert.deepEqual(countProgress(markers, new Set(["m-0004"]), {}), { markers: 0, layers: 0 },
+    "a trial id in the found set is not a marker");
+  assert.deepEqual(countProgress(markers, new Set(), {}), { markers: 0, layers: 0 });
 });
 
 test("formatCount", () => {

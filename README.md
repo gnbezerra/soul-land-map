@@ -199,9 +199,18 @@ Warnings:
   below it; the (i) button opens the rules with the official texts and the counts done of each.
 - Clicking a marker opens a popup with its title (the marker's own name, else the entry name, else the type),
   the entry description, the marker's note and a "Mark as found" button. Found markers are faded on the map;
-  "Hide found markers" removes them instead. Extra popup fields (`subtype`, `players`, `contract`, `species`,
-  `seed`, `requiresSeed`, `to`) appear automatically when a marker has them. Tags and howtos are in the data
-  but not shown yet.
+  "Hide found markers" removes them instead. Extra popup fields (`subtype`, `players`, `contract`, `pillar`,
+  `species`, `seed`, `requiresSeed`, `to`) appear automatically when a marker has them; contracts show their
+  official name (`contract.<code>` UI keys) and a warning that opening the chest uses the contract up.
+- Popups also show the marker's tags (its entry's plus its own) as labels, with the names in `tag.<id>` UI keys
+  and an optional `tag.<id>.hint` tooltip; a new tag only needs those keys (`poison_seal` and `fire_seal` are
+  ready for the maps after Nuoding). A marker's howto sits behind "Show solution". A challenge chest's pillar
+  is a pin tied to the chest by a dashed line while its popup is open; "Show on map" closes the popup and
+  frames both, keeping the pin until the next click on the map.
+- Deep links: `#<map>/<marker id>` (e.g. `#nuoding/nuoding-0142`) opens that marker's popup, showing its type
+  again if it was hidden. While a popup is open the address bar shows its link (without adding history
+  entries), and "Copy link" in the popup footer copies it without `?lang=`, so whoever opens it gets their own
+  language. A link typed into the address bar works too; an unknown marker id leaves just the map.
 - Divine Trials count per stage (a "layer" on the site), like the game: 65 in Nuoding. Their popup lists the
   layers (stars, and for combat trials the minimum level and the recommended rating) instead of the "found"
   button: clicking a layer that is not done marks it and the earlier ones, clicking a done layer unmarks it

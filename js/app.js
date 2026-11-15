@@ -4,14 +4,17 @@ import {
   loadSettings, saveSettings, loadProgress, saveProgress, loadTrials, saveTrials, buildBackup, parseBackup,
 } from "./storage.js";
 import { detectLang, loadI18n, loadLanguages } from "./i18n.js";
-import { buildModel, applyProgress } from "./model.js";
+import { buildModel, applyProgress, countProgress } from "./model.js";
+import { parseHash, mapHash, markerHash, markerLink } from "./links.js";
 import { stageCounts, setTrialProgress, migrateFoundTrials } from "./trials.js";
 import { createLayers } from "./layers.js";
 import { createSidebar } from "./sidebar.js";
 
 const settings = loadSettings();
 const maps = await fetchJson("data/maps.json");
-const mapId = location.hash.slice(1).split("/")[0] || settings.mapId || "nuoding";
+// Deep links: #<map>, or #<map>/<marker id> to open a marker (js/links.js).
+const link = parseHash(location.hash);
+const mapId = link.mapId || settings.mapId || "nuoding";
 const cfg = maps[mapId];
 if (!cfg) throw new Error(`Unknown map: ${mapId}`);
 
@@ -39,7 +42,7 @@ for (const id of Object.keys(maps)) {
 }
 select.addEventListener("change", () => {
   saveSettings({ ...settings, mapId: select.value });
-  location.hash = select.value;
+  location.hash = mapHash(select.value);
   location.reload();
 });
 
@@ -185,9 +188,11 @@ if (!calibrated) {
   let trials = loadTrials(mapId);
   let hideFound = settings.hideFound?.[mapId] === true;
   let storageWarned = false;
-  // Counts in messages only include markers that exist in the data (backups may carry stale ids).
-  const knownIds = new Set(markers.map((m) => m.id));
-  const countKnown = (ids) => [...ids].filter((id) => knownIds.has(id)).length;
+  // Backup messages count found markers and, when there are any, Divine Trial layers. Only markers that
+  // exist in the data count (backups may carry stale ids).
+  const progressOf = (ids, progress) => countProgress(markers, ids, progress);
+  const progressMessage = (key, { markers: n, layers }) =>
+    (layers ? i18n.tf(`${key}Layers`, { n, layers }) : i18n.tf(key, { n }));
   // Trial ids marked found before stage progress existed become complete trials (js/trials.js).
   const trialStages = stageCounts(markers);
   const migrateTrials = (foundIds, trialProgress) => migrateFoundTrials(foundIds, trialProgress, trialStages);
@@ -220,11 +225,17 @@ if (!calibrated) {
   }
 
   const layers = createLayers({
-    L, map, markers, categories, calibration: cfg.calibration, nativeZoom: nz, i18n,
+    L, map, markers, entries, categories, calibration: cfg.calibration, nativeZoom: nz, i18n,
     isFound: (id) => found.has(id),
     onSetFound: setFound,
     trialDone: (id) => trials[id] ?? 0,
     onSetTrial: setTrial,
+    linkFor: (id) => markerLink(location.href, mapId, id),
+    // The address bar follows the open popup, without adding history entries (Back stays as it was).
+    onPopupOpen: (id) => history.replaceState(null, "", markerHash(mapId, id)),
+    onPopupClose: (id) => {
+      if (parseHash(location.hash).markerId === id) history.replaceState(null, "", mapHash(mapId));
+    },
   });
   const migrated = migrateTrials(found, trials);
   applyProgress(model, found, trials);
@@ -259,7 +270,7 @@ if (!calibrated) {
     link.download = `soul-land-map-progress-${backup.exportedAt.slice(0, 10)}.json`;
     link.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
-    sidebar.showMessage(i18n.tf("ui.exported", { n: countKnown(found) }));
+    sidebar.showMessage(progressMessage("ui.exported", progressOf(found, trials)));
   }
 
   async function importBackup(file) {
@@ -268,20 +279,29 @@ if (!calibrated) {
       sidebar.showMessage(t(`ui.importError.${result.error}`), true);
       return;
     }
-    const incoming = result.progress[mapId] ?? new Set();
-    if (!window.confirm(i18n.tf("ui.importConfirm", { current: countKnown(found), incoming: countKnown(incoming) }))) return;
+    // The backup's own trial ids are migrated first, so the confirmation counts them as layers.
+    const incoming = new Set(result.progress[mapId] ?? []);
+    const incomingTrials = { ...(result.trials[mapId] ?? {}) };
+    migrateTrials(incoming, incomingTrials);
+    const now = progressOf(found, trials);
+    const next = progressOf(incoming, incomingTrials);
+    const question = now.layers || next.layers
+      ? i18n.tf("ui.importConfirmLayers", {
+        current: now.markers, currentLayers: now.layers, incoming: next.markers, incomingLayers: next.layers,
+      })
+      : i18n.tf("ui.importConfirm", { current: now.markers, incoming: next.markers });
+    if (!window.confirm(question)) return;
     // Other maps' trial ids in their found set are migrated when that map is opened.
     for (const [id, ids] of Object.entries(result.progress)) {
       if (id === mapId || !maps[id]) continue;
       saveProgress(id, ids);
       saveTrials(id, result.trials[id] ?? {});
     }
-    found = new Set(incoming);
-    trials = { ...(result.trials[mapId] ?? {}) };
-    migrateTrials(found, trials);
+    found = incoming;
+    trials = incomingTrials;
     persist();
     refreshProgress();
-    sidebar.showMessage(i18n.tf("ui.imported", { n: countKnown(found) }));
+    sidebar.showMessage(progressMessage("ui.imported", progressOf(found, trials)));
   }
 
   const sidebar = createSidebar({
@@ -307,6 +327,27 @@ if (!calibrated) {
     onImport: importBackup,
   });
   if (migrated) persist();
+
+  // Opens the marker of a deep link, showing its type again if it was hidden. An unknown id (e.g. a
+  // marker removed from the data) leaves just the map, and the address bar drops it.
+  function openLinkedMarker(markerId) {
+    const type = layers.typeOf(markerId);
+    if (!type) {
+      map.closePopup();
+      history.replaceState(null, "", mapHash(mapId));
+      return;
+    }
+    if (hidden.has(type)) setTypes([type], true);
+    layers.openMarker(markerId);
+  }
+  if (link.markerId) openLinkedMarker(link.markerId);
+  // A hash typed or pasted into the address bar: another map reloads the page, a marker opens.
+  window.addEventListener("hashchange", () => {
+    const next = parseHash(location.hash);
+    if (next.mapId && next.mapId !== mapId && maps[next.mapId]) location.reload();
+    else if (next.markerId) openLinkedMarker(next.markerId);
+    else map.closePopup();
+  });
   map.on("click", () => {
     layers.highlight(null);
     closeDrawerIfNarrow();

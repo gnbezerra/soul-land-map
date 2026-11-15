@@ -34,7 +34,7 @@ the obligation of listing all of them at launch.
 ```text
 index.html
 favicon.svg, favicon.ico, apple-touch-icon.png   site icon (the .ico and .png from tools/make_favicon.py)
-js/            ES modules: app, layers, sidebar, util (UI); model, trials, storage, i18n, geo (pure)
+js/            ES modules: app, layers, sidebar, util (UI); model, trials, exploration, popup, links, storage, i18n, geo (pure)
 vendor/leaflet Leaflet 1.9.4 (committed, with its LICENSE)
 css/
 icons/         only the icons actually used (not created yet)
@@ -92,7 +92,9 @@ Normal chests are partitioned into entries, so `entry` is mandatory for `chest_n
 Nuoding: 20 normal-chest sets (sum 264), 16 decryption chests (4 cooperative, 6 Pillar of Empty Path, 6 Coffers,
 each an entry of size 1), 6 crystal sets (sum 28), 5 encounters, 2 "Other" entries (Light Up! Teleport 6, Enjoy
 the Scenery 4). Divine Trials are not in the game's list and have no entry. Tags: `grappling_hook`,
-`purple_demon_eye`, `guarded`, `hidden`, `ghostly_trace` (a Tang Sect skill); filtering by tag is post-MVP but the data carries it. A marker may add
+`purple_demon_eye`, `guarded`, `hidden`, `ghostly_trace` (a Tang Sect skill); from Suotuo on, `poison_seal` and `fire_seal`
+(chests in green gas or on fire, opened only with the Tang Sect skill Xuanyu Hand, level 1 for poison and 2 for fire:
+the tag is the seal the player sees, and its hint names the skill level). Filtering by tag is post-MVP. A marker may add
 its own tags on top of its entry's (e.g. one Tang Sect Chest Two chest also needs the Grappling Hook); its
 effective tags are the union. The sidebar shows entry tags; the popup shows the effective tags of the marker.
 
@@ -260,11 +262,12 @@ Mobile (< 700 px): the sidebar is a drawer that starts closed; `100dvh`; `pointe
 targets (≥ 44 px). Planned: popup as bottom sheet.
 
 Popup: title, type, description, note, type-specific fields, "found" button (or the layer list on Divine
-Trials, 4.6), coordinates; planned: tags, rewards with icons, copy-link, howto behind a "show solution" button.
+Trials, 4.6), effective tags, howto behind a "show solution" button, coordinates and a copy-link button;
+planned: rewards with icons.
 Popups open below the zoom buttons and scroll inside on short screens.
 
 Deep link by simple hash, `#nuoding/nuoding-0142` (only a bare `#name` works on GitHub Pages; no routes or
-query strings). Not implemented yet.
+query strings). The address bar follows the open popup (history.replaceState, so Back is unaffected).
 
 ## 8. Data pipeline and validation
 
@@ -345,11 +348,10 @@ Open: final marker size/style per zoom (depends on real icons); official Chinese
 - Divine Trials: pipeline and UI done (4.6): layer list and progress in the popup, badge, counters per layer
   (65 in Nuoding). The build prints the stage sum but does not check it against the game counter (not stored
   anywhere yet). Most combat stages have no recommended CP yet. Stage rewards wait for items (4.8).
-- Marker texts: `note` is shown in the popup; `howto` is built and validated but not shown yet.
-- Tags: carried by entries and markers in the data; not shown or filterable on the site yet.
-- Not yet: items/loot/rewards, howto button, tags on the site,
-  `links` in the UI, the contract-consumed warning on `chest_contract`, deep links, copy-link, bottom-sheet
-  popup, pillar line for `chest_challenge`, species filter, real icons,
-  other regions.
+- Popup extras done: `note` always shown and `howto` behind "show solution"; effective tags in the popup (not
+  in the sidebar nor filterable yet); contract name and contract-consumed warning; pillar pin and dashed line
+  for `chest_challenge`, with "show on map" for when the popup covers the pillar; deep links and copy-link.
+- Not yet: items/loot/rewards, tags in the sidebar, `links` in the UI, bottom-sheet popup, species filter,
+  real icons, other regions.
 - Backup contains `progress` and `trials` (no settings).
 - Entry order follows the CSV row order, not alphabetical.

@@ -24,6 +24,8 @@ import { extname, join, normalize, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildModel } from "../js/model.js";
 import { gameToPixel } from "../js/geo.js";
+import { loadI18n } from "../js/i18n.js";
+import { markerTitle, effectiveTags } from "../js/popup.js";
 
 const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const MAP = "nuoding";
@@ -51,6 +53,14 @@ const puzzle = trials.find((m) => m.subtype === "puzzle");
 const topTrial = [...trials].sort((a, b) => b.y - a.y)[0]; // nearest the top edge (game y grows upwards)
 const chest = markers.find((m) => m.type === "chest_normal");
 const nameOf = (m) => markerNames[m.id]?.name;
+// The site's English texts, loaded from disk the way the page loads them.
+const i18nEn = await loadI18n("en", MAP, async (url, fallback) => (existsSync(join(ROOT, url)) ? json(url) : fallback));
+const entriesData = json(`data/entries/${MAP}.json`);
+const withHowto = markers.find((m) => markerNames[m.id]?.howto);
+const tagged = markers.filter((m) => effectiveTags(m, entriesData).length).sort((a, b) =>
+  effectiveTags(b, entriesData).length - effectiveTags(a, entriesData).length)[0];
+const contractChest = markers.find((m) => m.type === "chest_contract");
+const pillarChest = markers.find((m) => m.pillar);
 const mapCfg = json("data/maps.json")[MAP];
 // Image pixel of every icon: encounters with several points draw one icon per point.
 const iconPixels = markers.flatMap((m) => (m.points ?? [m]).map((p) => gameToPixel(mapCfg.calibration, p.x, p.y)));
@@ -124,6 +134,7 @@ await new Promise((r) => ws.addEventListener("open", r));
 let nextId = 0;
 const pending = new Map();
 const pageErrors = [];
+let lastDialog = null; // text of the last confirm() the page showed (accepted automatically)
 ws.addEventListener("message", (event) => {
   const m = JSON.parse(event.data);
   if (m.id && pending.has(m.id)) {
@@ -140,7 +151,10 @@ ws.addEventListener("message", (event) => {
     pageErrors.push(`${m.params.response.status} ${m.params.response.url}`);
   }
   if (m.method === "Network.loadingFailed" && !m.params.canceled) pageErrors.push(`failed: ${m.params.errorText}`);
-  if (m.method === "Page.javascriptDialogOpening") send("Page.handleJavaScriptDialog", { accept: true });
+  if (m.method === "Page.javascriptDialogOpening") {
+    lastDialog = m.params.message;
+    send("Page.handleJavaScriptDialog", { accept: true });
+  }
 });
 function send(method, params = {}) {
   return new Promise((r) => {
@@ -376,6 +390,71 @@ try {
     });
   }
 
+  // Opens a marker through the address bar, like a pasted link (the page handles hashchange).
+  async function openByHash(m) {
+    if (await ev(`!!document.querySelector(".leaflet-popup")`)) await closePopup();
+    await ev(`location.hash = ${JSON.stringify(`#${MAP}/${m.id}`)}`);
+    return until(`${POPUP}?.querySelector("strong")?.textContent`, `popup of ${m.id}`);
+  }
+  const hash = () => ev(`location.hash`);
+
+  await check("deep link: opens the marker on load, and the address follows the open popup", async () => {
+    await freshLoad("?lang=pt");
+    await load(`?lang=en#${MAP}/${chest.id}`);
+    equal(await until(`${POPUP}?.querySelector("strong")?.textContent`, "the linked popup"), markerTitle(chest, i18nEn), "title");
+    equal(await hash(), `#${MAP}/${chest.id}`, "hash while open");
+    await closePopup();
+    equal(await hash(), `#${MAP}`, "hash after closing");
+    await openIcon(ICONS, 5);
+    if (!/^#[^/]+\/./.test(await hash())) throw new Error(`hash after opening an icon: ${await hash()}`);
+    await ev(`location.hash = "#${MAP}/${MAP}-9999"`);
+    await until(`location.hash === "#${MAP}"`, "an unknown id to be dropped");
+    await until(`!document.querySelector(".leaflet-popup")`, "the open popup to close (it fades out)");
+  });
+
+  await check("popup extras: tags, solution, contract warning, pillar line, copy link", async () => {
+    await freshLoad("?lang=en");
+    equal(await openByHash(tagged), markerTitle(tagged, i18nEn), "tagged title");
+    equal(await ev(`[...${POPUP}.querySelectorAll(".mk-tag")].map((e) => e.textContent)`),
+      effectiveTags(tagged, entriesData).map((tag) => i18nEn.t(`tag.${tag}`)), "tags");
+    await shot("popup-tags");
+
+    await openByHash(withHowto);
+    const howto = () => ev(`(() => { const b = ${POPUP}.querySelector(".howto-btn"), p = ${POPUP}.querySelector(".howto");
+      return { expanded: b.getAttribute("aria-expanded"), visible: !p.hidden && p.offsetHeight > 0, text: p.textContent }; })()`);
+    equal(await howto(), { expanded: "false", visible: false, text: markerNames[withHowto.id].howto }, "solution hidden");
+    await ev(`${POPUP}.querySelector(".howto-btn").click()`);
+    equal((await howto()).visible, true, "solution after the click");
+    await shot("popup-solution");
+
+    await openByHash(contractChest);
+    equal(await ev(`[...${POPUP}.querySelectorAll("dd")].map((e) => e.textContent)`),
+      [i18nEn.t(`contract.${contractChest.contract}`)], "contract name");
+    equal(await ev(`${POPUP}.querySelector(".warn")?.textContent`), `⚠ ${i18nEn.t("popup.contractWarning")}`, "warning");
+    await shot("popup-contract");
+
+    await openByHash(pillarChest);
+    equal(await ev(`[document.querySelectorAll(".pillar-line").length, document.querySelectorAll(".pillar-pin").length]`), [1, 1], "pillar shown");
+    await ev(`navigator.clipboard.writeText = async (text) => { window.__copied = text; }`);
+    await ev(`${POPUP}.querySelector(".copy-link").click()`);
+    equal(await until(`window.__copied`, "the copied link"), `${BASE}#${MAP}/${pillarChest.id}`, "copied link");
+    equal(await ev(`${POPUP}.querySelector(".copy-link").textContent`), `✓ ${i18nEn.t("popup.linkCopied")}`, "button after copying");
+    await wait(700); // autopan
+    await shot("popup-pillar");
+    await closePopup();
+    equal(await ev(`document.querySelectorAll(".pillar-line, .pillar-pin").length`), 0, "pillar hidden");
+
+    // "Show on map": the popup closes and the pillar stays until the next click on the map.
+    await openByHash(pillarChest);
+    await ev(`${POPUP}.querySelector(".show-on-map").click()`);
+    await until(`!document.querySelector(".leaflet-popup")`, "the popup to close");
+    equal(await ev(`[document.querySelectorAll(".pillar-line").length, document.querySelectorAll(".pillar-pin").length]`), [1, 1], "pillar kept");
+    await wait(400); // fitBounds animation
+    await shot("popup-pillar-shown");
+    await ev(`document.getElementById("map").dispatchEvent(new MouseEvent("click", { bubbles: true, clientX: 700, clientY: 400 }))`);
+    equal(await ev(`document.querySelectorAll(".pillar-line, .pillar-pin").length`), 0, "pillar after a map click");
+  });
+
   await check("found button: counts, saves and survives a reload", async () => {
     await freshLoad("?lang=en");
     const icons = `${ICONS}.filter((e) => e.querySelector(".mk-dot")?.style.getPropertyValue("--c") === "${categories.types.chest_normal.color}")`;
@@ -443,9 +522,13 @@ try {
     const doc = await send("DOM.getDocument");
     const input = await send("DOM.querySelector", { nodeId: doc.result.root.nodeId, selector: "#sidebar input[type=file]" });
     await send("DOM.setFileInputFiles", { nodeId: input.result.nodeId, files: [file] });
-    await until(`document.querySelector("#sidebar .message")?.textContent`, "the import message");
+    const message = await until(`document.querySelector("#sidebar .message")?.textContent`, "the import message");
     equal(await stored("trials"), { [longTrial.id]: 2, [puzzle.id]: puzzle.stages.length }, "trials");
     equal(await stored("progress"), [chest.id], "found ids");
+    // The messages count trial layers too, the backup's old trial ids included.
+    const layers = 2 + puzzle.stages.length;
+    equal(lastDialog, i18nEn.tf("ui.importConfirmLayers", { current: 0, currentLayers: 0, incoming: 1, incomingLayers: layers }), "confirmation");
+    equal(message, i18nEn.tf("ui.importedLayers", { n: 1, layers }), "message");
   });
 
   const layouts = [["desktop", 1280, 800, false], ["mobile", 390, 844, true], ["landscape", 844, 390, true]];

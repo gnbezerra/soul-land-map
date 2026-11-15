@@ -22,8 +22,9 @@ Working, and verified by the owner in a real browser (Chrome, DevTools mobile em
 - Sidebar: groups/types with checkboxes and live `found/total` counters, entry lists with frame-and-highlight,
   exploration value in points with reward milestones and the rules behind an (i) button, hide-found toggle,
   backup export/import.
-- Popups with title (own name, else entry name, else type), type, description, note, extra fields and a
-  "found" button. Found = gray dot with a check. Encounters with several points show a marker on each point.
+- Popups with title (own name, else entry name, else type), type, tags, description, note, "show solution"
+  (howto), extra fields (contract names and warning, pillar with a dashed line and "show on map") and a
+  "found" button; deep links (`#map/marker`, the address bar follows the open popup) and copy-link. Found = gray dot with a check. Encounters with several points show a marker on each point.
 - Divine Trials: popup layer list (stars, min. level, recommended rating or "—"), click-to-set progress,
   "mark all", `4/10` badge on started trials, counters per layer (Divine Trials 65; 10 points per layer in the exploration value).
 - Progress per map in localStorage (found ids, layers done per trial), in the backup too; settings
@@ -34,7 +35,7 @@ Working, and verified by the owner in a real browser (Chrome, DevTools mobile em
 How it was tested: early work was built in a sandbox without network, against a minimal Leaflet stub, with node
 unit tests for `model.js` and `storage.js`; real-Leaflet behavior was verified manually by the owner. Since
 then, changes are checked on the owner's machine with the unit tests in `tests/`
-(`node --test tests/`: model, storage, geo, i18n and trials, made-up data), the pipeline tests
+(`node --test tests/`: every pure module in `js/`, made-up data), the pipeline tests
 (`python -m unittest discover -s tests`: `tools/build_data.py` run on made-up CSVs, every error and warning,
 outputs and deterministic rebuilds) and `node tests/browser.mjs`, a dependency-free
 headless Chrome test over the DevTools protocol (real vendored Leaflet): it checks that every icon sits on
@@ -51,9 +52,8 @@ zoom are not covered (synthetic input does not zoom headless Chrome).
    `data/categories.json`.
    Then settle marker sizes per zoom (SPEC §12): at the whole-map zoom the markers overlap heavily (some
    books sit under chests), especially on mobile.
-2. **Popup extras**: "show solution" button for `howto` (texts already in `marker_texts.csv`), tags in the
-   popup and sidebar (data already carried), `links` between related markers, the contract-consumed warning
-   on `chest_contract`, pillar line for `chest_challenge`, deep links, copy-link, bottom-sheet popup on mobile.
+2. **More popup and sidebar extras**: tags in the sidebar (and later a tag filter), `links` between related
+   markers (none in the data yet), bottom-sheet popup on mobile (after the real icons).
 3. **Rewards/items/loot** (SPEC §4.8), popup rewards with icons, including the Divine Trial layer rewards.
 4. **Other regions**, one at a time, each needing a map image, tiles, calibration points (~10), `maps.json`
    entry, and CSVs. Region ids/names still to be fixed with the owner. Suotuo first (Nuoding already has a
@@ -77,8 +77,7 @@ zoom are not covered (synthetic input does not zoom headless Chrome).
 - Unused leftover PT/ZH strings were cut off in the game UI ("Rec.", "Adicionar"); do not rely on them.
 - The official PT texts are translated from Chinese and are not consistent with the English names; keep them
   as the game shows them (SPEC §5).
-- Backup carries `progress` and `trials`; settings are not included. The export/import messages count found
-  markers only, not trial layers.
+- Backup carries `progress` and `trials`; settings are not included.
 - Mixed Area's 240 exploration points reconcile only if a seed counts +5 (unconfirmed). Seeds are in no
   `explorationRules` entry until it is: add `seed` to the chests rule (or a rule of its own) once confirmed.
 - Marker scale tunables: `MARKER_SHRINK_PER_ZOOM` 0.25, `MARKER_MIN_SCALE` 0.5 in `js/layers.js`; the glyph is
