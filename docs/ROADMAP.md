@@ -33,7 +33,7 @@ Working, and verified by the owner in a real browser (Chrome, DevTools mobile em
 How it was tested: early work was built in a sandbox without network, against a minimal Leaflet stub, with node
 unit tests for `model.js` and `storage.js`; real-Leaflet behavior was verified manually by the owner. Since
 then, changes are checked on the owner's machine with the unit tests in `tests/`
-(`node --test tests/`: model, storage, geo and i18n, made-up data), the pipeline tests
+(`node --test tests/`: model, storage, geo, i18n and trials, made-up data), the pipeline tests
 (`python -m unittest discover -s tests`: `tools/build_data.py` run on made-up CSVs, every error and warning,
 outputs and deterministic rebuilds) and `node tests/browser.mjs`, a dependency-free
 headless Chrome test over the DevTools protocol (real vendored Leaflet): it checks that every icon sits on

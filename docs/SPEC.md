@@ -34,7 +34,7 @@ the obligation of listing all of them at launch.
 ```text
 index.html
 favicon.svg, favicon.ico, apple-touch-icon.png   site icon (the .ico and .png from tools/make_favicon.py)
-js/            ES modules: app, layers, model, sidebar, storage, i18n, geo, util
+js/            ES modules: app, layers, sidebar, util (UI); model, trials, storage, i18n, geo (pure)
 vendor/leaflet Leaflet 1.9.4 (committed, with its LICENSE)
 css/
 icons/         only the icons actually used (not created yet)

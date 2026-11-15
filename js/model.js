@@ -1,16 +1,10 @@
 // Builds the filter/sidebar model from categories, entries and markers.
 // Pure data logic: no DOM and no Leaflet, so it is easy to test.
+import { stageCount, stagesDone } from "./trials.js";
 
 // Counter text for a type, entry or group: found / total.
 export function formatCount(found, total) {
   return `${found}/${total}`;
-}
-
-// Divine Trial layers are played in order, so progress is the number of layers done. Clicking a layer
-// that is not done marks it and the ones before it; clicking a done layer unmarks it and the ones after.
-//   nextTrialProgress(8, 5) -> 4      nextTrialProgress(4, 7) -> 7
-export function nextTrialProgress(done, clicked) {
-  return clicked <= done ? clicked - 1 : clicked;
 }
 
 export function buildModel(categories, entries, markers) {
@@ -44,7 +38,7 @@ export function buildModel(categories, entries, markers) {
   for (const m of markers) {
     const type = getType(m.type);
     if (!type) continue;
-    const stages = m.stages?.length ?? 0;
+    const stages = stageCount(m);
     type.loaded += stages || 1;
     type.markerIds.push(m.id);
     if (stages) type.stagesById.set(m.id, stages);
@@ -78,7 +72,7 @@ export function applyProgress(model, foundIds, trials) {
   for (const type of model.types.values()) {
     const done = (id) => {
       const stages = type.stagesById.get(id);
-      if (stages) return Math.min(trials[id] ?? 0, stages);
+      if (stages) return stagesDone(trials[id], stages);
       return foundIds.has(id) ? 1 : 0;
     };
     const countFound = (ids) => ids.reduce((n, id) => n + done(id), 0);

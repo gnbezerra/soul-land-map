@@ -2,7 +2,7 @@
 // Uses small made-up data, so editing the real CSVs never breaks them.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { buildModel, applyProgress, formatCount, nextTrialProgress } from "../js/model.js";
+import { buildModel, applyProgress, formatCount } from "../js/model.js";
 
 const categories = {
   groups: [
@@ -76,16 +76,6 @@ test("applyProgress recomputes from scratch", () => {
   applyProgress(model, new Set(["m-0001"]), { "m-0004": 2 });
   applyProgress(model, new Set(), {});
   assert.deepEqual(model.exploration, { found: 0, total: 18 });
-});
-
-test("nextTrialProgress: a layer not done marks up to it, a done layer unmarks from it", () => {
-  assert.equal(nextTrialProgress(0, 1), 1);
-  assert.equal(nextTrialProgress(4, 7), 7);
-  assert.equal(nextTrialProgress(8, 9), 9);
-  assert.equal(nextTrialProgress(8, 5), 4, "the clicked done layer and the later ones are unmarked");
-  assert.equal(nextTrialProgress(8, 8), 7);
-  assert.equal(nextTrialProgress(8, 1), 0);
-  assert.equal(nextTrialProgress(10, 10), 9);
 });
 
 test("formatCount", () => {

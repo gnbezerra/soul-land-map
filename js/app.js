@@ -5,6 +5,7 @@ import {
 } from "./storage.js";
 import { detectLang, loadI18n, loadLanguages } from "./i18n.js";
 import { buildModel, applyProgress } from "./model.js";
+import { stageCounts, setTrialProgress, migrateFoundTrials } from "./trials.js";
 import { createLayers } from "./layers.js";
 import { createSidebar } from "./sidebar.js";
 
@@ -187,20 +188,9 @@ if (!calibrated) {
   // Counts in messages only include markers that exist in the data (backups may carry stale ids).
   const knownIds = new Set(markers.map((m) => m.id));
   const countKnown = (ids) => [...ids].filter((id) => knownIds.has(id)).length;
-  const stagesById = new Map(markers.filter((m) => m.stages?.length).map((m) => [m.id, m.stages.length]));
-
-  // Before stage progress existed, a trial could only be marked found as a whole: a trial id in
-  // the found set means all its stages are done. Moves those ids into `trials`.
-  function migrateTrials(foundIds, trialProgress) {
-    let changed = false;
-    for (const [id, stages] of stagesById) {
-      if (!foundIds.has(id)) continue;
-      foundIds.delete(id);
-      trialProgress[id] = Math.max(trialProgress[id] ?? 0, stages);
-      changed = true;
-    }
-    return changed;
-  }
+  // Trial ids marked found before stage progress existed become complete trials (js/trials.js).
+  const trialStages = stageCounts(markers);
+  const migrateTrials = (foundIds, trialProgress) => migrateFoundTrials(foundIds, trialProgress, trialStages);
 
   function persist() {
     const savedFound = saveProgress(mapId, found);
@@ -224,8 +214,7 @@ if (!calibrated) {
   }
 
   function setTrial(markerId, stagesDone) {
-    if (stagesDone > 0) trials[markerId] = stagesDone;
-    else delete trials[markerId];
+    setTrialProgress(trials, markerId, stagesDone);
     persist();
     refreshProgress(markerId);
   }

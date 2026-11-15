@@ -1,5 +1,7 @@
 import { gameToPixel, pixelToLatLng } from "./geo.js";
-import { nextTrialProgress } from "./model.js";
+import {
+  stageCount, stagesDone, isTrialComplete, isTrialStarted, nextTrialProgress, markAllProgress,
+} from "./trials.js";
 
 // Markers shrink when zoomed out so they do not pile up. Full size from the native zoom up;
 // each level below it removes MARKER_SHRINK_PER_ZOOM, down to MARKER_MIN_SCALE.
@@ -35,9 +37,9 @@ export function createLayers({ L, map, markers, categories, calibration, nativeZ
   map.on("zoom zoomend", updateScale);
   updateScale();
 
-  const stagesOf = (m) => m.stages?.length ?? 0;
-  const doneOf = (m) => Math.min(trialDone(m.id), stagesOf(m));
-  const isComplete = (m) => (stagesOf(m) ? doneOf(m) === stagesOf(m) : isFound(m.id));
+  const stagesOf = stageCount;
+  const doneOf = (m) => stagesDone(trialDone(m.id), stagesOf(m));
+  const isComplete = (m) => (stagesOf(m) ? isTrialComplete(doneOf(m), stagesOf(m)) : isFound(m.id));
 
   // Applies highlight, found, the trial badge and "hide found" to one marker.
   function applyState(record) {
@@ -47,7 +49,6 @@ export function createLayers({ L, map, markers, categories, calibration, nativeZ
       el.classList.toggle("hl", record.entry != null && record.entry === highlighted);
       el.classList.toggle("found", found);
       if (stagesOf(record.m)) {
-        // Badge with the stages done, only while the trial is started but not complete.
         let badge = el.querySelector(".mk-badge");
         if (!badge) {
           badge = document.createElement("span");
@@ -56,7 +57,7 @@ export function createLayers({ L, map, markers, categories, calibration, nativeZ
         }
         const done = doneOf(record.m);
         badge.textContent = `${done}/${stagesOf(record.m)}`;
-        badge.hidden = done === 0 || found;
+        badge.hidden = !isTrialStarted(done, stagesOf(record.m));
       }
     }
     record.marker.setZIndexOffset(record.entry != null && record.entry === highlighted ? 1000 : found ? -500 : 0);
@@ -158,7 +159,7 @@ export function createLayers({ L, map, markers, categories, calibration, nativeZ
     return root;
   }
 
-  // Divine Trial: progress, stage list and a "mark all" button (click rule: nextTrialProgress).
+  // Divine Trial: progress, stage list and a "mark all" button (rules in js/trials.js).
   // The elements are built once and updated in place, so keyboard focus stays where it is.
   function makeTrialSection(m) {
     const total = stagesOf(m);
@@ -221,7 +222,7 @@ export function createLayers({ L, map, markers, categories, calibration, nativeZ
     const hint = el("p", "trial-hint", i18n.t("trial.hint"));
     const button = el("button", "found-btn");
     button.type = "button";
-    button.addEventListener("click", () => set(doneOf(m) === total ? 0 : total));
+    button.addEventListener("click", () => set(markAllProgress(doneOf(m), total)));
 
     function sync() {
       const done = doneOf(m);
