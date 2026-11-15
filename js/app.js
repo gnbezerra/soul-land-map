@@ -236,6 +236,7 @@ if (!calibrated) {
     onPopupClose: (id) => {
       if (parseHash(location.hash).markerId === id) history.replaceState(null, "", mapHash(mapId));
     },
+    sheetHost: document.getElementById("map-wrap"),
   });
   const migrated = migrateTrials(found, trials);
   applyProgress(model, found, trials);

@@ -3,6 +3,7 @@ import {
   stageCount, stagesDone, isTrialComplete, isTrialStarted, nextTrialProgress, markAllProgress,
 } from "./trials.js";
 import { markerTitle, effectiveTags, popupFields, consumesContract } from "./popup.js";
+import { createSheet } from "./sheet.js";
 
 // Markers shrink when zoomed out so they do not pile up. Full size from the native zoom up;
 // each level below it removes MARKER_SHRINK_PER_ZOOM, down to MARKER_MIN_SCALE.
@@ -21,10 +22,11 @@ const TIER_Z = { major: 250 };
 //   isFound(markerId) -> boolean          onSetFound(markerId, found)
 //   trialDone(markerId) -> stages done    onSetTrial(markerId, stagesDone)   (Divine Trials)
 //   linkFor(markerId) -> link to share    onPopupOpen(markerId)   onPopupClose(markerId)
-// A Divine Trial counts as found once all its stages are done.
+// A Divine Trial counts as found once all its stages are done. On narrow screens popups open as a bottom
+// sheet inside `sheetHost` (js/sheet.js), and the marker they belong to gets a ring.
 export function createLayers({
   L, map, markers, entries, categories, calibration, nativeZoom, i18n, isFound, onSetFound, trialDone, onSetTrial,
-  linkFor, onPopupOpen, onPopupClose,
+  linkFor, onPopupOpen, onPopupClose, sheetHost,
 }) {
   const layerByType = new Map();
   const recordsByEntry = new Map();
@@ -32,6 +34,9 @@ export function createLayers({
   const container = map.getContainer();
   let highlighted = null;
   let hideFound = false;
+  // The record whose popup is open as a sheet (its marker has a ring).
+  let selected = null;
+  const sheet = createSheet({ map, host: sheetHost });
   // Hover tooltips only make sense with a mouse; on touch screens a tap opens the popup.
   const canHover = window.matchMedia("(hover: hover)").matches;
 
@@ -53,13 +58,14 @@ export function createLayers({
   const doneOf = (m) => stagesDone(trialDone(m.id), stagesOf(m));
   const isComplete = (m) => (stagesOf(m) ? isTrialComplete(doneOf(m), stagesOf(m)) : isFound(m.id));
 
-  // Applies highlight, found, the trial badge and "hide found" to one marker.
+  // Applies highlight, selection, found, the trial badge and "hide found" to one marker.
   function applyState(record) {
     const el = record.marker.getElement();
     const found = isComplete(record.m);
     if (el) {
       el.classList.toggle("hl", record.entry != null && record.entry === highlighted);
       el.classList.toggle("found", found);
+      el.classList.toggle("selected", record === selected);
       if (stagesOf(record.m)) {
         let badge = el.querySelector(".mk-badge");
         if (!badge) {
@@ -72,8 +78,9 @@ export function createLayers({
         badge.hidden = !isTrialStarted(done, stagesOf(record.m));
       }
     }
-    record.marker.setZIndexOffset(record.entry != null && record.entry === highlighted ? 1000 : found ? -500
-      : TIER_Z[categories.types[record.m.type].tier] ?? 0);
+    record.marker.setZIndexOffset(record === selected ? 2000
+      : record.entry != null && record.entry === highlighted ? 1000 : found ? -500
+        : TIER_Z[categories.types[record.m.type].tier] ?? 0);
     const shouldShow = !(hideFound && found);
     if (shouldShow && !record.group.hasLayer(record.marker)) record.group.addLayer(record.marker);
     else if (!shouldShow && record.group.hasLayer(record.marker)) record.group.removeLayer(record.marker);
@@ -222,9 +229,12 @@ export function createLayers({
     }
     if (consumesContract(m)) root.append(el("div", "warn", `⚠ ${i18n.t("popup.contractWarning")}`));
 
-    const footer = makeFooter(m, point);
+    // The main button and the footer stay in view at the bottom of the sheet (css/style.css, `.mk-actions`).
+    const actions = el("div", "mk-actions");
     if (stagesOf(m)) {
-      root.append(...makeTrialSection(m), footer);
+      const section = makeTrialSection(m);
+      actions.append(section.pop(), makeFooter(m, point));
+      root.append(...section, actions);
       return root;
     }
 
@@ -242,7 +252,8 @@ export function createLayers({
       sync();
     });
     sync();
-    root.append(button, footer);
+    actions.append(button, makeFooter(m, point));
+    root.append(actions);
     return root;
   }
 
@@ -362,11 +373,14 @@ export function createLayers({
     for (const p of points) {
       const marker = L.marker(latLngOf(p.x, p.y), { icon: makeIcon(m, meta) });
       if (canHover) marker.bindTooltip(makeTooltip(m, p));
-      // The larger top padding keeps the popup below the zoom buttons, which are drawn above it.
-      marker.bindPopup(() => makePopup(m, p), {
+      // The larger top padding keeps the popup below the zoom buttons, which are drawn above it. A sheet
+      // frames its marker itself, so autoPan follows the screen width at the moment the popup opens.
+      const popup = L.popup({
         className: "mk-popup-wrap", closeButton: true,
         autoPanPaddingTopLeft: [24, 110], autoPanPaddingBottomRight: [24, 24],
       });
+      Object.defineProperty(popup.options, "autoPan", { get: () => !sheet.active() });
+      marker.bindPopup(popup.setContent(() => makePopup(m, p)));
       const record = { id: m.id, m, marker, group, entry: m.entry ?? null };
       marker.on("add", () => applyState(record));
       // A challenge chest's pillar (where the jumping puzzle starts): a pin tied to the chest by a dashed
@@ -381,13 +395,23 @@ export function createLayers({
         }),
       ]);
       if (pillar && !pillars.has(m.id)) pillars.set(m.id, { layer: pillar, marker });
-      marker.on("popupopen", () => {
+      marker.on("popupopen", (e) => {
         unpinPillar();
         pillar?.addTo(map);
+        if (sheet.active()) {
+          selected = record;
+          applyState(record);
+          sheet.show(e.popup, m.pillar ? [marker.getLatLng(), latLngOf(m.pillar.x, m.pillar.y)] : [marker.getLatLng()]);
+        }
         onPopupOpen?.(m.id);
       });
       marker.on("popupclose", () => {
         if (pillar !== pinnedPillar) pillar?.remove();
+        if (selected === record) {
+          selected = null;
+          applyState(record);
+          sheet.hide();
+        }
         onPopupClose?.(m.id);
       });
       group.addLayer(marker);

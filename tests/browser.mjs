@@ -611,9 +611,76 @@ try {
       await freshLoad("?lang=pt");
       await openTrial(markerNamesPt[topTrial.id]?.name);
       await popupPlacement(name);
+      // Only the narrow layout (below 700 px wide) turns the popup into a bottom sheet.
+      equal(await ev(`!!document.querySelector(".leaflet-popup.mk-sheet")`), name === "mobile", "popup is a sheet");
       await shot(`${name}-pt-trial`);
     });
   }
+
+  // Where the open sheet, the selected marker and the given map layers (e.g. the pillar pin) are, in px
+  // relative to the map's wrapper.
+  const sheetLayout = (extra = "null") => ev(`(() => {
+    const wrap = document.getElementById("map-wrap").getBoundingClientRect();
+    const sheet = document.querySelector(".leaflet-popup.mk-sheet");
+    const center = (e) => { const b = e.getBoundingClientRect(); return [b.left + b.width / 2 - wrap.left, b.top + b.height / 2 - wrap.top]; };
+    const s = sheet?.getBoundingClientRect();
+    const button = sheet?.querySelector(".mk-actions .found-btn")?.getBoundingClientRect();
+    const extra = ${extra};
+    return {
+      width: wrap.width, height: wrap.height, inWrap: sheet?.parentElement?.id === "map-wrap",
+      sheet: s && { top: s.top - wrap.top, bottom: wrap.bottom - s.bottom, left: s.left - wrap.left, right: wrap.right - s.right },
+      button: button && { top: button.top - wrap.top, bottom: wrap.bottom - button.bottom },
+      selected: [...document.querySelectorAll(".leaflet-marker-icon.selected")].map(center),
+      extra: extra ? center(extra) : null,
+      open: document.getElementById("map-wrap").classList.contains("sheet-open"),
+    };
+  })()`);
+  // A point must sit in the map area left above the sheet.
+  function aboveSheet(layout, [x, y], label) {
+    if (!(x >= 0 && x <= layout.width && y >= 0 && y < layout.sheet.top)) {
+      throw new Error(`${label} at ${x.toFixed(0)}, ${y.toFixed(0)} is not above the sheet (top ${layout.sheet.top.toFixed(0)})`);
+    }
+  }
+
+  await check("mobile: the popup is a bottom sheet; its marker has a ring and stays in view", async () => {
+    await viewport(390, 844, true);
+    await freshLoad("?lang=en");
+    await openTrial(nameOf(longTrial));
+    await wait(700); // the pan animation
+    const r = await sheetLayout();
+    if (!r.inWrap) throw new Error("the sheet is not in #map-wrap");
+    for (const side of ["bottom", "left", "right"]) {
+      if (Math.abs(r.sheet[side]) > 1) throw new Error(`the sheet is ${r.sheet[side]} px off the ${side} edge`);
+    }
+    if (r.sheet.top < r.height / 2 - 1) throw new Error(`the sheet is taller than half the map (top ${r.sheet.top})`);
+    if (!(r.button && r.button.top >= r.sheet.top && r.button.bottom >= 0)) {
+      throw new Error(`the main button is not in view: ${JSON.stringify(r.button)}`);
+    }
+    equal(r.selected.length, 1, "selected markers");
+    aboveSheet(r, r.selected[0], "the trial");
+    equal(r.open, true, "readout hidden while the sheet is open");
+    // A layer click still works inside the sheet.
+    await ev(`${POPUP}.querySelectorAll(".trial-stage")[1].click()`);
+    equal((await trialPopup()).done, `2/${longTrial.stages.length}`, "layers done after a click in the sheet");
+    await closePopup();
+    const closed = await sheetLayout();
+    equal([closed.selected.length, closed.open], [0, false], "ring and sheet state after closing");
+    await shot("mobile-sheet-trial");
+  });
+
+  await check("mobile: a challenge chest's sheet frames the chest and its pillar above it", async () => {
+    await load(`?lang=pt#${MAP}/${pillarChest.id}`); // another query: a new hash alone would not reload
+    await until(`!!document.querySelector(".leaflet-popup.mk-sheet .mk-popup")`, "the sheet");
+    await wait(700);
+    const r = await sheetLayout(`document.querySelector(".pillar-pin")`);
+    equal(r.selected.length, 1, "selected markers");
+    aboveSheet(r, r.selected[0], "the chest");
+    if (!r.extra) throw new Error("no pillar pin on the map");
+    aboveSheet(r, r.extra, "the pillar");
+    await shot("mobile-sheet-pillar");
+    await closePopup();
+    await viewport(1280, 800, false);
+  });
 
   await check("no console errors or failed requests", async () => {
     // favicon and every file the site asked for loaded; nothing was logged as an error or warning

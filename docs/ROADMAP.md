@@ -34,7 +34,8 @@ Working, and verified by the owner in a real browser (Chrome, DevTools mobile em
 - Progress per map in localStorage (found ids, layers done per trial), in the backup too; settings
   (language, map, hidden types, hide-found) saved.
 - i18n: en/pt/zh UI, top-bar language selector, English fallback per key.
-- Responsive: drawer sidebar under 700 px, touch-sized targets, pinch zoom (markers hidden while pinching).
+- Responsive: drawer sidebar under 700 px, touch-sized targets, pinch zoom (markers hidden while pinching),
+  popups as a bottom sheet under 700 px with an orange ring on their marker (`js/sheet.js`).
 
 How it was tested: early work was built in a sandbox without network, against a minimal Leaflet stub, with node
 unit tests for `model.js` and `storage.js`; real-Leaflet behavior was verified manually by the owner. Since
@@ -45,7 +46,8 @@ outputs and deterministic rebuilds) and `node tests/browser.mjs`, a dependency-f
 headless Chrome test over the DevTools protocol (real vendored Leaflet): it checks that every icon sits on
 its image pixel (measured against the tiles, at two zooms), clicks every marker in en and pt,
 checks the found button, Divine Trial progress, reloads, migration, backup import, popup placement on
-desktop/mobile/landscape, that a pinch (through Leaflet's touch handler) hides the markers until it ends,
+desktop/mobile/landscape, the bottom sheet on mobile (edges, height, the marker and a pillar framed above it,
+the ring), that a pinch (through Leaflet's touch handler) hides the markers until it ends,
 and console errors, and can save screenshots. Real wheel and double-click zoom and the browser's native pinch
 are not covered (synthetic input does not zoom headless Chrome).
 
@@ -54,18 +56,16 @@ are not covered (synthetic input does not zoom headless Chrome).
 Order agreed with the owner on 2026-11-15: the next region comes before rewards, because a new map helps
 players more and rewards need a lot of data collected in-game.
 
-1. **Bottom-sheet popup on mobile.** On a phone the floating popup covers much of the map and sometimes its
-   own marker; a sheet at the bottom shows more text and keeps the map visible. Preview the options first.
-2. **Other regions**, one at a time, each needing a map image, tiles, calibration points (~10), `maps.json`
+1. **Other regions**, one at a time, each needing a map image, tiles, calibration points (~10), `maps.json`
    entry, and CSVs. Region ids/names still to be fixed with the owner. Suotuo first (Nuoding already has a
    portal to it); the site side (tiles, `maps.json`, pipeline and test changes) can start while the owner
    collects the data.
-3. **Tags in the sidebar**, then a tag filter (e.g. only the chests that need the grappling hook; the tags
+2. **Tags in the sidebar**, then a tag filter (e.g. only the chests that need the grappling hook; the tags
    are in the data already). Needs a preview. Later: `links` between related markers (none in the data yet).
-4. **Rewards/items/loot** (SPEC §4.8), popup rewards with icons, including the Divine Trial layer rewards.
-5. **Icon leftovers**, when they come up: sprites for `seed` (candidate `dt_icon_cz`), `mechanism` and `arena`
+3. **Rewards/items/loot** (SPEC §4.8), popup rewards with icons, including the Divine Trial layer rewards.
+4. **Icon leftovers**, when they come up: sprites for `seed` (candidate `dt_icon_cz`), `mechanism` and `arena`
    when those regions arrive; sharper major icons on 2x screens if the softness shows (see "Known gaps").
-6. Dragon Island (Combat/Safe toggle, species filter) last.
+5. Dragon Island (Combat/Safe toggle, species filter) last.
 
 ## Waiting on the owner
 
@@ -100,6 +100,14 @@ players more and rewards need a lot of data collected in-game.
 - Co-op chests show their number of players (the `players` field, 1 to 4; Nuoding has 1-player "tutorial"
   co-op chests). Challenge chests have no badge: the game has no sprite for the pillar (`dt_icon_sj` is the
   Asura Statue's).
+- The bottom sheet is Leaflet's popup element moved into `#map-wrap` (js/sheet.js). Leaflet keeps writing the
+  floating position inline (hence `!important` in `.mk-sheet`), and its `.leaflet-container`-scoped styles
+  (the close button) no longer apply there, so the sheet styles them itself. It has no grabber bar on
+  purpose: it cannot be dragged. If a Leaflet update breaks it, look there first. Tested in headless Chrome
+  (emulated phone) only, not on a real phone yet.
+- The "distinct titles" count the browser test prints for the every-marker check varies between runs (e.g.
+  274 to 285): a just-closed popup stays in the page while it fades out and is sometimes read instead. Only
+  the count is affected; the check itself looks at every title.
 - The browser test's zoomed-in placement check measures again for up to 3 s: right after a zoom Leaflet can
   still be swapping tile levels (it failed about one run in three before; settled, the icons were always on
   their pixel). If it fails again, look there first.

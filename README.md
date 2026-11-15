@@ -239,6 +239,12 @@ Warnings:
   backups still import); importing replaces the saved progress after a confirmation.
 - Popups pan into view even at the edges of the map (the pan limits are lifted while a popup is open), open
   below the zoom buttons, and scroll inside on short screens.
+- Below 700 px wide (where the sidebar becomes a drawer) a popup opens as a bottom sheet instead
+  (`js/sheet.js`): full width, at most half the map tall, its content scrolling inside while the main button
+  and the footer stay in view. The map frames the marker (and a challenge chest's pillar) in the area above
+  it, and the marker gets an orange ring. It closes with ✕ or a tap on the map. Crossing the 700 px
+  breakpoint (turning a phone) closes the open popup; a phone held sideways is wider than that and keeps the
+  floating popup.
 - Entry lists (for example the chest sets) expand under their type. Clicking an entry frames and highlights
   its markers on the map, and shows the type again if it was hidden.
 - UI texts live in `i18n/<lang>.json` (flat keys), entry names in `i18n/entries.<map>.<lang>.json` and

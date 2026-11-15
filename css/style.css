@@ -307,6 +307,22 @@ body.sidebar-hidden #sidebar {
   box-shadow: 0 0 0 1.5px #10151b;
 }
 
+/* The marker whose popup is open as a bottom sheet (js/sheet.js): a sheet has no tip pointing at it. */
+.mk.selected::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 48px;
+  height: 48px;
+  margin: -24px 0 0 -24px;
+  box-sizing: border-box;
+  border: 3px solid var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px #000a, 0 0 12px var(--accent);
+  pointer-events: none;
+}
+
 /* Tells chests that share a sprite apart (categories.json "badge"). */
 .mk-type-badge {
   position: absolute;
@@ -669,6 +685,87 @@ body.sidebar-hidden #sidebar {
 
 .mk-popup-wrap a.leaflet-popup-close-button {
   color: var(--muted);
+}
+
+/* The main button and the footer; pinned to the bottom of the sheet below. */
+.mk-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Bottom sheet on narrow screens (js/sheet.js): Leaflet's popup, moved out of the map pane into #map-wrap.
+   Leaflet keeps writing the floating popup's position and width inline, hence the !important. At most half
+   the map tall; the content scrolls inside while the main button and the footer stay in view. */
+.leaflet-popup.mk-sheet {
+  position: absolute;
+  top: auto;
+  right: 0;
+  bottom: 0 !important;
+  left: 0 !important;
+  z-index: 1000; /* above the map and its controls, below the sidebar drawer (1100) */
+  display: flex;
+  flex-direction: column;
+  max-height: 50%;
+  margin: 0;
+  transform: none !important;
+}
+
+.mk-sheet .leaflet-popup-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 0;
+  border-width: 1px 0 0;
+  border-radius: 14px 14px 0 0;
+  box-shadow: 0 -8px 24px #000a;
+}
+
+.mk-sheet .leaflet-popup-content {
+  width: auto !important;
+  max-height: none;
+  min-height: 0;
+  margin: 0;
+  padding: 14px 16px 0;
+  overflow-y: auto;
+}
+
+.mk-sheet .leaflet-popup-tip-container {
+  display: none;
+}
+
+/* Leaflet styles the close button only inside .leaflet-container, which the sheet has left. */
+.mk-sheet a.leaflet-popup-close-button {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: none;
+  font: 26px/44px Tahoma, Verdana, sans-serif;
+  text-align: center;
+  text-decoration: none;
+}
+
+.mk-sheet .mk-popup > strong {
+  padding-right: 36px;
+  font-size: 16px;
+}
+
+.mk-sheet .mk-actions {
+  position: sticky;
+  bottom: 0;
+  gap: 8px;
+  margin: 4px -16px 0;
+  padding: 10px 16px 14px;
+  border-top: 1px solid var(--border);
+  background: var(--panel);
+}
+
+/* The coordinate readout would sit under the sheet. */
+#map-wrap.sheet-open .hud {
+  display: none;
 }
 
 .mk-popup {
