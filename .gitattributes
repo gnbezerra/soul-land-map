@@ -1,0 +1,7 @@
+# Text files are stored and checked out with LF on every OS
+* text=auto eol=lf
+
+# Binary assets
+*.webp binary
+*.png binary
+*.ico binary

@@ -70,7 +70,6 @@ zoom are not covered (synthetic input does not zoom headless Chrome).
 - **CI (GitHub Actions):** on every push, run `build_data.py --check`, rebuild the data and fail if the
   committed JSON differs from the CSVs, then `node --test tests/` and `node tests/browser.mjs` (Ubuntu runners
   ship Chrome). Every push to `main` deploys, and the CSVs can be edited without an agent.
-- **`.gitattributes`** (`* text=auto eol=lf`): working files currently mix CRLF and LF.
 - **Pipeline tests** with Python's `unittest` in `tests/`, replacing the manual `--root <temp dir>` check.
 
 ## Known gaps and notes
