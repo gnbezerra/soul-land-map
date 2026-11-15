@@ -1,3 +1,5 @@
+// Browser helpers for the UI modules (network and DOM); pure modules must not import this file.
+
 // Fetches JSON. If `fallback` is given, a missing file (404) yields it instead of throwing.
 export async function fetchJson(url, fallback) {
   const res = await fetch(url);

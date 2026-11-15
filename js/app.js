@@ -14,13 +14,15 @@ const mapId = location.hash.slice(1).split("/")[0] || settings.mapId || "nuoding
 const cfg = maps[mapId];
 if (!cfg) throw new Error(`Unknown map: ${mapId}`);
 
-const languages = await loadLanguages();
-const lang = detectLang(settings, languages);
+const languages = await loadLanguages(fetchJson);
+const lang = detectLang(languages, {
+  query: location.search, saved: settings.lang, browser: navigator.languages ?? [navigator.language],
+});
 const [categories, entries, markers, i18n] = await Promise.all([
   fetchJson("data/categories.json"),
   fetchJson(`data/entries/${mapId}.json`, {}),
   fetchJson(`data/markers/${mapId}.json`, []),
-  loadI18n(lang, mapId),
+  loadI18n(lang, mapId, fetchJson),
 ]);
 const t = i18n.t;
 

@@ -215,7 +215,7 @@ Warnings:
   marker names, notes and howtos in `i18n/markers.<map>.<lang>.json`.
   Missing keys fall back to English. To add a language, create `i18n/<lang>.json` with the keys of
   `i18n/en.json` and list it in `i18n/languages.json` (`{"pt": "Português"}`). Only listed languages are
-  offered or auto-detected, so the UI is never half translated. Try it with `?lang=pt`.
+  offered or auto-detected, so the UI is never half translated. Try it with `?lang=pt` (any case: `?lang=PT`).
   The top bar selector saves the choice. Game terms (category, region, entry names) are the official in-game
   texts; the site's own UI strings (filters, backup, popups) are unofficial translations, so corrections from
   native speakers are very welcome. Keys missing from a language (for example `type.book`) fall back to English.

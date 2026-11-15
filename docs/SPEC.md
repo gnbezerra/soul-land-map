@@ -217,7 +217,7 @@ The sidebar should filter by species; the popup lists the other locations of the
 ## 5. i18n
 
 - `en` is default and fallback per key. A manifest `i18n/languages.json` lists offered languages; only listed
-  languages are detected (`?lang=`, saved setting, `navigator.languages`) or shown, so the UI is never half
+  languages are detected (`?lang=` in any case, saved setting, `navigator.languages`) or shown, so the UI is never half
   translated.
 - Data JSONs are language-neutral; all text is in i18n files keyed by id. Marker titles: the marker's own
   name (trials, books, teleports, viewpoints), else the entry name, else the type.

@@ -308,6 +308,14 @@ try {
     equal(await ev(`document.querySelector(".disclaimer")?.textContent`), ui.en["ui.disclaimer"], "disclaimer");
   });
 
+  await check("?lang accepts upper-case codes", async () => {
+    for (const lang of ["en", "pt", "zh"]) {
+      await load(`?lang=${lang.toUpperCase()}`);
+      equal(await ev(`document.documentElement.lang`), lang, `?lang=${lang.toUpperCase()}`);
+    }
+    equal(await ev(`document.title`), json("i18n/zh.json")["ui.title"] ?? ui.en["ui.title"], "title in zh");
+  });
+
   await check("every icon sits on its image pixel (fit zoom, then zoomed in)", async () => {
     const fit = await iconPlacementError("fit zoom");
     await ev(`document.querySelector(".leaflet-control-zoom-in").click()`);

@@ -1,29 +1,30 @@
-import { fetchJson } from "./util.js";
-
+// Language detection and translated texts. Pure: the page's environment (URL query, browser languages)
+// and the JSON loader are passed in by js/app.js, so Node can test all of it.
+//
 // The languages the UI is translated into are listed in i18n/languages.json
-// ({ "<code>": "<native name>" }). To add one, create i18n/<code>.json, add it to the
+// ({ "<code>": "<native name>" }, lowercase codes). To add one, create i18n/<code>.json, add it to the
 // manifest, and run tools/build_data.py so i18n/entries.<map>.<code>.json and
 // i18n/markers.<map>.<code>.json exist.
-export async function loadLanguages() {
+
+// `fetchJson(url, fallback)` resolves to the parsed file, or to `fallback` when the file is missing.
+export async function loadLanguages(fetchJson) {
   return fetchJson("i18n/languages.json", { en: "English" });
 }
 
-// Language priority: ?lang=xx, saved setting, browser languages (in order), English.
-// Only languages present in the manifest are considered.
-export function detectLang(settings, languages) {
-  const supported = (l) => typeof l === "string" && Object.hasOwn(languages, l);
-  const candidates = [
-    new URLSearchParams(location.search).get("lang"),
-    settings.lang,
-    ...(navigator.languages ?? [navigator.language]).map((l) => l?.slice(0, 2)),
-  ];
-  return candidates.find(supported) ?? "en";
+// Language priority: ?lang=xx, saved setting, browser languages (in order), English. Only languages in
+// the manifest are considered. Codes are matched case-insensitively on their first two letters, so
+// ?lang=PT, "pt-BR" and "zh-CN" work.
+//   detectLang(languages, { query: location.search, saved: settings.lang, browser: navigator.languages })
+export function detectLang(languages, { query = "", saved, browser = [] } = {}) {
+  const code = (l) => (typeof l === "string" ? l.slice(0, 2).toLowerCase() : null);
+  const candidates = [new URLSearchParams(query).get("lang"), saved, ...browser].map(code);
+  return candidates.find((l) => l && Object.hasOwn(languages, l)) ?? "en";
 }
 
 // Loads UI strings (i18n/<lang>.json), entry texts (i18n/entries.<map>.<lang>.json) and
 // marker texts such as Divine Trial names and notes (i18n/markers.<map>.<lang>.json).
 // Anything missing in the chosen language falls back to English.
-export async function loadI18n(lang, mapId) {
+export async function loadI18n(lang, mapId, fetchJson) {
   const order = lang === "en" ? ["en"] : [lang, "en"];
   const ui = await Promise.all(order.map((l) => fetchJson(`i18n/${l}.json`, {})));
   const entries = await Promise.all(order.map((l) => fetchJson(`i18n/entries.${mapId}.${l}.json`, {})));
