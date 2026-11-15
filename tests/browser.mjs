@@ -15,6 +15,7 @@
 // - Click marker icons with dispatchEvent (they may be off screen), and wait for each popup to appear
 //   instead of sleeping a fixed time.
 // - Popups pan into view with an animation: wait for it before measuring a popup's position.
+// - Chrome's first start on a fresh machine (a CI runner) can take over 10 s: keep the startup waits generous.
 import { spawn } from "node:child_process";
 import { createServer } from "node:http";
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync, mkdirSync } from "node:fs";
@@ -80,13 +81,37 @@ const profile = join(temp, "profile");
 const chrome = spawn(chromePath, ["--headless=new", "--remote-debugging-port=0", "--no-first-run",
   "--no-default-browser-check", "--disable-gpu", `--user-data-dir=${profile}`, "about:blank"], { stdio: "ignore" });
 
-// Chrome writes the port it picked into <profile>/DevToolsActivePort.
-let port;
-for (let i = 0; i < 100 && !port; i++) {
-  try { port = readFileSync(join(profile, "DevToolsActivePort"), "utf8").split("\n")[0]; } catch { await wait(100); }
+// Chrome writes the port it picked into <profile>/DevToolsActivePort, then opens its page target. A cold
+// start on a fresh CI runner can take well over 10 s, so wait up to 30 s for each and fail with a clear
+// message instead of carrying on with an undefined port.
+let chromeExit = null;
+chrome.on("exit", (code, signal) => { chromeExit = signal ?? code; });
+async function waitFor(what, get, timeoutMs = 30000) {
+  for (const deadline = Date.now() + timeoutMs; Date.now() < deadline;) {
+    if (chromeExit !== null) throw new Error(`Chrome exited (${chromeExit}) while waiting for ${what}`);
+    const value = await get().catch(() => null);
+    if (value) return value;
+    await wait(100);
+  }
+  throw new Error(`timed out after ${timeoutMs / 1000} s waiting for ${what}`);
 }
-const targets = await (await fetch(`http://127.0.0.1:${port}/json`)).json();
-const ws = new WebSocket(targets.find((t) => t.type === "page").webSocketDebuggerUrl);
+let page;
+try {
+  const port = await waitFor("its DevToolsActivePort file",
+    async () => readFileSync(join(profile, "DevToolsActivePort"), "utf8").split("\n")[0].trim());
+  page = await waitFor("its page target", async () => {
+    const targets = await (await fetch(`http://127.0.0.1:${port}/json`)).json();
+    return targets.find((t) => t.type === "page" && t.webSocketDebuggerUrl);
+  });
+} catch (error) {
+  console.error(`Could not connect to Chrome: ${error.message}`);
+  chrome.kill();
+  server.close();
+  await wait(300);
+  try { rmSync(temp, { recursive: true, force: true }); } catch { /* Chrome may still hold files on Windows */ }
+  process.exit(2);
+}
+const ws = new WebSocket(page.webSocketDebuggerUrl);
 await new Promise((r) => ws.addEventListener("open", r));
 
 let nextId = 0;

@@ -21,6 +21,13 @@ Pipeline tests (Python's `unittest`, made-up CSVs in a temporary directory; abou
 Browser test (needs Chrome; about 15 s): `node tests/browser.mjs`, with `--shots <dir>` to save screenshots
 and `CHROME=<path>` if Chrome is not in a standard place.
 
+CI and deploy: `.github/workflows/ci.yml` runs on every push and pull request. It validates every map in
+`data/maps.json`, rebuilds the data and fails if the result differs from the committed JSON, then runs the
+pipeline, unit and browser tests. On `main`, and only when all of that passes, it publishes the repo as is to
+GitHub Pages (Settings → Pages → Source must be "GitHub Actions"). When a browser test fails, its screenshots
+are attached to the run as the `browser-shots` artifact. To redeploy without a new commit, run the workflow
+by hand (Actions → CI → Run workflow) on `main`.
+
 Map images are not committed (`maps/` is ignored; only the generated tiles are published). To regenerate
 the tiles after the map image changes (341 files, ~5.6 MB for a 4096x4096 image):
 

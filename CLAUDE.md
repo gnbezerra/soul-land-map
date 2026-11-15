@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 **Soul Land Map** is an unofficial interactive-map fansite for *Soul Land: New World*, live at
-<https://gnbezerra.github.io/soul-land-map/> (GitHub Pages serves `main` as is). Read `README.md` (running it,
+<https://gnbezerra.github.io/soul-land-map/> (GitHub Pages, deployed from `main` by CI). Read `README.md` (running it,
 data pipeline), `docs/SPEC.md` (design) and `docs/ROADMAP.md` (state, next steps, known gaps). This file holds
 the rules; the details live there.
 
@@ -13,7 +13,8 @@ Never break these. If a task seems to need it, stop and ask.
   A change to either format needs a migration of the stored data, old backups must keep importing, and both
   need tests. All `localStorage` access goes through `js/storage.js`, wrapped in try/catch, and the site
   must keep working when storage is unavailable.
-- **Every push to `main` is a deploy.** Run the checks below before pushing.
+- **Every push to `main` is a deploy** once CI passes (`.github/workflows/`). Run the checks below before
+  pushing anyway: a red CI run keeps the old site up, but `main` stays broken until it is fixed.
 - **Marker ids** (`<map>-0001`) are permanent: never reused, renumbered or derived from a row or position.
   Progress is keyed by them. Entries are identified by (map, slug).
 - **Markers store game coordinates**, never pixels. The conversion lives in `js/geo.js` and `data/maps.json`.
@@ -45,8 +46,8 @@ change (see "Adding complexity").
 | Third-party code is vendored (`vendor/leaflet`), no CDN | no third-party requests, reproducible, survives CDN outages | a dependency is impractical to vendor |
 | No `package.json`; Node is a dev tool only (`node --test`, the browser test) | nothing needs npm packages yet | a tool worth having needs them (linter, formatter, bundler) |
 | Static site, no backend or database; progress lives in the browser | nothing needs accounts or shared state | cross-device sync, user accounts, in-site community contributions |
-| Generated data and tiles are committed; Pages serves the repo as is | the owner previews the build locally anyway; the diffs are reviewable | repo size or build time hurts, or a CI build becomes the norm |
-| Checks run locally; no CI | solo project so far | now: a CI workflow is a pending proposal (ROADMAP) |
+| Generated data and tiles are committed; CI deploys the repo as is to Pages | the owner previews the build locally anyway; the diffs are reviewable | repo size or build time hurts, or building the data in CI becomes simpler than committing it |
+| Checks run locally and in CI on every push and pull request; deploy only after they pass; GitHub's own actions only | every push deploys, and the CSVs can be edited without an agent | the checks get slow (over ~5 min) or need secrets or external services |
 
 ## Adding complexity
 
@@ -68,19 +69,20 @@ So:
   one. Split a module when it mixes unrelated domains or passes ~500 lines; do not split ahead of need.
 - Each pure module has a matching `tests/<module>.test.mjs`. UI modules keep only the DOM and Leaflet wiring
   and call into the pure ones.
-- Tests live in `tests/`: unit tests (`*.test.mjs`, Node's built-in runner, made-up data) and the browser test
-  (`tests/browser.mjs`; its header lists the gotchas of driving headless Chrome). Extend them with new code
-  instead of writing throwaway scripts.
-- The data pipeline has no tests in the repo yet. After changing it, run it on a copy of the project
-  (`--root <temp dir>`) with made-up valid and invalid rows, never on the real CSVs.
+- Tests live in `tests/`: unit tests (`*.test.mjs`, Node's built-in runner, made-up data), pipeline tests
+  (`test_*.py`, Python's `unittest`, made-up CSVs in a temporary `--root`, never the real ones) and the
+  browser test (`tests/browser.mjs`; its header lists the gotchas of driving headless Chrome). Extend them
+  with new code instead of writing throwaway scripts.
 
 ## Before finishing or pushing
 
 - `node --test tests/`
+- `python -m unittest discover -s tests`
 - `node tests/browser.mjs` (needs Chrome). Real wheel, pinch and double-click zoom are not covered: check them
   by hand or say they were not checked.
 - `python tools/build_data.py <map> --check` for each map; the expected warnings are listed in ROADMAP
   "Known gaps".
+- CI runs the same list, plus a check that the committed JSON matches the CSVs.
 - Update README, SPEC or ROADMAP when behavior or the project state changes.
 - When a "Current decisions" row no longer holds (its trigger happened, or a change you are making would
   contradict it), say so and propose the new text for `CLAUDE.md`. Never edit `CLAUDE.md` or

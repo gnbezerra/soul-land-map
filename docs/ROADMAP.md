@@ -7,8 +7,11 @@ Read order for a new agent: `README.md` (run it, data pipeline) → `CLAUDE.md` 
 
 Working, and verified by the owner in a real browser (Chrome, DevTools mobile emulation included):
 
-- Live at <https://gnbezerra.github.io/soul-land-map/> (GitHub Pages, `main` from the root; every push to
-  `main` publishes). Unofficial-fansite disclaimer in the sidebar footer, map-pin favicon.
+- Live at <https://gnbezerra.github.io/soul-land-map/> (GitHub Pages). Unofficial-fansite disclaimer in the
+  sidebar footer, map-pin favicon.
+- CI (`.github/workflows/ci.yml`, GitHub Actions) on every push and pull request: data validation of every
+  map, committed JSON equal to a fresh build, pipeline, unit and browser tests. On `main` it then deploys the
+  repo as is to Pages, so a push that fails the checks leaves the previous site up.
 - Nuoding City Area map: 4096² image in 256 px tiles (zoom 0–4, `maxZoom` 5), calibrated, coordinate readout.
 - Zoom: fractional fit zoom as `minZoom`, slow wheel (`wheelPxPerZoomLevel` 120), +/- snap to multiples of 0.5.
 - Data pipeline CSV → JSON (`tools/build_data.py`), with validation and id stability checks.
@@ -66,12 +69,6 @@ zoom are not covered (synthetic input does not zoom headless Chrome).
 - Real icon sprites.
 - Two Mixed Area PT descriptions that were cut off in screenshots.
 - Native review of the ZH UI strings.
-
-## Proposed tooling (not decided yet)
-
-- **CI (GitHub Actions):** on every push, run `build_data.py --check`, rebuild the data and fail if the
-  committed JSON differs from the CSVs, then `node --test tests/` and `node tests/browser.mjs` (Ubuntu runners
-  ship Chrome). Every push to `main` deploys, and the CSVs can be edited without an agent.
 
 ## Known gaps and notes
 

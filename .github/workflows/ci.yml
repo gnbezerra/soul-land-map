@@ -1,0 +1,111 @@
+# Checks every push and pull request; on main, deploys the site to GitHub Pages only when they pass.
+# The same checks run locally (see "Before finishing or pushing" in CLAUDE.md).
+# Requires Settings -> Pages -> Source: "GitHub Actions" (otherwise the deploy job fails and Pages keeps
+# serving the branch as before).
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# An explicit bash runs with -eo pipefail (the implicit default has no pipefail), so a failing command
+# piped into sed still fails its step.
+defaults:
+  run:
+    shell: bash
+
+# A newer push to a branch cancels its older run, except on main, where a deploy may be in progress.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.15"
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "26"
+
+      - name: Validate the data of every map
+        run: |
+          for map in $(python -c "import json; print(' '.join(json.load(open('data/maps.json'))))"); do
+            # Data errors also become annotations, listed on the run's summary page.
+            python tools/build_data.py "$map" --check | sed -u 's/^ERROR   /::error::'"$map"': /'
+          done
+
+      - name: Check that the committed JSON matches the CSVs
+        run: |
+          for map in $(python -c "import json; print(' '.join(json.load(open('data/maps.json'))))"); do
+            python tools/build_data.py "$map" > /dev/null
+          done
+          if [ -n "$(git status --porcelain)" ]; then
+            git status --porcelain
+            git diff --stat
+            echo "::error::The generated files do not match the CSVs: run python tools/build_data.py <map> and commit the result."
+            exit 1
+          fi
+
+      # The tests run even when a data step failed, so one run shows every problem.
+      - name: Pipeline tests
+        if: ${{ !cancelled() }}
+        run: python -m unittest discover -s tests
+
+      - name: Unit tests
+        if: ${{ !cancelled() }}
+        run: node --test tests/
+
+      - name: Browser test
+        if: ${{ !cancelled() }}
+        # Each failed check (a "FAIL  <name>" line and its message on the next one) becomes an annotation,
+        # and so does a failure to start Chrome.
+        run: |
+          node tests/browser.mjs --shots browser-shots 2>&1 | awk '
+            { print; fflush() }
+            /^Could not connect to Chrome/ { print "::error::browser test: " $0; fflush() }
+            /^FAIL  / { name = substr($0, 7); getline; print; msg = $0; sub(/^ +/, "", msg)
+                        print "::error::browser test: " name ": " msg; fflush() }'
+
+      - name: Keep the browser test screenshots
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: browser-shots
+          path: browser-shots/
+          if-no-files-found: ignore
+
+  deploy:
+    needs: check
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+
+      # The repo is published as is, like the branch deploy before (.git and .github are left out).
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: .
+
+      - id: deployment
+        uses: actions/deploy-pages@v5
