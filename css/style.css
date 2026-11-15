@@ -969,3 +969,12 @@ body.sidebar-hidden #sidebar {
     min-height: 36px;
   }
 }
+
+/* TEMPORARY experiment switches (?fx=..., see js/app.js); remove once decided. */
+.fx-nofilter .mk-ic img {
+  filter: none !important;
+}
+
+.fx-pinching .leaflet-marker-pane {
+  display: none;
+}
