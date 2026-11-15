@@ -367,8 +367,12 @@ try {
     await wait(400);
     await ev(`document.querySelector(".leaflet-control-zoom-in").click()`);
     await until(`!document.querySelector(".leaflet-zoom-anim") && [...document.querySelectorAll("img.leaflet-tile")].every((t) => t.classList.contains("leaflet-tile-loaded"))`, "the zoom and its tiles", 5000);
-    await wait(300);
-    const zoomed = await iconPlacementError("zoomed in");
+    // Right after the zoom, Leaflet can still be swapping tile levels for a moment (seen on CI about one run
+    // in three, never once settled): measure again until it passes, for up to 3 s.
+    let zoomed;
+    for (const started = Date.now(); ; await wait(200)) {
+      try { zoomed = await iconPlacementError("zoomed in"); break; } catch (e) { if (Date.now() - started > 3000) throw e; }
+    }
     console.log(`      worst offset ${fit.toFixed(2)} px at fit zoom, ${zoomed.toFixed(2)} px zoomed in`);
   });
 
