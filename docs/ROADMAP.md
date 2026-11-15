@@ -19,7 +19,7 @@ Working, and verified by the owner in a real browser (Chrome, DevTools mobile em
   65 stages, 28 crystals, 5 encounters, 6 teleports, 4 viewpoints, 1 portal, 3 books) and 49 entries, all with
   en/pt/zh names. Marker names, notes and howtos in `marker_texts.csv`; marker tags (e.g. `grappling_hook`).
   The recommended CP of most combat trial stages is not collected yet (see "Waiting on the owner").
-- Sidebar: groups/types with checkboxes and live `found/total` counters, entry lists with frame-and-highlight,
+- Sidebar: groups/types with checkboxes, the marker's sprite as legend, live `found/total` counters, entry lists with frame-and-highlight,
   exploration value in points with reward milestones and the rules behind an (i) button, hide-found toggle,
   backup export/import.
 - Popups with title (own name, else entry name, else type), type, tags, description, note, "show solution"
@@ -50,9 +50,9 @@ zoom are not covered (synthetic input does not zoom headless Chrome).
 ## Next steps (suggested order)
 
 1. **Icon follow-ups.** Co-op chests show their number of players (1 to 4, the `players` field; Nuoding has
-   1-player "tutorial" co-op chests). Challenge chests still show the placeholder letter "J" (the old glyph,
-   no meaning in the game): find a better mark, or drop it. Consider the sprites in the sidebar instead of
-   the colored dots (needs a preview). Sprites for `seed`, `mechanism` and `arena` when those regions arrive.
+   1-player "tutorial" co-op chests). Challenge chests have no badge: the game has no sprite for the pillar
+   (`dt_icon_sj` is the Asura Statue's), and the old letter "J" meant nothing. Sprites for `seed`, `mechanism`
+   and `arena` when those regions arrive.
 2. **More popup and sidebar extras**: tags in the sidebar (and later a tag filter), `links` between related
    markers (none in the data yet), bottom-sheet popup on mobile (after the real icons).
 3. **Rewards/items/loot** (SPEC §4.8), popup rewards with icons, including the Divine Trial layer rewards.
@@ -80,8 +80,13 @@ zoom are not covered (synthetic input does not zoom headless Chrome).
 - Backup carries `progress` and `trials`; settings are not included.
 - Mixed Area's 240 exploration points reconcile only if a seed counts +5 (unconfirmed). Seeds are in no
   `explorationRules` entry until it is: add `seed` to the chests rule (or a rule of its own) once confirmed.
-- Marker scale tunables: `MARKER_SHRINK_PER_ZOOM` 0.25, `MARKER_MIN_SCALE` 0.5, `TIER_SIZE` in
+- Marker scale tunables: `MARKER_SHRINK_PER_ZOOM` 0.25, `MARKER_MIN_SCALE` 0.35 (at 0.5 the whole-map view on a phone was a blur of halos), `TIER_SIZE` in
   `js/layers.js`; the glyph and the icon badges are hidden below 0.65 scale.
 - The source sprites are 43–57 px and the major markers are drawn at 38 px, so on 2x screens they may look
   slightly soft; the owner accepted fixing that later (sharpen or redraw larger) if it shows.
 - The book's category color is grey, so its glow is faint.
+- Pinch zoom stutters on a mid-range phone (Samsung A55) while markers are shown; the +/- buttons and pinch
+  with "Hide all" are smooth (screen recording, 2026-11-15). Leaflet moves every marker on each pinch frame
+  (the buttons animate the whole pane once). In headless Chrome with the CPU slowed 4x, a simulated pinch
+  takes ~133 ms per frame with the icons, ~60 ms with the old circles and 17 ms with no markers; turning off
+  the CSS filters or the per-frame scale update made no difference there (no GPU). Being tested on the phone.

@@ -7,7 +7,7 @@ import { markerTitle, effectiveTags, popupFields, consumesContract } from "./pop
 // Markers shrink when zoomed out so they do not pile up. Full size from the native zoom up;
 // each level below it removes MARKER_SHRINK_PER_ZOOM, down to MARKER_MIN_SCALE.
 const MARKER_SHRINK_PER_ZOOM = 0.25;
-const MARKER_MIN_SCALE = 0.5;
+const MARKER_MIN_SCALE = 0.35;
 // Below this scale the glyph is unreadable, so only the colored dot is shown (and icons lose their badges).
 const MARKER_TINY_SCALE = 0.65;
 // Icon box per tier (categories.json), in px at full scale: the hundreds of chests stay small, the types

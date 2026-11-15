@@ -41,7 +41,7 @@ const model = buildModel(categories, json(`data/entries/${MAP}.json`), markers);
 const ui = { en: json("i18n/en.json"), pt: json("i18n/pt.json") };
 const markerNames = json(`i18n/markers.${MAP}.en.json`);
 const markerNamesPt = json(`i18n/markers.${MAP}.pt.json`);
-const trialColor = categories.types.divine_trial.color;
+const trialIcon = categories.types.divine_trial.icon;
 const trialTotal = model.types.get("divine_trial").total;
 const barTotal = model.exploration.total; // exploration value, in points
 // Points of one marker of a type (one layer, for a Divine Trial), from data/categories.json.
@@ -249,7 +249,7 @@ async function openTrial(title) {
   throw new Error(`no trial popup titled ${title}`);
 }
 const counts = () => ev(`(() => {
-  const row = [...document.querySelectorAll("#sidebar .row")].find((r) => r.querySelector(".dot")?.style.background && getComputedStyle(r.querySelector(".dot")).backgroundColor === (() => { const d = document.createElement("i"); d.style.color = "${trialColor}"; document.body.append(d); const c = getComputedStyle(d).color; d.remove(); return c; })());
+  const row = [...document.querySelectorAll("#sidebar .row")].find((r) => r.querySelector(".dot-ic img")?.getAttribute("src") === "${trialIcon}");
   return { trial: row?.querySelector(".count")?.textContent, bar: document.querySelector(".exploration .count").textContent };
 })()`);
 const trialPopup = () => ev(`(() => {
@@ -490,11 +490,15 @@ try {
       equal(o.broken, 0, `${type}: sprite loaded`);
       equal(o.widths, [`${tierPx[meta.tier]}px`], `${type}: size`);
     }
-    // A co-op chest's badge is its number of players; a challenge chest's is the fixed text.
+    // The sidebar legend shows the same sprites as the map, loaded.
+    const legend = await ev(`(() => { const imgs = [...document.querySelectorAll("#sidebar .dot-ic img")];
+      return { srcs: [...new Set(imgs.map((i) => i.getAttribute("src")))].sort(), broken: imgs.filter((i) => !i.complete || !i.naturalWidth).length }; })()`);
+    const onMap = [...new Set(Object.values(seen).flatMap((o) => o.srcs))].sort();
+    equal(legend, { srcs: onMap, broken: 0 }, "sidebar legend sprites");
+    // A co-op chest's badge is its number of players; challenge chests have none.
     const badges = (type) => ev(`${iconsOf(type)}.map((e) => e.querySelector(".mk-type-badge")?.textContent ?? null).sort()`);
     equal(await badges("chest_coop"), markers.filter((m) => m.type === "chest_coop").map((m) => String(m.players)).sort(), "co-op badges");
-    equal(new Set(await badges("chest_challenge")).size === 1 && (await badges("chest_challenge"))[0],
-      categories.types.chest_challenge.badge, "challenge badges");
+    equal([...new Set(await badges("chest_challenge"))], [null], "challenge badges");
     // The contract chest swaps to the "opened" sprite when found, as the game leaves it on its map.
     const contracts = iconsOf("chest_contract");
     const shown = () => ev(`(() => { const b = ${contracts}[0].querySelector(".mk-ic");

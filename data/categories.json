@@ -21,7 +21,7 @@
   "types": {
     "chest_normal":    { "color": "#5aa9ff", "glyph": "C", "icon": "icons/chest.png", "tier": "common" },
     "chest_coop":      { "color": "#c58bff", "glyph": "2", "icon": "icons/chest.png", "tier": "common", "badgeField": "players" },
-    "chest_challenge": { "color": "#c58bff", "glyph": "J", "icon": "icons/chest.png", "tier": "common", "badge": "J" },
+    "chest_challenge": { "color": "#c58bff", "glyph": "J", "icon": "icons/chest.png", "tier": "common" },
     "chest_contract":  { "color": "#c58bff", "glyph": "K", "icon": "icons/chest_contract.png", "iconFound": "icons/chest_contract_open.png", "tier": "common" },
     "divine_trial":    { "color": "#ff6b6b", "glyph": "D", "icon": "icons/divine_trial.png", "tier": "major" },
     "crystal":         { "color": "#ffa43a", "glyph": "M", "icon": "icons/crystal.png", "tier": "major" },

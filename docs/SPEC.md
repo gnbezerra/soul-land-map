@@ -253,7 +253,7 @@ Reference mockup (names/numbers are placeholders): <https://claude.ai/artifact/Q
 
 Desktop: top bar (title, map selector, language selector, sidebar toggle); left sidebar (~320 px, collapsible)
 with the exploration bar, "hide found" toggle and filter tree; each group/type has a checkbox and a live
-`found/total` counter; entry lists expand under their type and clicking an entry frames and highlights its
+`found/total` counter and the type's sprite (a colored dot when it has none); entry lists expand under their type and clicking an entry frames and highlights its
 markers; extras and auxiliary groups are outside the exploration bar. Map: the game's sprites as markers, sized
 by importance (§9); found markers turn grey with a check (or vanish with hide-found), coordinate readout
 bottom-left, zoom control top-right. Markers shrink below the native zoom; under a threshold their badges are
@@ -346,7 +346,7 @@ Decided: books in the MVP without completeness; equipment level cut-offs irrelev
 PR when there is interest; Leaflet vendored, no CDN or framework; the exploration bar shows the game's exploration
 value in points, with the map's reward milestones (§11); trial progress is a user-entered integer; a trial stage is called a "layer" on the site (4.6).
 
-Open: the corner badge of challenge chests (placeholder "J"); icons in the sidebar; official Chinese texts as source of truth
+Open: official Chinese texts as source of truth
 (later, non-blocking); Dragon Island positions (in-game collection).
 
 ## 13. Implementation status (differences from this spec)

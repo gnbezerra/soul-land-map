@@ -19,7 +19,10 @@ export function createSidebar({
   const counters = []; // { el, read: () => [found, total] }
   const t = i18n.t;
 
-  const dot = (type) => h("span", { class: "dot", style: `background:${type.color}` });
+  // The legend shows the marker's own sprite; types without one keep the colored dot.
+  const dot = (type) => type.icon
+    ? h("span", { class: "dot-ic" }, h("img", { src: type.icon, alt: "" }))
+    : h("span", { class: "dot", style: `background:${type.color}` });
   function count(read) {
     const el = h("span", { class: "count", title: t("ui.countHint") });
     counters.push({ el, read });

@@ -191,9 +191,9 @@ Warnings:
 ## Site behavior
 
 - `data/categories.json` defines the sidebar groups (the game's own exploration categories plus a few
-  extra groups), their marker types, and per type: `color` (sidebar dot, glow, pillar line), `glyph`
+  extra groups), their marker types, and per type: `color` (glow, pillar line, and the dot of a type with no icon), `glyph`
   (letter in the colored dot used when a type has no icon: `seed`, `mechanism`, `arena` today), `icon`
-  (path in `icons/`), optional `iconFound` (replaces the icon once found: the opened contract chest),
+  (path in `icons/`; the sidebar shows it too), optional `iconFound` (replaces the icon once found: the opened contract chest),
   `tier`, and optional `badge` (short text on the icon's corner, for chests that share a sprite) or
   `badgeField` (the badge shows that marker field instead: a co-op chest shows its `players`, 1 to 4).
 - Marker size follows the tier (`TIER_SIZE` in `js/layers.js`): `common` 22 px (chests), `major` 38 px with
