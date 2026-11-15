@@ -23,6 +23,7 @@ import { tmpdir } from "node:os";
 import { extname, join, normalize, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildModel } from "../js/model.js";
+import { gameToPixel } from "../js/geo.js";
 
 const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const MAP = "nuoding";
@@ -47,6 +48,9 @@ const puzzle = trials.find((m) => m.subtype === "puzzle");
 const topTrial = [...trials].sort((a, b) => b.y - a.y)[0]; // nearest the top edge (game y grows upwards)
 const chest = markers.find((m) => m.type === "chest_normal");
 const nameOf = (m) => markerNames[m.id]?.name;
+const mapCfg = json("data/maps.json")[MAP];
+// Image pixel of every icon: encounters with several points draw one icon per point.
+const iconPixels = markers.flatMap((m) => (m.points ?? [m]).map((p) => gameToPixel(mapCfg.calibration, p.x, p.y)));
 
 // --- Static server ------------------------------------------------------------------------------
 const TYPES = { ".html": "text/html", ".js": "text/javascript", ".mjs": "text/javascript", ".css": "text/css",
@@ -249,6 +253,36 @@ async function clickPopupButton() {
 const iconState = (list, i) => ev(`(() => { const e = ${list}[${i}]; const b = e.querySelector(".mk-badge");
   return { found: e.classList.contains("found"), badge: b && !b.hidden ? b.textContent : null }; })()`);
 const stored = (kind) => ev(`JSON.parse(localStorage.getItem("slmap:v1:${kind}:${MAP}"))`);
+// Every icon must sit on its image pixel. Measured against a loaded tile, whose place in the image is known
+// from its URL (z/x/y), so this does not go through js/geo.js's LatLng conversion: it catches a wrong
+// projection, zoom or axis in the real Leaflet. Returns the largest distance in screen pixels.
+async function iconPlacementError(label) {
+  const r = await ev(`(() => {
+    const tiles = [...document.querySelectorAll("img.leaflet-tile-loaded")].map((img) => {
+      const [z, x, y] = img.src.match(/(\\d+)\\/(\\d+)\\/(\\d+)\\.webp$/).slice(1).map(Number);
+      const b = img.getBoundingClientRect();
+      return { z, x, y, left: b.left, top: b.top, width: b.width };
+    });
+    const top = Math.max(...tiles.map((t) => t.z));
+    const icons = ${ICONS}.map((e) => { const b = e.getBoundingClientRect(); return [b.left + b.width / 2, b.top + b.height / 2]; });
+    return { tile: tiles.find((t) => t.z === top), icons };
+  })()`);
+  if (!r.tile) throw new Error(`${label}: no loaded tile`);
+  equal(r.icons.length, iconPixels.length, `${label}: icons`);
+  const { z, x, y, left, top, width } = r.tile;
+  const span = mapCfg.tiles.tileSize * 2 ** (mapCfg.tiles.maxNativeZoom - z); // image pixels per tile
+  const s = width / span;
+  let worst = 0;
+  for (const [px, py] of iconPixels) {
+    const sx = left + (px - x * span) * s;
+    const sy = top + (py - y * span) * s;
+    const d = Math.min(...r.icons.map(([ix, iy]) => Math.hypot(ix - sx, iy - sy)));
+    worst = Math.max(worst, d);
+  }
+  if (worst > 1.5) throw new Error(`${label}: an icon is ${worst.toFixed(1)} px away from its image pixel`);
+  return worst;
+}
+
 // The whole popup must sit inside the map and clear of the zoom buttons.
 async function popupPlacement(label) {
   await wait(700); // autopan animation
@@ -272,6 +306,17 @@ try {
     await freshLoad("?lang=en");
     equal(await counts(), { trial: `0/${trialTotal}`, bar: `0/${barTotal}` }, "counters");
     equal(await ev(`document.querySelector(".disclaimer")?.textContent`), ui.en["ui.disclaimer"], "disclaimer");
+  });
+
+  await check("every icon sits on its image pixel (fit zoom, then zoomed in)", async () => {
+    const fit = await iconPlacementError("fit zoom");
+    await ev(`document.querySelector(".leaflet-control-zoom-in").click()`);
+    await wait(400);
+    await ev(`document.querySelector(".leaflet-control-zoom-in").click()`);
+    await until(`!document.querySelector(".leaflet-zoom-anim") && [...document.querySelectorAll("img.leaflet-tile")].every((t) => t.classList.contains("leaflet-tile-loaded"))`, "the zoom and its tiles", 5000);
+    await wait(300);
+    const zoomed = await iconPlacementError("zoomed in");
+    console.log(`      worst offset ${fit.toFixed(2)} px at fit zoom, ${zoomed.toFixed(2)} px zoomed in`);
   });
 
   for (const lang of ["en", "pt"]) {

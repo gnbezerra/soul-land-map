@@ -54,7 +54,7 @@ i18n/
 tiles/<map>/{z}/{x}/{y}.webp   generated offline by tools/make_tiles.py (committed)
 maps/<map>.png  source map image, local only (ignored by git)
 tools/         Python: build_data.py, check_calibration.py, make_tiles.py, make_favicon.py
-tests/         unit tests for js/model.js and js/storage.js (node --test tests/), browser test (browser.mjs)
+tests/         unit tests for the pure js/ modules (node --test tests/), pipeline tests (test_*.py), browser test (browser.mjs)
 docs/          SPEC.md, ROADMAP.md
 ```
 
