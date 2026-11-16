@@ -60,7 +60,10 @@ langSelect.addEventListener("change", () => {
   saveSettings({ ...settings, lang: langSelect.value });
   const url = new URL(location.href);
   url.searchParams.delete("lang");
-  location.replace(url);
+  // Without a ?lang= to drop, the address stays the same, and going to the same address with a hash
+  // (#<map>, written by the deep links) only scrolls to it: the page must be reloaded instead.
+  if (url.href === location.href) location.reload();
+  else location.replace(url);
 });
 
 // --- Map -----------------------------------------------------------------------------

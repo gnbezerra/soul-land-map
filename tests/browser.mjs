@@ -361,6 +361,36 @@ try {
     equal(await ev(`document.title`), json("i18n/zh.json")["ui.title"] ?? ui.en["ui.title"], "title in zh");
   });
 
+  // Picks a language in the top bar and waits for the page to reload in it.
+  async function switchLang(code, label) {
+    await ev(`(() => {
+      window.__stale = true;
+      const select = document.getElementById("lang-select");
+      select.value = "${code}";
+      select.dispatchEvent(new Event("change"));
+    })()`);
+    await until(`!window.__stale && document.documentElement.lang === "${code}" && document.querySelectorAll(".leaflet-marker-icon").length > 0`,
+      `the page to reload in ${code} (${label})`, 5000);
+  }
+
+  await check("the language selector reloads the page in the new language, with or without a hash", async () => {
+    await load("?lang=en");
+    await switchLang("pt", "?lang= in the address");
+    equal(await ev(`location.search`), "", "?lang= dropped");
+    // Opening and closing a popup leaves #<map> in the address (deep links).
+    await openIcon(ICONS, 0);
+    await closePopup();
+    equal(await ev(`location.hash`), `#${MAP}`, "hash after closing a popup");
+    await switchLang("zh", `#${MAP} in the address`);
+    // With a popup open the address is #<map>/<marker>; the reload opens that marker again.
+    await openIcon(ICONS, 0);
+    const id = (await ev(`location.hash`)).split("/")[1];
+    await switchLang("en", "a marker in the address");
+    await until(`${POPUP}?.querySelector("strong")`, "the marker's popup after the reload");
+    equal(await ev(`location.hash`), `#${MAP}/${id}`, "hash after the reload");
+    await closePopup();
+  });
+
   await check("every icon sits on its image pixel (fit zoom, then zoomed in)", async () => {
     const fit = await iconPlacementError("fit zoom");
     await ev(`document.querySelector(".leaflet-control-zoom-in").click()`);
