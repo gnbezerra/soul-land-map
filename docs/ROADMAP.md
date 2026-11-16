@@ -13,9 +13,9 @@ Working, and verified by the owner in a real browser (Chrome, DevTools mobile em
   map, committed JSON equal to a fresh build, pipeline, unit and browser tests. On `main` it then deploys the
   repo as is to Pages, so a push that fails the checks leaves the previous site up.
 - Nuoding City Area map: 4096² image in 256 px tiles (zoom 0–4, `maxZoom` 5), calibrated, coordinate readout.
-- Suotuo City Area: 2048² image in tiles (zoom 0–3, `maxZoom` 5), as a draft map: reachable at `#suotuo`
-  only, not in the region selector. Its CSVs were exported from the game tables and completed by the owner
-  (see "Next steps").
+- Suotuo City Area: 2048² image in tiles (zoom 0–3, `maxZoom` 5), in the region selector since 2026-11-16.
+  Its CSVs were exported from the game tables and completed by the owner (see "Next steps"); the
+  location-specific tags and some height notes are still to come.
 - Calibration of both maps from the game's `map_position` table (README "Calibration"), since 2026-11-16;
   before that, least-squares fits of points measured in-game, which it matches within 0.7 (Nuoding) and
   1.9 (Suotuo) game units.
@@ -66,14 +66,14 @@ players more and rewards need a lot of data collected in-game.
 
 1. **Other regions**, one at a time, each needing a map image, tiles, the calibration (from the game, with
    a few points to check it), a `maps.json` entry (as a draft until its data is in), and CSVs. Suotuo is
-   in as a draft (tiles, calibration, names, milestones). Its CSVs were exported from the game tables
-   (README "Game data") and completed in-game by the owner (coop players, combat levels, seals, the
+   listed (no longer a draft since 2026-11-16, at the owner's call). Its CSVs were exported from the game
+   tables (README "Game data") and completed in-game by the owner (coop players, combat levels, seals, the
    encounters with no NPC, the pillar, portals), positions sampled in-game: 331 markers, 55 entries,
    matching every count of the game (247 normal chests with the 30 in the site's two `unlisted` entries,
    12 decryption chests with the two `chest_boss`, exploration value 3245). Next on it: the
-   location-specific tags and the notes on chests at a non-obvious height (the owner, in-game), the
-   marker density at full size, then dropping `draft`. Five of the eight regions' images are 2048², three
-   are 4096²; the game tables have the other regions' data and calibration too.
+   location-specific tags and the notes on chests at a non-obvious height (the owner, in-game), and the
+   marker density at full size. Five of the eight regions' images are 2048², three are 4096²; the game
+   tables have the other regions' data and calibration too.
 2. **`links` in the popup**, needed by Suotuo's Ownerless Objects (SPEC §4.7): the encounter's popup lists
    its three chests (found or not, "show on map"), each chest's popup names the encounter. Needs a preview;
    it can be done while the owner collects Suotuo's data, which does not depend on it.
@@ -105,7 +105,7 @@ players more and rewards need a lot of data collected in-game.
   about 2.2 times closer together on screen. Now that Suotuo has markers, it looks crowded at the whole-map
   view (browser test screenshot, 2026-11-16); judge it on a real screen; if it crowds, base the
   marker scale (and the zooms that frame markers) on px per game unit instead of the native zoom.
-- A map with no data shows an empty sidebar and `0/0` exploration value (only a draft map, today).
+- A map with no data shows an empty sidebar and `0/0` exploration value (a new draft map, before its data).
 - `type.book/mechanism/portal/boss/arena` UI keys exist only in `en.json` on purpose (fallback to English).
 - Unused leftover PT/ZH strings were cut off in the game UI ("Rec.", "Adicionar"); do not rely on them.
 - The official PT texts are translated from Chinese and are not consistent with the English names; keep them

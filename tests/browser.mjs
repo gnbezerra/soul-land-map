@@ -715,26 +715,30 @@ try {
     await viewport(1280, 800, false);
   });
 
-  // Maps marked "draft" in data/maps.json: their link opens them, but the region selector lists them only
-  // while they are the current map.
+  // Every other map opens by its link with its tiles and markers. A map marked "draft" in data/maps.json is
+  // listed in the region selector only while it is the current map.
   const allMaps = json("data/maps.json");
-  const drafts = Object.keys(allMaps).filter((id) => allMaps[id].draft);
+  const others = Object.keys(allMaps).filter((id) => id !== MAP);
   const mapOptions = () => ev(`[...document.querySelectorAll("#map-select option")].map((o) => o.value + (o.selected ? "*" : ""))`);
-  for (const draft of drafts) {
-    await check(`draft map ${draft}: opens by its link, listed in the selector only there`, async () => {
+  for (const other of others) {
+    const draft = !!allMaps[other].draft;
+    await check(`map ${other}${draft ? " (draft)" : ""}: opens by its link, with its tiles, markers and selector`, async () => {
       await load("?lang=en");
-      if ((await mapOptions()).includes(draft)) throw new Error(`${draft} is offered on ${MAP}`);
+      if (draft === (await mapOptions()).includes(other)) {
+        throw new Error(`${other} is ${draft ? "" : "not "}offered on ${MAP}`);
+      }
       await ev(`window.__stale = true`);
-      await send("Page.navigate", { url: `${BASE}?lang=pt#${draft}` });
-      await until(`!window.__stale && [...document.querySelectorAll(".leaflet-tile")].some((t) => t.complete && t.naturalWidth > 0 && t.src.includes("tiles/${draft}/"))`,
-        `${draft}'s tiles`, 10000);
-      equal(await mapOptions(), Object.keys(allMaps).map((id) => id + (id === draft ? "*" : "")), "selector on the draft map");
-      equal(await ev(`document.querySelector("#map-select option:checked").textContent`), json("i18n/pt.json")[`map.${draft}`] ?? draft, "its name");
+      await send("Page.navigate", { url: `${BASE}?lang=pt#${other}` });
+      await until(`!window.__stale && [...document.querySelectorAll(".leaflet-tile")].some((t) => t.complete && t.naturalWidth > 0 && t.src.includes("tiles/${other}/"))`,
+        `${other}'s tiles`, 10000);
+      equal(await mapOptions(), Object.keys(allMaps).filter((id) => !allMaps[id].draft || id === other)
+        .map((id) => id + (id === other ? "*" : "")), "selector");
+      equal(await ev(`document.querySelector("#map-select option:checked").textContent`), json("i18n/pt.json")[`map.${other}`] ?? other, "its name");
       // One icon per point: an encounter with several points shows one on each.
       equal(await ev(`document.querySelectorAll(".leaflet-marker-icon").length`),
-        (json(`data/markers/${draft}.json`) ?? []).reduce((n, m) => n + (m.points?.length ?? 1), 0), "marker icons");
+        (json(`data/markers/${other}.json`) ?? []).reduce((n, m) => n + (m.points?.length ?? 1), 0), "marker icons");
       await wait(500); // tiles fade in after loading
-      await shot(`draft-${draft}`);
+      await shot(`map-${other}`);
     });
   }
 

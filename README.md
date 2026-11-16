@@ -6,9 +6,9 @@ Live site: <https://gnbezerra.github.io/soul-land-map/>. Repository: <https://gi
 Documentation for contributors and agents: [`CLAUDE.md`](CLAUDE.md) (rules and current decisions),
 [`docs/SPEC.md`](docs/SPEC.md) (design) and [`docs/ROADMAP.md`](docs/ROADMAP.md) (current state, next steps).
 
-Current state: the Nuoding map is calibrated and fully mapped (339 markers); data pipeline, filter sidebar
-with counters, popups, found tracking with backup, en/pt/zh UI and a responsive layout. See the roadmap for
-what comes next.
+Current state: two regions, Nuoding (339 markers) and Suotuo (331 markers, from the game tables); data
+pipeline, filter sidebar with counters, popups, found tracking with backup, en/pt/zh UI and a responsive
+layout. See the roadmap for what comes next.
 
 ## Running it
 
