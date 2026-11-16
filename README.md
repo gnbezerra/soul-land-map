@@ -325,7 +325,8 @@ task or a mount (Ownerless Objects is one).
 - "Only this" (the target button on every group and type, `js/filters.js`) shows that category alone; a bar
   above the filters names it and has "Back". A second click or "Back" restores the filter from before, also
   after a reload (`settings.solo` per map, next to `settings.hidden`); a checkbox ends it and keeps what is on
-  screen.
+  screen. While the sidebar is closed (a phone, or "Hide filters"), a chip at the top of the map says the same,
+  with its own "Back", centered right of the zoom control; a name too long for it ends in "...".
 - UI texts live in `i18n/<lang>.json` (flat keys), entry names in `i18n/entries.<map>.<lang>.json` and
   marker names, notes and howtos in `i18n/markers.<map>.<lang>.json`.
   Missing keys fall back to English. To add a language, create `i18n/<lang>.json` with the keys of

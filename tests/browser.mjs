@@ -229,6 +229,15 @@ async function shot(name) {
   writeFileSync(join(SHOTS, `${name}.png`), Buffer.from(result.data, "base64"));
 }
 
+// Screenshot of the "only this" chip turned on (Divine Mind Crystals), then off again.
+async function shotChip(lang) {
+  if (!SHOTS) return;
+  await ev(`document.querySelector('.solo[data-types="crystal"]').click()`);
+  await wait(300);
+  await shot(`mobile-solo-chip-${lang}`);
+  await ev(`document.querySelector(".solo-chip button").click()`);
+}
+
 const ICONS = `[...document.querySelectorAll(".leaflet-marker-icon")]`;
 const iconsOf = (type) => `${ICONS}.filter((e) => e.querySelector("[data-type]")?.dataset.type === "${type}")`;
 const TRIAL_ICONS = iconsOf("divine_trial");
@@ -484,6 +493,52 @@ try {
     equal(await until(`${POPUP}?.querySelector("strong")?.textContent`, "the trial's popup"), names[firstId].name, "the popup's full name");
     await closePopup();
   });
+
+  // The "only this" chip on the map: on a phone, only while the sidebar is closed, in each language, clear of
+  // the zoom control; every category's name is measured on it (a name too long ends in "...").
+  for (const lang of ["en", "pt", "zh"]) {
+    await check(`only this chip (${lang}): on the map while the sidebar is closed, Back works`, async () => {
+      await viewport(390, 844, true);
+      await freshLoad(`?lang=${lang}`);
+      const ui = { ...json("i18n/en.json"), ...json(`i18n/${lang}.json`) };
+      const chipShown = () => ev(`getComputedStyle(document.querySelector(".solo-chip-lane")).display !== "none"`);
+      const drawerOpen = () => ev(`!document.body.classList.contains("sidebar-hidden")`);
+      if (await drawerOpen()) throw new Error("the sidebar starts open on a phone");
+      equal(await chipShown(), false, "no chip before only this");
+      await ev(`document.getElementById("sidebar-toggle").click()`);
+      await ev(`document.querySelector('.solo[data-types="crystal"]').click()`);
+      equal(await chipShown(), false, "no chip while the sidebar is open");
+      await ev(`document.getElementById("sidebar-toggle").click()`);
+      equal(await chipShown(), true, "the chip once the sidebar is closed");
+      const name = ui["group.divine_mind_crystal"];
+      equal(await ev(`document.querySelector(".solo-chip .what").textContent`), ui["ui.soloChip"].replace("{name}", name), "its text");
+      equal(await ev(`document.querySelector(".solo-chip button").textContent`), ui["ui.soloBack"], "its button");
+      const gap = await ev(`document.querySelector(".solo-chip").getBoundingClientRect().left - document.querySelector(".leaflet-control-zoom").getBoundingClientRect().right`);
+      if (gap < 4) throw new Error(`the chip is ${gap.toFixed(1)} px from the zoom control`);
+      // Every category's name on the chip: which ones end in "..." at this width.
+      const cut = await ev(`(() => {
+        const cut = [];
+        const back = document.querySelector(".solo-chip button");
+        for (const b of document.querySelectorAll(".solo")) {
+          b.click();
+          const what = document.querySelector(".solo-chip .what");
+          if (what.scrollWidth > what.clientWidth + 1) cut.push(what.textContent);
+          const chip = document.querySelector(".solo-chip").getBoundingClientRect();
+          if (chip.right > innerWidth - 9) cut.push("OUTSIDE " + what.textContent);
+        }
+        back.click();
+        return cut;
+      })()`);
+      if (cut.some((x) => x.startsWith("OUTSIDE"))) throw new Error(`chip past the screen edge: ${cut.join(" | ")}`);
+      console.log(`      names cut short on a 390 px screen: ${cut.length ? cut.join(" | ") : "none"}`);
+      await ev(`document.querySelector('.solo[data-types="crystal"]').click()`);
+      await ev(`document.querySelector(".solo-chip button").click()`);
+      equal(await chipShown(), false, "Back hides the chip");
+      equal(await ev(`document.querySelector(".solo-bar").hidden`), true, "and ends only this");
+      await shotChip(lang);
+    });
+  }
+  await viewport(1280, 800, false);
 
   await check("deep link: opens the marker on load, and the address follows the open popup", async () => {
     await freshLoad("?lang=pt");

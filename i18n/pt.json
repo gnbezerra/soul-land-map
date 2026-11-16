@@ -12,6 +12,7 @@
   "ui.solo": "Mostrar só esta",
   "ui.soloShowing": "Mostrando só:",
   "ui.soloBack": "Voltar",
+  "ui.soloChip": "Só: {name}",
   "ui.countHint": "Encontrados / total no jogo",
   "ui.noCalibration": "Calibração incompleta em data/maps.json: preencha offsetX e offsetY.",
   "ui.hover": "Mova o cursor sobre o mapa",

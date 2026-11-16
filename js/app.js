@@ -331,6 +331,7 @@ if (!calibrated) {
 
   const sidebar = createSidebar({
     container: document.getElementById("sidebar"),
+    chipHost: document.getElementById("map-wrap"),
     model,
     milestones: cfg.exploration?.milestones ?? [],
     i18n,

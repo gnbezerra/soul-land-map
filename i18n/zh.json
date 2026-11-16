@@ -12,6 +12,7 @@
   "ui.solo": "只显示此项",
   "ui.soloShowing": "仅显示：",
   "ui.soloBack": "返回",
+  "ui.soloChip": "仅：{name}",
   "ui.countHint": "已找到 / 游戏内总数",
   "ui.noCalibration": "data/maps.json 中的校准信息不完整：请填写 offsetX 和 offsetY。",
   "ui.hover": "将光标移到地图上",

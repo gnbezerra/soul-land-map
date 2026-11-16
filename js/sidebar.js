@@ -13,10 +13,11 @@ import { hasItemList, typeItems } from "./items.js";
 //   onFocusEntry(entryId, typeId)        onFocusMarker(markerId, typeId)
 //   itemProgress(markerId) -> [done, total]
 //   onExport()                           onImport(file)
+// `chipHost`: where the "only this" chip goes (the map), shown by CSS only while the sidebar is closed.
 // `milestones`: the map's exploration reward milestones (data/maps.json), drawn on the exploration bar.
 // Call refresh() after visibility changes and refreshCounts() after progress changes.
 export function createSidebar({
-  container, model, markers = [], milestones = [], i18n, isVisible, onToggle, getSolo = () => null, onSolo,
+  container, chipHost, model, markers = [], milestones = [], i18n, isVisible, onToggle, getSolo = () => null, onSolo,
   onSoloBack, isHideFound, onHideFound, onFocusEntry, onFocusMarker, itemProgress, onExport, onImport,
 }) {
   const typeInputs = new Map();
@@ -122,11 +123,19 @@ export function createSidebar({
     return h("div", { class: "block" }, line, ...group.types.map((type) => typeBlock(type, t(`type.${type.id}`), true)));
   }
 
-  // While "only this" is on: what is shown, and the way back.
+  // While "only this" is on: what is shown, and the way back, in the sidebar and, while the sidebar is
+  // closed, on a chip at the top of the map.
   const soloName = h("b");
   const soloBar = h("div", { class: "solo-bar", role: "status", hidden: true },
     h("span", { class: "what" }, t("ui.soloShowing"), " ", soloName),
     h("button", { type: "button", onclick: () => onSoloBack() }, t("ui.soloBack")));
+  const chipText = h("span", { class: "what" });
+  const chipIcon = h("span", { class: "solo-chip-ic" });
+  chipIcon.innerHTML = TARGET;
+  const chip = h("div", { class: "solo-chip-lane", hidden: true },
+    h("div", { class: "solo-chip", role: "status" }, chipIcon, chipText,
+      h("button", { type: "button", onclick: () => onSoloBack() }, t("ui.soloBack"))));
+  chipHost?.append(chip);
 
   // Exploration value in the game's points, with the reward milestones as marks on the bar, the next
   // reward below it and the scoring rules behind the (i) button (js/exploration.js). Only categories
@@ -236,7 +245,13 @@ export function createSidebar({
       el.setAttribute("aria-pressed", String(on));
     }
     soloBar.hidden = !solo;
-    if (solo) soloName.textContent = labels.get([...solo.types].sort().join(" ")) ?? solo.types.join(", ");
+    chip.hidden = !solo;
+    if (solo) {
+      const name = labels.get([...solo.types].sort().join(" ")) ?? solo.types.join(", ");
+      soloName.textContent = name;
+      chipText.textContent = i18n.tf("ui.soloChip", { name });
+      chipText.title = chipText.textContent; // the whole name, when it ends in "..."
+    }
   }
   refresh();
   refreshCounts();

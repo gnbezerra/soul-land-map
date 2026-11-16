@@ -282,6 +282,68 @@ body.sidebar-hidden #sidebar {
   font-size: 12.5px;
 }
 
+/* The same, on the map while the sidebar is closed: centered in the free space right of the +/- control
+   (10 px margin, the control, 10 px gap), so it never covers it; a name too long ends in "...". */
+.solo-chip-lane {
+  position: absolute;
+  top: 10px;
+  left: 54px;
+  right: 10px;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.solo-chip-lane[hidden],
+body:not(.sidebar-hidden) .solo-chip-lane {
+  display: none;
+}
+
+.solo-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  padding: 4px 4px 4px 10px;
+  border: 1px solid #5a4416;
+  border-radius: 18px;
+  background: #2a2110ee;
+  box-shadow: 0 2px 8px #0008;
+  color: var(--text);
+  font-size: 13px;
+  white-space: nowrap;
+  pointer-events: auto;
+}
+
+.solo-chip-ic {
+  display: flex;
+  flex: none;
+  color: var(--accent);
+}
+
+.solo-chip-ic svg {
+  width: 14px;
+  height: 14px;
+}
+
+.solo-chip .what {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.solo-chip button {
+  flex: none;
+  min-height: 28px;
+  padding: 0 12px;
+  border: 1px solid #5a4416;
+  border-radius: 14px;
+  background: none;
+  color: var(--accent);
+  font-size: 13px;
+}
+
 /* The number that tells apart items the game gives the same name (three "Totem" trials). */
 .entry-n {
   color: #7d8ea3;
@@ -558,8 +620,13 @@ body.sidebar-hidden #sidebar {
     height: 40px;
   }
 
-  .solo-bar button {
+  .solo-bar button,
+  .solo-chip button {
     min-height: 32px;
+  }
+
+  .solo-chip-lane {
+    left: 62px;
   }
 
   .entry {
