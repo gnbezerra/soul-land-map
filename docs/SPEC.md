@@ -187,6 +187,15 @@ visible), `howto` (own text in `marker_texts.csv`, behind a "show solution" butt
 the game's Answer button is not stored: its locations are the markers themselves, and anything else worth
 keeping goes into the `howto`. Progress is by marker id.
 
+When the trigger points are markers of their own, the encounter does not sit on them: two icons at the same
+X/Y would stack and the bigger encounter icon would hide the other marker and take its clicks. Suotuo's
+Ownerless Objects is triggered by opening three specific normal chests, in any order (each drops a metal
+plate; the third starts it), and completes when the plates are handed to the blacksmith, which is also when
+it counts. Decided with the owner (2026-11-16): the encounter is one point at the blacksmith, its `links`
+name the three chests (filled on the encounter only; the UI shows the relation both ways), the chests stay
+ordinary normal chests in their own entries, and the steps go into its `howto`. Animal Protection keeps its
+three points because the cages are nothing else.
+
 ### 4.8 Rewards, items and loot (not implemented yet)
 
 A reward list accepts fixed (`item`, `qty`), independent random (`chance`) and exclusive choice (`oneOf` with

@@ -13,7 +13,8 @@ Working, and verified by the owner in a real browser (Chrome, DevTools mobile em
   map, committed JSON equal to a fresh build, pipeline, unit and browser tests. On `main` it then deploys the
   repo as is to Pages, so a push that fails the checks leaves the previous site up.
 - Nuoding City Area map: 4096² image in 256 px tiles (zoom 0–4, `maxZoom` 5), calibrated, coordinate readout.
-- Suotuo City Area: 2048² image in tiles (zoom 0–3, `maxZoom` 5), calibrated (RMS 2.6 px, see README), as a
+- Suotuo City Area: 2048² image in tiles (zoom 0–3, `maxZoom` 5), calibrated (RMS 2.6 px, see README;
+  checked by the owner in-game on 2026-11-16: exact or 1 game unit off), as a
   draft map: reachable at `#suotuo` only, not in the region selector, with header-only CSVs in
   `data/src/suotuo/` waiting for the owner's data.
 - Zoom: fractional fit zoom as `minZoom`, slow wheel (`wheelPxPerZoomLevel` 120), +/- snap to multiples of 0.5.
@@ -64,12 +65,15 @@ players more and rewards need a lot of data collected in-game.
    next on it: the owner's data in `data/src/suotuo/`, a check of the calibration against known markers,
    the marker density at full size (see "Known gaps"), its exploration milestones and reference counts
    (SPEC §11), then dropping `draft`. Five of the eight regions' images are 2048², three are 4096².
-2. **Tags in the sidebar**, then a tag filter (e.g. only the chests that need the grappling hook; the tags
-   are in the data already). Needs a preview. Later: `links` between related markers (none in the data yet).
-3. **Rewards/items/loot** (SPEC §4.8), popup rewards with icons, including the Divine Trial layer rewards.
-4. **Icon leftovers**, when they come up: sprites for `seed` (candidate `dt_icon_cz`), `mechanism` and `arena`
+2. **`links` in the popup**, needed by Suotuo's Ownerless Objects (SPEC §4.7): the encounter's popup lists
+   its three chests (found or not, "show on map"), each chest's popup names the encounter. Needs a preview;
+   it can be done while the owner collects Suotuo's data, which does not depend on it.
+3. **Tags in the sidebar**, then a tag filter (e.g. only the chests that need the grappling hook; the tags
+   are in the data already). Needs a preview.
+4. **Rewards/items/loot** (SPEC §4.8), popup rewards with icons, including the Divine Trial layer rewards.
+5. **Icon leftovers**, when they come up: sprites for `seed` (candidate `dt_icon_cz`), `mechanism` and `arena`
    when those regions arrive; sharper major icons on 2x screens if the softness shows (see "Known gaps").
-5. Dragon Island (Combat/Safe toggle, species filter) last.
+6. Dragon Island (Combat/Safe toggle, species filter) last.
 
 ## Waiting on the owner
 
