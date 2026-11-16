@@ -1,7 +1,7 @@
 # Roadmap and handoff
 
 Read order for a new agent: `README.md` (run it, data pipeline) → `CLAUDE.md` (rules) →
-`docs/SPEC.md` (design) → this file (state and next steps). Last updated: 2026-11-15.
+`docs/SPEC.md` (design) → this file (state and next steps). Last updated: 2026-11-16.
 
 ## Current state
 
@@ -13,6 +13,9 @@ Working, and verified by the owner in a real browser (Chrome, DevTools mobile em
   map, committed JSON equal to a fresh build, pipeline, unit and browser tests. On `main` it then deploys the
   repo as is to Pages, so a push that fails the checks leaves the previous site up.
 - Nuoding City Area map: 4096² image in 256 px tiles (zoom 0–4, `maxZoom` 5), calibrated, coordinate readout.
+- Suotuo City Area: 2048² image in tiles (zoom 0–3, `maxZoom` 5), calibrated (RMS 2.6 px, see README), as a
+  draft map: reachable at `#suotuo` only, not in the region selector, with header-only CSVs in
+  `data/src/suotuo/` waiting for the owner's data.
 - Zoom: fractional fit zoom as `minZoom`, slow wheel (`wheelPxPerZoomLevel` 120), +/- snap to multiples of 0.5.
 - Data pipeline CSV → JSON (`tools/build_data.py`), with validation and id stability checks.
 - Data: Nuoding is fully mapped. 337 markers (264 normal chests, 16 decryption chests, 10 Divine Trials with
@@ -57,9 +60,10 @@ Order agreed with the owner on 2026-11-15: the next region comes before rewards,
 players more and rewards need a lot of data collected in-game.
 
 1. **Other regions**, one at a time, each needing a map image, tiles, calibration points (~10), `maps.json`
-   entry, and CSVs. Region ids/names still to be fixed with the owner. Suotuo first (Nuoding already has a
-   portal to it); the site side (tiles, `maps.json`, pipeline and test changes) can start while the owner
-   collects the data.
+   entry (as a draft until its data is in), and CSVs. Suotuo is in as a draft (tiles, calibration, names);
+   next on it: the owner's data in `data/src/suotuo/`, a check of the calibration against known markers,
+   the marker density at full size (see "Known gaps"), its exploration milestones and reference counts
+   (SPEC §11), then dropping `draft`. Five of the eight regions' images are 2048², three are 4096².
 2. **Tags in the sidebar**, then a tag filter (e.g. only the chests that need the grappling hook; the tags
    are in the data already). Needs a preview. Later: `links` between related markers (none in the data yet).
 3. **Rewards/items/loot** (SPEC §4.8), popup rewards with icons, including the Divine Trial layer rewards.
@@ -71,14 +75,20 @@ players more and rewards need a lot of data collected in-game.
 
 - Recommended CP of the combat trial stages. It needs a new character leveled to each stage's requirement,
   so it takes days of play. `cp` is optional in `stages.csv` meanwhile and the build lists the missing stages.
-- Map images and calibration points for other regions.
+- Suotuo's data (CSVs), its exploration reward milestones and category totals; map images and calibration
+  points for the regions after it.
 - Two Mixed Area PT descriptions that were cut off in screenshots.
 - Native review of the ZH UI strings.
 
 ## Known gaps and notes
 
-- Expected `build_data.py nuoding --check` warnings today: the portal to `suotuo` (map not added yet) and
-  the combat trial stages without a recommended CP yet.
+- Expected `build_data.py nuoding --check` warnings today: the combat trial stages without a recommended CP
+  yet. `suotuo --check` has none (no data yet).
+- Marker size follows the tile zoom (full size from `maxNativeZoom` up), not the game's scale. Suotuo has
+  1.65 image px per game unit at its native zoom against Nuoding's 3.57, so at full size its markers sit
+  about 2.2 times closer together on screen. Look at it once Suotuo has markers; if it crowds, base the
+  marker scale (and the zooms that frame markers) on px per game unit instead of the native zoom.
+- A map with no data shows an empty sidebar and `0/0` exploration value (only a draft map, today).
 - `type.book/mechanism/portal/boss/arena` UI keys exist only in `en.json` on purpose (fallback to English).
 - Unused leftover PT/ZH strings were cut off in the game UI ("Rec.", "Adicionar"); do not rely on them.
 - The official PT texts are translated from Chinese and are not consistent with the English names; keep them

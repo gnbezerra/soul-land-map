@@ -6,6 +6,7 @@ import {
 import { detectLang, loadI18n, loadLanguages } from "./i18n.js";
 import { buildModel, applyProgress, countProgress } from "./model.js";
 import { parseHash, mapHash, markerHash, markerLink } from "./links.js";
+import { selectableMaps } from "./maps.js";
 import { stageCounts, setTrialProgress, migrateFoundTrials } from "./trials.js";
 import { createLayers } from "./layers.js";
 import { createSidebar } from "./sidebar.js";
@@ -34,10 +35,11 @@ document.documentElement.lang = lang;
 document.title = t("ui.title");
 document.getElementById("title").textContent = t("ui.title");
 
-// Region selector. Switching reloads the page, which is enough while there is one map.
+// Region selector. Switching reloads the page, which is enough for a handful of maps. Draft maps are
+// left out unless they are the current one (js/maps.js).
 const select = document.getElementById("map-select");
 select.setAttribute("aria-label", t("ui.region"));
-for (const id of Object.keys(maps)) {
+for (const id of selectableMaps(maps, mapId)) {
   select.append(new Option(t(`map.${id}`, id), id, false, id === mapId));
 }
 select.addEventListener("change", () => {

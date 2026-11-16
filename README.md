@@ -32,7 +32,7 @@ Map images are not committed (`maps/` is ignored; only the generated tiles are p
 the tiles after the map image changes (341 files, ~5.6 MB for a 4096x4096 image):
 
 1. `pip install pillow`
-2. `python tools/make_tiles.py maps/nuoding.png tiles/nuoding`
+2. `python tools/make_tiles.py maps/nuoding.png tiles/nuoding` (Suotuo: 2048x2048, 85 files, ~1.1 MB)
 
 Regenerate tiles only when the image changes: another Pillow version may encode different bytes and bloat
 the history. Leaflet lives in `vendor/leaflet` (`leaflet.js`, `leaflet.css`, `LICENSE`; its PNG images are
@@ -51,9 +51,21 @@ run `python tools/make_favicon.py` (Pillow) to rebuild `favicon.ico` and `apple-
 
 ## Calibration
 
-`data/maps.json` holds `scaleX`/`scaleY` (±25/7; game Y grows upwards, image pixel Y grows downwards) and
-`offsetX`/`offsetY` (currently 428.5714285714 and 3657.142857142 for Nuoding, RMS 0.37 px over 11 points).
-A new map needs its own offsets.
+`data/maps.json` holds `scaleX`/`scaleY` (game Y grows upwards, image pixel Y grows downwards, hence the
+negative `scaleY`) and `offsetX`/`offsetY`, fitted per map:
+
+| Map | Image | Scale (px per game unit) | Offsets | Fit |
+|---|---|---|---|---|
+| Nuoding | 4096² | ±25/7 (3.571) | 428.571, 3657.143 | RMS 0.37 px over 11 points |
+| Suotuo | 2048² | 1.644 / −1.648 | 296.627, 1752.758 | RMS 2.6 px (about 1.6 game units), worst 4.8 px, over 10 points |
+
+Suotuo's points are less precise: in that region the game's own map draws the character a few pixels off
+from where the surroundings say it is. More points, or checking known markers once they exist, can refine
+it without touching any marker (markers store game coordinates).
+
+A map that is still being collected has `"draft": true` in `maps.json`: its link (`#<map>`) opens it, but
+the region selector lists it only while it is the current map (`js/maps.js`), so players do not land on an
+empty map. Remove the flag when the map has its data.
 
 - The readout in the bottom-left corner shows game coordinates; a click pins the reading (also logged to the
   console). With offsets set to `null` it shows image pixels only.

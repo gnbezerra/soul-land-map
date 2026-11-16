@@ -715,6 +715,27 @@ try {
     await viewport(1280, 800, false);
   });
 
+  // Maps marked "draft" in data/maps.json: their link opens them, but the region selector lists them only
+  // while they are the current map.
+  const allMaps = json("data/maps.json");
+  const drafts = Object.keys(allMaps).filter((id) => allMaps[id].draft);
+  const mapOptions = () => ev(`[...document.querySelectorAll("#map-select option")].map((o) => o.value + (o.selected ? "*" : ""))`);
+  for (const draft of drafts) {
+    await check(`draft map ${draft}: opens by its link, listed in the selector only there`, async () => {
+      await load("?lang=en");
+      if ((await mapOptions()).includes(draft)) throw new Error(`${draft} is offered on ${MAP}`);
+      await ev(`window.__stale = true`);
+      await send("Page.navigate", { url: `${BASE}?lang=pt#${draft}` });
+      await until(`!window.__stale && [...document.querySelectorAll(".leaflet-tile")].some((t) => t.complete && t.naturalWidth > 0 && t.src.includes("tiles/${draft}/"))`,
+        `${draft}'s tiles`, 10000);
+      equal(await mapOptions(), Object.keys(allMaps).map((id) => id + (id === draft ? "*" : "")), "selector on the draft map");
+      equal(await ev(`document.querySelector("#map-select option:checked").textContent`), json("i18n/pt.json")[`map.${draft}`] ?? draft, "its name");
+      equal(await ev(`document.querySelectorAll(".leaflet-marker-icon").length`), (json(`data/markers/${draft}.json`) ?? []).length, "markers");
+      await wait(500); // tiles fade in after loading
+      await shot(`draft-${draft}`);
+    });
+  }
+
   await check("no console errors or failed requests", async () => {
     // favicon and every file the site asked for loaded; nothing was logged as an error or warning
     if (pageErrors.length) throw new Error([...new Set(pageErrors)].join("\n"));
