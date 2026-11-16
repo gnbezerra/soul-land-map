@@ -53,23 +53,23 @@
   },
   "hidden-valley": {
     "name": "神隐之谷宝箱",
-    "description": "圣魂村东北部,有一处荫蔽的山谷(神隐之谷),找到附近散落的初级宝箱。"
+    "description": "圣魂村东北部，有一处荫蔽的山谷（神隐之谷），找到附近散落的初级宝箱。"
   },
   "guardian": {
     "name": "守护宝箱",
-    "description": "拿到地图内所有被怪物守护的宝箱!"
+    "description": "拿到地图内所有被怪物守护的宝箱！"
   },
   "tang-sect-1": {
     "name": "唐门宝箱一",
-    "description": "使用钩爪,找到地图内所有散落的唐门宝箱。"
+    "description": "使用钩爪，找到地图内所有散落的唐门宝箱。"
   },
   "tang-sect-2": {
     "name": "唐门宝箱二",
-    "description": "使用紫极魔瞳,找到地图内所有散落的变形唐门宝箱。"
+    "description": "使用紫极魔瞳，找到地图内所有散落的变形唐门宝箱。"
   },
   "tang-sect-3": {
     "name": "唐门宝箱三",
-    "description": "使用紫极魔瞳,找到地图内所有散落的隐形唐门宝箱。"
+    "description": "使用紫极魔瞳，找到地图内所有散落的隐形唐门宝箱。"
   },
   "hidden-1": {
     "name": "遮蔽宝箱一",
@@ -81,67 +81,67 @@
   },
   "coop-1": {
     "name": "合作宝箱一",
-    "description": "找到诺丁学院附近的宝箱,与其他魂师合作开启宝箱。"
+    "description": "找到诺丁学院附近的宝箱，与其他魂师合作开启宝箱。"
   },
   "coop-2": {
     "name": "合作宝箱二",
-    "description": "找到诺丁学院的宝箱,与其他魂师合作开启宝箱。"
+    "description": "找到诺丁学院的宝箱，与其他魂师合作开启宝箱。"
   },
   "coop-3": {
     "name": "合作宝箱三",
-    "description": "找到浮金溪滩的高级宝箱,与其他魂师合作开启宝箱。"
+    "description": "找到浮金溪滩的高级宝箱，与其他魂师合作开启宝箱。"
   },
   "coop-4": {
     "name": "合作宝箱四",
-    "description": "找到圣魂村北的高级宝箱,与其他魂师合作开启宝箱。"
+    "description": "找到圣魂村北的高级宝箱，与其他魂师合作开启宝箱。"
   },
   "pillar-empty-path-1": {
     "name": "空行之柱一",
-    "description": "通过空行之柱,找到圣魂山隐藏的高级宝箱。"
+    "description": "通过空行之柱，找到圣魂山隐藏的高级宝箱。"
   },
   "pillar-empty-path-2": {
     "name": "空行之柱二",
-    "description": "通过空行之柱,找到圣魂村东隐藏的高级宝箱。"
+    "description": "通过空行之柱，找到圣魂村东隐藏的高级宝箱。"
   },
   "pillar-empty-path-3": {
     "name": "空行之柱三",
-    "description": "通过空行之柱,找到浮金溪滩隐藏的高级宝箱。"
+    "description": "通过空行之柱，找到浮金溪滩隐藏的高级宝箱。"
   },
   "pillar-empty-path-4": {
     "name": "空行之柱四",
-    "description": "通过空行之柱,找到圣魂村东隐藏的高级宝箱。"
+    "description": "通过空行之柱，找到圣魂村东隐藏的高级宝箱。"
   },
   "pillar-empty-path-5": {
     "name": "空行之柱五",
-    "description": "通过空行之柱,找到圣魂村北隐藏的高级宝箱。"
+    "description": "通过空行之柱，找到圣魂村北隐藏的高级宝箱。"
   },
   "pillar-empty-path-6": {
     "name": "空行之柱六",
-    "description": "通过空行之柱,找到圣魂村北隐藏的高级宝箱。"
+    "description": "通过空行之柱，找到圣魂村北隐藏的高级宝箱。"
   },
   "dragonwood-coffer-1": {
     "name": "龙木契匣一",
-    "description": "有神明取东方龙木之精,结为神契,用以守护珍贵之物。神契牢不可破,唯有寻得契石,方能解开。"
+    "description": "有神明取东方龙木之精，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
   },
   "dragonwood-coffer-2": {
     "name": "龙木契匣二",
-    "description": "有神明取东方龙木之精,结为神契,用以守护珍贵之物。神契牢不可破,唯有寻得契石,方能解开。"
+    "description": "有神明取东方龙木之精，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
   },
   "dragonwood-coffer-3": {
     "name": "龙木契匣三",
-    "description": "有神明取东方龙木之精,结为神契,用以守护珍贵之物。神契牢不可破,唯有寻得契石,方能解开。"
+    "description": "有神明取东方龙木之精，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
   },
   "desolate-flame-coffer-1": {
     "name": "荒炎契匣一",
-    "description": "有神明取西方荒炎之火,结为神契,用以守护珍贵之物。神契牢不可破,唯有寻得契石,方能解开。"
+    "description": "有神明取西方荒炎之火，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
   },
   "desolate-flame-coffer-2": {
     "name": "荒炎契匣二",
-    "description": "有神明取西方荒炎之火,结为神契,用以守护珍贵之物。神契牢不可破,唯有寻得契石,方能解开。"
+    "description": "有神明取西方荒炎之火，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
   },
   "mysterious-frost-coffer-1": {
     "name": "玄霜契匣一",
-    "description": "有神明取极北玄霜之气,结为神契,用以守护珍贵之物。神契牢不可破,唯有寻得契石,方能解开。"
+    "description": "有神明取极北玄霜之气，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
   },
   "wind-rest-plains-crystal": {
     "name": "风息平原结晶",
@@ -181,14 +181,14 @@
   },
   "lost-in-the-maze": {
     "name": "迷火记",
-    "description": "诺丁城深处有宝藏,无数人趋之若鹜"
+    "description": "诺丁城深处有宝藏，无数人趋之若鹜"
   },
   "market-games": {
     "name": "集市游戏",
-    "description": "诺丁学院门口的集市,经常有好玩的小游戏"
+    "description": "诺丁学院门口的集市，经常有好玩的小游戏"
   },
   "light-up-teleport": {
-    "name": "点亮!传送",
+    "name": "点亮！传送",
     "description": "点亮地图上所有的传送点。"
   },
   "enjoy-the-scenery": {

@@ -33,7 +33,7 @@
     "name": "Provação da Força: Pena do Vento"
   },
   "nuoding-0283": {
-    "name": "Prova da Sabedoria: Caminho Sem Arrependimentos"
+    "name": "Prova da Sabedoria: Caminho sem Arrependimentos"
   },
   "nuoding-0284": {
     "name": "Provação da Força: Equilíbrio de Gelo e Fogo"
@@ -116,5 +116,11 @@
   "nuoding-0337": {
     "name": "Academia de Nuoding: Uma Crônica da Escola",
     "note": "Volume 3 da série \"Lendas Históricas\""
+  },
+  "nuoding-0338": {
+    "name": "Hino à Deusa"
+  },
+  "nuoding-0339": {
+    "name": "Mistérios Revelados: Volume de Nuoding do Santuário"
   }
 }

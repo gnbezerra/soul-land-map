@@ -49,7 +49,7 @@
   },
   "nuoding-outskirts": {
     "name": "Nuoding Outskirts Chest",
-    "description": "Find the primary chests scattered in the outskirts of Nuoding City."
+    "description": "Discover the primary chests scattered in the outskirts of Nuoding City."
   },
   "hidden-valley": {
     "name": "Hidden Valley Chest",
@@ -73,11 +73,11 @@
   },
   "hidden-1": {
     "name": "Hidden Chest I",
-    "description": "Find the hidden chests scattered around Nuoding."
+    "description": "Find all hidden chests scattered around Nuoding"
   },
   "hidden-2": {
     "name": "Hidden Chest II",
-    "description": "Find the hidden chests scattered around Nuoding."
+    "description": "Find all hidden chests scattered around Nuoding"
   },
   "coop-1": {
     "name": "Cooperative Chest One",
@@ -101,7 +101,7 @@
   },
   "pillar-empty-path-2": {
     "name": "Pillar of Empty Path II",
-    "description": "Use the Pillar of Empty Path to find the hidden advanced chest at the east of Soul Mountain."
+    "description": "Use the Pillar of Empty Path to find the hidden advanced chest at the east of Soul Village."
   },
   "pillar-empty-path-3": {
     "name": "Pillar of Empty Path Three",
