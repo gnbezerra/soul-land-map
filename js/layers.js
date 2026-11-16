@@ -462,6 +462,17 @@ export function createLayers({
       record.marker.openPopup();
       return true;
     },
+    // From the sidebar's item list: a marker with one point opens as from a deep link; one with several
+    // points (some encounters) frames them all first, then opens on its first point.
+    focusMarker(markerId) {
+      const records = recordsById.get(markerId);
+      if (!records?.length) return false;
+      if (records.length === 1) return this.openMarker(markerId);
+      for (const r of records) if (!r.group.hasLayer(r.marker)) r.group.addLayer(r.marker);
+      map.fitBounds(L.latLngBounds(records.map((r) => r.marker.getLatLng())).pad(0.3), { maxZoom: nativeZoom + 1, animate: false });
+      records[0].marker.openPopup();
+      return true;
+    },
     typeOf(markerId) {
       return recordsById.get(markerId)?.[0]?.m.type ?? null;
     },

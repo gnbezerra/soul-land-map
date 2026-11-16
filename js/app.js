@@ -7,9 +7,10 @@ import { detectLang, loadI18n, loadLanguages } from "./i18n.js";
 import { buildModel, applyProgress, countProgress } from "./model.js";
 import { parseHash, mapHash, markerHash, markerLink } from "./links.js";
 import { selectableMaps } from "./maps.js";
-import { stageCounts, setTrialProgress, migrateFoundTrials } from "./trials.js";
+import { stageCounts, stagesDone, setTrialProgress, migrateFoundTrials } from "./trials.js";
 import { createLayers } from "./layers.js";
 import { createSidebar } from "./sidebar.js";
+import { toggleSolo, endSolo, cleanSolo } from "./filters.js";
 
 const settings = loadSettings();
 const maps = await fetchJson("data/maps.json");
@@ -246,18 +247,36 @@ if (!calibrated) {
   const migrated = migrateTrials(found, trials);
   applyProgress(model, found, trials);
   layers.setHideFound(hideFound);
-  // Hidden types are stored (not visible ones), so new types default to visible.
-  const hidden = new Set(settings.hidden?.[mapId] ?? []);
+  // Hidden types are stored (not visible ones), so new types default to visible. "Only this" (solo) is
+  // stored too, with the filter it replaced (js/filters.js).
+  let hidden = new Set(settings.hidden?.[mapId] ?? []);
+  const allTypeIds = model.groups.flatMap((g) => g.types.map((x) => x.id));
+  let solo = cleanSolo(settings.solo?.[mapId], allTypeIds);
   for (const type of model.types.keys()) layers.setVisible(type, !hidden.has(type));
 
+  function saveFilters() {
+    settings.hidden = { ...settings.hidden, [mapId]: [...hidden] };
+    settings.solo = { ...settings.solo, [mapId]: solo };
+    saveSettings(settings);
+  }
+
+  // A checkbox (or anything that shows a type again) ends "only this": the filter on screen stays.
   function setTypes(typeIds, visible) {
     for (const type of typeIds) {
       if (visible) hidden.delete(type);
       else hidden.add(type);
       layers.setVisible(type, visible);
     }
-    settings.hidden = { ...settings.hidden, [mapId]: [...hidden] };
-    saveSettings(settings);
+    solo = null;
+    saveFilters();
+    sidebar.refresh();
+  }
+
+  function applyFilter(next) {
+    hidden = next.hidden;
+    solo = next.solo;
+    for (const type of model.types.keys()) layers.setVisible(type, !hidden.has(type));
+    saveFilters();
     sidebar.refresh();
   }
 
@@ -315,8 +334,12 @@ if (!calibrated) {
     model,
     milestones: cfg.exploration?.milestones ?? [],
     i18n,
+    markers,
     isVisible: (type) => !hidden.has(type),
     onToggle: setTypes,
+    getSolo: () => solo,
+    onSolo: (typeIds) => applyFilter(toggleSolo({ hidden, solo }, typeIds, allTypeIds)),
+    onSoloBack: () => applyFilter(endSolo(solo)),
     isHideFound: () => hideFound,
     onHideFound(value) {
       hideFound = value;
@@ -328,6 +351,15 @@ if (!calibrated) {
       if (hidden.has(typeId)) setTypes([typeId], true);
       layers.focusEntry(entryId);
       closeDrawerIfNarrow();
+    },
+    onFocusMarker(markerId, typeId) {
+      if (hidden.has(typeId)) setTypes([typeId], true);
+      closeDrawerIfNarrow();
+      layers.focusMarker(markerId);
+    },
+    itemProgress(markerId) {
+      const stages = trialStages.get(markerId);
+      return stages ? [stagesDone(trials[markerId], stages), stages] : [found.has(markerId) ? 1 : 0, 1];
     },
     onExport: exportBackup,
     onImport: importBackup,

@@ -317,6 +317,15 @@ task or a mount (Ownerless Objects is one).
   floating popup.
 - Entry lists (for example the chest sets) expand under their type. Clicking an entry frames and highlights
   its markers on the map, and shows the type again if it was hidden.
+- Small types whose entries are one marker each, or that have none, list their markers instead (`js/items.js`:
+  Divine Trials, encounters, books, each kind of decryption chest; at most `ITEM_LIST_MAX`, 20, and only when
+  every marker has a name or an entry, so portals are not listed). Clicking an item opens that marker, as a
+  click on the map would. Divine Trials drop their kind from the name ("Memory Link"), and repeated names get
+  a small number (1, 2, 3) in the data's order.
+- "Only this" (the target button on every group and type, `js/filters.js`) shows that category alone; a bar
+  above the filters names it and has "Back". A second click or "Back" restores the filter from before, also
+  after a reload (`settings.solo` per map, next to `settings.hidden`); a checkbox ends it and keeps what is on
+  screen.
 - UI texts live in `i18n/<lang>.json` (flat keys), entry names in `i18n/entries.<map>.<lang>.json` and
   marker names, notes and howtos in `i18n/markers.<map>.<lang>.json`.
   Missing keys fall back to English. To add a language, create `i18n/<lang>.json` with the keys of

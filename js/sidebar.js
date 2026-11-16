@@ -1,23 +1,31 @@
 import { h } from "./util.js";
 import { formatCount, isUnlisted, splitUnlisted } from "./model.js";
 import { milestoneMarks, milestoneStatus } from "./exploration.js";
+import { isSolo } from "./filters.js";
+import { hasItemList, typeItems } from "./items.js";
 
 // Renders the filter sidebar: one row per game category (group), nested rows for its
-// types when it has several, and an optional expandable list of exploration entries.
+// types when it has several, and an optional expandable list: of exploration entries (chest sets,
+// crystals), or of single markers for small types (trials, encounters, books; js/items.js).
 //   isVisible(typeId) -> boolean         onToggle(typeIds, visible)
+//   getSolo() -> solo | null             onSolo(typeIds)    onSoloBack()    ("only this", js/filters.js)
 //   isHideFound() -> boolean             onHideFound(hide)
-//   onFocusEntry(entryId, typeId)
+//   onFocusEntry(entryId, typeId)        onFocusMarker(markerId, typeId)
+//   itemProgress(markerId) -> [done, total]
 //   onExport()                           onImport(file)
 // `milestones`: the map's exploration reward milestones (data/maps.json), drawn on the exploration bar.
 // Call refresh() after visibility changes and refreshCounts() after progress changes.
 export function createSidebar({
-  container, model, milestones = [], i18n, isVisible, onToggle, isHideFound, onHideFound, onFocusEntry, onExport,
-  onImport,
+  container, model, markers = [], milestones = [], i18n, isVisible, onToggle, getSolo = () => null, onSolo,
+  onSoloBack, isHideFound, onHideFound, onFocusEntry, onFocusMarker, itemProgress, onExport, onImport,
 }) {
   const typeInputs = new Map();
   const groupInputs = [];
+  const soloButtons = []; // { el, typeIds }
+  const labels = new Map(); // sorted type ids -> label, for the "only this" bar
   const counters = []; // { el, read: () => [found, total] }
   const t = i18n.t;
+  const markersById = new Map(markers.map((m) => [m.id, m]));
 
   // The legend shows the marker's own sprite (with its badge sprite, if any); types without one keep the
   // colored dot.
@@ -31,6 +39,21 @@ export function createSidebar({
     return el;
   }
 
+  // "Only this": a target icon (an eye would read as "hide"), in a column of its own.
+  const TARGET = '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" '
+    + 'stroke="currentColor" stroke-width="1.6"/><circle cx="8" cy="8" r="2.4" fill="currentColor"/></svg>';
+  function soloButton(typeIds, label) {
+    labels.set([...typeIds].sort().join(" "), label);
+    const el = h("button", {
+      type: "button", class: "solo", title: t("ui.solo"), "aria-label": `${t("ui.solo")}: ${label}`, "aria-pressed": "false",
+      "data-types": typeIds.join(" "), onclick: () => onSolo(typeIds),
+    });
+    el.innerHTML = TARGET;
+    soloButtons.push({ el, typeIds });
+    return el;
+  }
+  const expanderSlot = () => h("span", { class: "expander-slot" });
+
   function typeCheckbox(type, label, nested) {
     const input = h("input", { type: "checkbox" });
     input.addEventListener("change", () => onToggle([type.id], input.checked));
@@ -40,19 +63,9 @@ export function createSidebar({
     return row;
   }
 
-  // Entries are listed only when some entry has more than one marker (e.g. chest sets). The site's own
-  // entries for what the game lists in no entry come last, after a separator (SPEC 4.3).
-  function entryList(type) {
-    if (!type.entries.some((e) => e.size > 1)) return null;
-    const { listed, unlisted } = splitUnlisted(type.entries);
-    const item = (e) => h("li", {},
-      h("button", { type: "button", class: `entry${isUnlisted(e) ? " unlisted" : ""}`, onclick: () => onFocusEntry(e.id, type.id) },
-        h("span", { class: "name" }, i18n.entry(e.id).name),
-        count(() => [e.found, e.size])));
-    const list = h("ul", { class: "entries", hidden: true },
-      ...listed.map(item),
-      ...(listed.length && unlisted.length ? [h("li", { class: "entries-sep", role: "presentation" })] : []),
-      ...unlisted.map(item));
+  // An expandable list under a type's row.
+  function expandable(items) {
+    const list = h("ul", { class: "entries", hidden: true }, ...items);
     const toggle = h("button", { type: "button", class: "expander", "aria-expanded": "false", title: t("ui.expand") }, "▸");
     toggle.addEventListener("click", () => {
       const open = list.hidden;
@@ -64,10 +77,37 @@ export function createSidebar({
     return { toggle, list };
   }
 
+  // Entries are listed when some entry has more than one marker (e.g. chest sets). The site's own
+  // entries for what the game lists in no entry come last, after a separator (SPEC 4.3).
+  function entryList(type) {
+    if (!type.entries.some((e) => e.size > 1)) return null;
+    const { listed, unlisted } = splitUnlisted(type.entries);
+    const item = (e) => h("li", {},
+      h("button", { type: "button", class: `entry${isUnlisted(e) ? " unlisted" : ""}`, onclick: () => onFocusEntry(e.id, type.id) },
+        h("span", { class: "name" }, i18n.entry(e.id).name),
+        count(() => [e.found, e.size])));
+    return expandable([
+      ...listed.map(item),
+      ...(listed.length && unlisted.length ? [h("li", { class: "entries-sep", role: "presentation" })] : []),
+      ...unlisted.map(item),
+    ]);
+  }
+
+  // Otherwise small types list their markers one by one; an item opens its marker.
+  function itemList(type) {
+    const ms = type.markerIds.map((id) => markersById.get(id)).filter(Boolean);
+    if (!onFocusMarker || !hasItemList(type, ms, i18n)) return null;
+    return expandable(typeItems(ms, i18n).map((item) => h("li", {},
+      h("button", { type: "button", class: "entry", "data-marker": item.id, onclick: () => onFocusMarker(item.id, type.id) },
+        h("span", { class: "name" }, item.label, ...(item.n ? [" ", h("span", { class: "entry-n" }, String(item.n))] : [])),
+        count(() => itemProgress(item.id))))));
+  }
+
   function typeBlock(type, label, nested) {
-    const entries = entryList(type);
-    const line = h("div", { class: "line" }, typeCheckbox(type, label, nested), ...(entries ? [entries.toggle] : []));
-    return h("div", { class: "block" }, line, ...(entries ? [entries.list] : []));
+    const list = entryList(type) ?? itemList(type);
+    const line = h("div", { class: "line" }, typeCheckbox(type, label, nested), soloButton([type.id], label),
+      list ? list.toggle : expanderSlot());
+    return h("div", { class: "block" }, line, ...(list ? [list.list] : []));
   }
 
   function groupBlock(group) {
@@ -78,8 +118,15 @@ export function createSidebar({
     input.addEventListener("change", () => onToggle(group.types.map((x) => x.id), input.checked));
     groupInputs.push({ input, group });
     const head = h("label", { class: "row group-head" }, input, h("span", { class: "name" }, label), count(() => [group.found, group.total]));
-    return h("div", { class: "block" }, head, ...group.types.map((type) => typeBlock(type, t(`type.${type.id}`), true)));
+    const line = h("div", { class: "line" }, head, soloButton(group.types.map((x) => x.id), label), expanderSlot());
+    return h("div", { class: "block" }, line, ...group.types.map((type) => typeBlock(type, t(`type.${type.id}`), true)));
   }
+
+  // While "only this" is on: what is shown, and the way back.
+  const soloName = h("b");
+  const soloBar = h("div", { class: "solo-bar", role: "status", hidden: true },
+    h("span", { class: "what" }, t("ui.soloShowing"), " ", soloName),
+    h("button", { type: "button", onclick: () => onSoloBack() }, t("ui.soloBack")));
 
   // Exploration value in the game's points, with the reward milestones as marks on the bar, the next
   // reward below it and the scoring rules behind the (i) button (js/exploration.js). Only categories
@@ -148,6 +195,7 @@ export function createSidebar({
   container.replaceChildren(
     bar,
     h("h2", {}, t("ui.filters")),
+    soloBar,
     h("div", { class: "bulk" },
       h("button", { type: "button", onclick: () => onToggle(allTypeIds, true) }, t("ui.showAll")),
       h("button", { type: "button", onclick: () => onToggle(allTypeIds, false) }, t("ui.hideAll"))),
@@ -181,6 +229,14 @@ export function createSidebar({
       input.indeterminate = on > 0 && on < group.types.length;
       input.closest(".row").classList.toggle("off", on === 0);
     }
+    const solo = getSolo();
+    for (const { el, typeIds } of soloButtons) {
+      const on = isSolo(solo, typeIds);
+      el.classList.toggle("on", on);
+      el.setAttribute("aria-pressed", String(on));
+    }
+    soloBar.hidden = !solo;
+    if (solo) soloName.textContent = labels.get([...solo.types].sort().join(" ")) ?? solo.types.join(", ");
   }
   refresh();
   refreshCounts();

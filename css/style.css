@@ -126,6 +126,7 @@ body.sidebar-hidden #sidebar {
 .line .row {
   flex: 1;
   min-width: 0;
+  padding-right: 4px;
 }
 
 .row {
@@ -209,6 +210,82 @@ body.sidebar-hidden #sidebar {
   border-radius: 6px;
   padding: 4px 10px;
   color: var(--muted);
+}
+
+/* "Only this" (js/filters.js) and the expander share a fixed column, so the buttons line up on every
+   row, including those with no list. */
+.line .expander,
+.expander-slot {
+  flex: none;
+  width: 24px;
+  padding: 4px 0;
+  text-align: center;
+}
+
+.solo {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--muted);
+}
+
+.solo:hover {
+  background: var(--panel-hover);
+  color: var(--text);
+}
+
+.solo svg {
+  width: 16px;
+  height: 16px;
+}
+
+.solo.on,
+.solo.on:hover {
+  background: var(--accent);
+  color: #10151b;
+}
+
+.solo-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 10px 8px;
+  padding: 7px 10px;
+  border: 1px solid #5a4416;
+  border-radius: 8px;
+  background: #2a2110;
+  font-size: 13px;
+}
+
+.solo-bar[hidden] {
+  display: none;
+}
+
+.solo-bar .what {
+  flex: 1;
+  min-width: 0;
+}
+
+.solo-bar button {
+  flex: none;
+  padding: 3px 10px;
+  border: 1px solid #5a4416;
+  border-radius: 14px;
+  background: none;
+  color: var(--accent);
+  font-size: 12.5px;
+}
+
+/* The number that tells apart items the game gives the same name (three "Totem" trials). */
+.entry-n {
+  color: #7d8ea3;
+  font-size: 11.5px;
 }
 
 .entries {
@@ -469,6 +546,20 @@ body.sidebar-hidden #sidebar {
   .row,
   .expander {
     min-height: 44px;
+  }
+
+  .solo,
+  .line .expander,
+  .expander-slot {
+    width: 40px;
+  }
+
+  .solo {
+    height: 40px;
+  }
+
+  .solo-bar button {
+    min-height: 32px;
   }
 
   .entry {

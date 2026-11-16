@@ -28,6 +28,7 @@ Working, and verified by the owner in a real browser (Chrome, DevTools mobile em
   the recommended CP of the combat stages, the stars of their layers 4 and 7, two books and the official
   texts came from there. The two new books (`nuoding-0338`, `0339`) have no note yet.
 - Sidebar: groups/types with checkboxes, the marker's sprite as legend, live `found/total` counters, entry lists with frame-and-highlight,
+  item lists for the small types (an item opens its marker), "only this" per group and type with "Back",
   exploration value in points with reward milestones and the rules behind an (i) button, hide-found toggle,
   backup export/import.
 - Popups with title (own name, else entry name, else type), type, tags, description, note, "show solution"
@@ -146,8 +147,11 @@ players more and rewards need a lot of data collected in-game.
 - The "distinct titles" count the browser test prints for the every-marker check varies between runs (e.g.
   274 to 285): a just-closed popup stays in the page while it fades out and is sometimes read instead. Only
   the count is affected; the check itself looks at every title.
-- The browser test's pinch check failed once in three runs on 2026-11-16 ("hidden during the pinch:
-  expected false"), with no change to the pinch code; it passed on the reruns. Watch whether it recurs.
+- The browser test is flaky, here and for earlier agents: on 2026-11-16 about one run in three failed a
+  check unrelated to the change and passed on a rerun (the pinch check, "hidden during the pinch: expected
+  false"; "timed out waiting for the map"; the language switch timing out on the reload; "fit zoom: no
+  loaded tile"). Most are waits for a page or tiles to load. Worth investigating eventually (the owner,
+  2026-11-16); meanwhile a failure in an unrelated check is rerun before it is trusted.
 - The browser test's zoomed-in placement check measures again for up to 3 s: right after a zoom Leaflet can
   still be swapping tile levels (it failed about one run in three before; settled, the icons were always on
   their pixel). If it fails again, look there first.

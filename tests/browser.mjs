@@ -436,6 +436,55 @@ try {
   }
   const hash = () => ev(`location.hash`);
 
+  // "Only this" (js/filters.js): one category alone, "Back" to the filter from before, also after a reload;
+  // a checkbox ends it and keeps what is on screen.
+  await check("only this: one category alone, Back restores the filter, a checkbox ends it", async () => {
+    await freshLoad("?lang=en");
+    const soloOf = (types) => `document.querySelector('.solo[data-types="${types}"]')`;
+    const boxOf = (types) => `${soloOf(types)}.closest(".line").querySelector("input")`;
+    const shownTypes = () => ev(`[...new Set(${ICONS}.map((e) => e.querySelector("[data-type]")?.dataset.type))].sort()`);
+    const bar = () => ev(`(() => { const b = document.querySelector(".solo-bar"); return b.hidden ? null : b.textContent; })()`);
+    const all = await shownTypes();
+    await ev(`${boxOf("divine_trial")}.click()`);
+    const before = all.filter((x) => x !== "divine_trial");
+    equal(await shownTypes(), before, "trials hidden by hand");
+    await ev(`${soloOf("crystal")}.click()`);
+    equal(await shownTypes(), ["crystal"], "only crystals");
+    equal(await ev(`${soloOf("crystal")}.getAttribute("aria-pressed")`), "true", "its button is on");
+    const label = json("i18n/en.json")["group.divine_mind_crystal"];
+    equal(await bar(), `${json("i18n/en.json")["ui.soloShowing"]} ${label}${json("i18n/en.json")["ui.soloBack"]}`, "the bar");
+    await load("?lang=en");
+    equal(await shownTypes(), ["crystal"], "only crystals after a reload");
+    if (!(await bar())) throw new Error("no bar after a reload");
+    await ev(`document.querySelector(".solo-bar button").click()`);
+    equal(await shownTypes(), before, "Back: the filter from before, after the reload too");
+    equal(await bar(), null, "no bar after Back");
+    await ev(`${soloOf("crystal")}.click()`);
+    await ev(`${boxOf("book")}.click()`);
+    equal(await shownTypes(), ["book", "crystal"], "a checkbox keeps what is on screen");
+    equal(await bar(), null, "and ends it");
+    await ev(`${soloOf("crystal")}.click()`);
+    await ev(`${soloOf("crystal")}.click()`);
+    equal(await shownTypes(), ["book", "crystal"], "a second click gives the filter back");
+  });
+
+  // Small types list their markers one by one (js/items.js); an item opens its marker's popup.
+  await check("item list: Divine Trials by short name, an item opens its trial", async () => {
+    await freshLoad("?lang=pt");
+    const block = `document.querySelector('.solo[data-types="divine_trial"]').closest(".block")`;
+    await ev(`${block}.querySelector(".expander").click()`);
+    const items = await ev(`[...${block}.querySelectorAll(".entry[data-marker]")].map((b) => [b.dataset.marker, b.querySelector(".name").textContent, b.querySelector(".count").textContent])`);
+    const trialsInData = markers.filter((m) => m.type === "divine_trial");
+    equal(items.map(([id]) => id), trialsInData.map((m) => m.id), "one item per trial, in the data's order");
+    const names = json(`i18n/markers.${MAP}.pt.json`);
+    const [firstId, firstLabel, firstCount] = items[0];
+    equal(firstLabel, names[firstId].name.slice(names[firstId].name.indexOf(": ") + 2), "the name without its kind");
+    equal(firstCount, `0/${trialsInData[0].stages.length}`, "its layers");
+    await ev(`${block}.querySelector('.entry[data-marker="${firstId}"]').click()`);
+    equal(await until(`${POPUP}?.querySelector("strong")?.textContent`, "the trial's popup"), names[firstId].name, "the popup's full name");
+    await closePopup();
+  });
+
   await check("deep link: opens the marker on load, and the address follows the open popup", async () => {
     await freshLoad("?lang=pt");
     await load(`?lang=en#${MAP}/${chest.id}`);
