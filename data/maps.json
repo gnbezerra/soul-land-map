@@ -10,10 +10,10 @@
       "maxZoom": 5
     },
     "calibration": {
-      "scaleX": 3.5714285714,
-      "offsetX": 428.5714285714,
-      "scaleY": -3.5714285714,
-      "offsetY": 3657.142857142
+      "scaleX": 3.574799,
+      "offsetX": 424.419577,
+      "scaleY": -3.574799,
+      "offsetY": 3659.14634
     },
     "exploration": {
       "milestones": [250, 500, 1000, 1500, 2000, 2500]
@@ -31,10 +31,13 @@
       "maxZoom": 5
     },
     "calibration": {
-      "scaleX": 1.644059,
-      "offsetX": 296.627,
-      "scaleY": -1.648098,
-      "offsetY": 1752.758
+      "scaleX": 1.645002,
+      "offsetX": 297.624327,
+      "scaleY": -1.645002,
+      "offsetY": 1751.80611
+    },
+    "exploration": {
+      "milestones": [250, 500, 1000, 1500, 2000, 2500]
     }
   }
 }
