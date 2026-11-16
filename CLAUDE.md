@@ -21,8 +21,9 @@ Never break these. If a task seems to need it, stop and ask.
 - **Generated files are never edited by hand** (`data/markers/*.json`, `data/entries/*.json`,
   `i18n/entries.*`, `i18n/markers.*`). Edit `data/src/<map>/*.csv`, then run
   `python tools/build_data.py <map>`. The committed JSON must always match the CSVs.
-- **The owner's data.** The CSVs under `data/src/` and the calibration in `data/maps.json` are collected
-  in-game. Do not change them without asking, not even to fix an obvious typo.
+- **The owner's data.** The CSVs under `data/src/` and the calibration in `data/maps.json` are the owner's,
+  whether collected in-game or exported from the game tables (`tools/game_data.py`) with the owner's
+  approval. Do not change them without asking, not even to fix an obvious typo.
 - **Relative paths only.** The site is served from a subpath (`/soul-land-map/`).
 - **Browser support:** current and recent Chrome, Edge, Firefox and Safari, desktop and mobile. Use web
   features that are Baseline "widely available" (MDN); anything newer needs a fallback or the owner's approval.
