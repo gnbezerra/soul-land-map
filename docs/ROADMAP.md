@@ -95,7 +95,10 @@ players more and rewards need a lot of data collected in-game.
 
 - Expected `build_data.py --check` warnings today: none for Nuoding; for Suotuo, its portals to
   `tian-dou` and `xing-dou-forest` (Xing Dou Great Forest), maps that do not exist yet. Map ids use
-  hyphens, as they go in the address (`#tian-dou`); give the new maps these ids.
+  hyphens, as they go in the address (`#tian-dou`); give the new maps these ids. Proposed for the other
+  regions, to confirm with the owner when each one is added (ids are permanent): `xing-dou-mixed` (Mixed
+  Area of Xing Dou Forest), `sunset-forest`, `city-of-slaughter`, `dragon-island`. The image names in
+  `maps/` (ignored by git) may keep underscores; only the tiles folder (`tiles/<id>`) follows the id.
 - Suotuo counts 247 normal chests but its entries add up to 217: 30 chests (14 in the south-west, 16 in the
   south-east) belong to NoteIds 1109 and 1110, which have no entry and no name in the game tables. Checked
   on a 247/247 character: every entry complete, 217/217. They are in the site's `unlisted-1` and
@@ -103,8 +106,8 @@ players more and rewards need a lot of data collected in-game.
 - Marker size follows the tile zoom (full size from `maxNativeZoom` up), not the game's scale. Suotuo has
   1.65 image px per game unit at its native zoom against Nuoding's 3.57, so at full size its markers sit
   about 2.2 times closer together on screen. Now that Suotuo has markers, it looks crowded at the whole-map
-  view (browser test screenshot, 2026-11-16); judge it on a real screen; if it crowds, base the
-  marker scale (and the zooms that frame markers) on px per game unit instead of the native zoom.
+  view (browser test screenshot, 2026-11-16); judge it on a real screen, a phone above all; if it crowds,
+  base the marker scale (and the zooms that frame markers) on px per game unit instead of the native zoom.
 - A map with no data shows an empty sidebar and `0/0` exploration value (a new draft map, before its data).
 - `type.book/mechanism/portal/boss/arena` UI keys exist only in `en.json` on purpose (fallback to English).
 - Unused leftover PT/ZH strings were cut off in the game UI ("Rec.", "Adicionar"); do not rely on them.
