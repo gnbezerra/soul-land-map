@@ -506,6 +506,9 @@ try {
 
   await check("marker icons: sprite per type, size per tier, contract sprite once found", async () => {
     await freshLoad("?lang=en");
+    // The markers appear before their sprites finish loading: wait for them (a broken one fails below).
+    await until(`${ICONS}.every((e) => { const i = e.querySelector(".ic-main"); return !i || (i.complete && i.naturalWidth > 0); })`,
+      "the sprites to load", 5000).catch(() => {});
     // Every marker of a type with an icon shows that sprite, loaded, in its tier's box; the rest keep the dot.
     const seen = await ev(`(() => {
       const out = {};
