@@ -67,10 +67,11 @@ regions of the game's assets, 4096 × 4096 for the other two), tile size 256, `m
 image, 3 for a 2048 one), `maxZoom` (beyond the native zoom the tiles are upscaled and blurry), the
 calibration, and an optional `draft: true` for a region whose data is still being collected (reachable by
 its link only, outside the region selector). Calibration is two independent linear equations without rotation:
-`px = scaleX * x + offsetX`, `py = scaleY * y + offsetY`. For Nuoding: scale ±25/7 (3.5714285714), offsetX
-428.5714285714, offsetY 3657.142857142, RMS error 0.37 px over 11 points. Suotuo: 1.644 / −1.648 px per game unit, RMS 2.6 px (about 1.6 game
-units) over 10 points, the game's own map being imprecise there. Game Y grows upward (like Leaflet
-`CRS.Simple`), image pixel Y grows downward, hence the negative `scaleY`.
+`px = scaleX * x + offsetX`, `py = scaleY * y + offsetY`. The values come from the game's `map_position`
+table (formula in README "Calibration", printed by `tools/game_data.py export`); points measured in-game
+check them (`tools/check_calibration.py`): Nuoding ±3.5748 px per game unit, within 0.7 game units of its
+11 points; Suotuo ±1.6450, within 1.9 units of its 10, the game's own map being imprecise there. Game Y
+grows upward (like Leaflet `CRS.Simple`), image pixel Y grows downward, hence the negative `scaleY`.
 
 Markers store **game units, never pixels**, so fixing the calibration or the image never requires regenerating
 markers and the data stays verifiable in-game. The in-game `[Location]` link walks the character exactly onto
@@ -238,7 +239,11 @@ The sidebar should filter by species; the popup lists the other locations of the
   name (trials, books, teleports, viewpoints), else the entry name, else the type.
 - The game's official English is inconsistent (Norton/Nuoding, Fugold/Floating Gold, Sunset Forest/Radiant
   Light Forest), so ids are independent of names, Chinese is the source of truth when available, and the site
-  may correct official English (e.g. a stray final period in a trial name). The official PT is
+  may correct official English. The site's wording of game names, in every type (entries, trials,
+  encounters, teleports, books): no closing period (the game writes "Choice." and "Wolf Pack."), and a
+  Divine Trial's English and Portuguese names split their parts with ": " where the game sometimes writes
+  " · " (Chinese keeps "·"). Descriptions keep the game's punctuation, full-width in Chinese.
+  `tools/game_data.py` applies this rule (`site_name`). The official PT is
   translated from Chinese and is not consistent with the English names; keep it as the game shows it.
 - Official game terms (categories, regions, entry names) vs unofficial site UI translations; the ZH UI needs
   review by a native speaker.
@@ -298,9 +303,11 @@ exactly as shown, without rounding. Crystals, special chests and sets follow the
 mechanisms and encounter points are noted separately. In regions not completed yet the Answer only exists
 once the entry is complete.
 
-Before walking everything, a short time-boxed look (a few hours) at the game assets via AssetRipper for
-position/localization tables is worthwhile; if found, a linear regression against a few hand-noted points
-converts everything. Version only derived data, never raw dumps.
+The game's config tables hold most of this (2026-11-16): positions, entries, names in the three languages,
+trial stars and CP, and the map image's placement, so a region's CSVs start from `tools/game_data.py export`
+and the in-game flow above fills in the rest (README "Game data" lists what). Nuoding's hand-collected CSVs
+matched the tables on all 338 points (280 exactly, 58 within 1 unit). Version only derived data, never the
+game files.
 
 Validations: unique never-reused ids; known types; bounds; per-entry marker count ≤ size; category totals equal
 the game's counters (Nuoding 264, 16, 65, 28, 5, 10); trial stage sum equals the game counter; `oneOf`
@@ -340,6 +347,8 @@ monetization, analytics or SEO in the MVP.
 
 - Nuoding City Area: Normal Chest 264, Decryption Chest 16, Divine Trial 65 stages (10 pillars), Divine Mind
   Crystal 28, Encounter 5, Other 10 (6 teleports + 4 viewpoints).
+- Suotuo City Area (from the game tables): 247 (30 of them in no entry) / 12 (2 of them Wolf Thief chests) /
+  51 stages (10 pillars) / 30 / 9 / 12 (8 teleports + 4 viewpoints); exploration value cap 3245.
 - Mixed Area of Xing Dou Forest: 172 / 9 / 12 / 20 / 2 / 14 (8 seeds + 6 teleports, no viewpoints).
 - Planned regions: Nuoding City Area, Suotuo City Area, Xing Dou Great Forest, Tian Dou City Area, Sunset
   Forest, Mixed Area of Xing Dou Forest, City of Slaughter, Dragon Island. The first seven follow the same
@@ -374,7 +383,7 @@ Open: official Chinese texts as source of truth
 
 - Done: tiles + calibrated map + readout; pipeline; sidebar with counters and entry lists; popups with found
   button; progress, hide-found and backup/restore; en/pt/zh with selector; responsive drawer layout; Nuoding
-  fully mapped (337 markers); encounters with several points draw an icon on each point.
+  fully mapped (339 markers); encounters with several points draw an icon on each point.
 - Divine Trials: pipeline and UI done (4.6): layer list and progress in the popup, badge, counters per layer
   (65 in Nuoding). The build prints the stage sum but does not check it against the game counter (not stored
   anywhere yet). Most combat stages have no recommended CP yet. Stage rewards wait for items (4.8).

@@ -13,16 +13,20 @@ Working, and verified by the owner in a real browser (Chrome, DevTools mobile em
   map, committed JSON equal to a fresh build, pipeline, unit and browser tests. On `main` it then deploys the
   repo as is to Pages, so a push that fails the checks leaves the previous site up.
 - Nuoding City Area map: 4096² image in 256 px tiles (zoom 0–4, `maxZoom` 5), calibrated, coordinate readout.
-- Suotuo City Area: 2048² image in tiles (zoom 0–3, `maxZoom` 5), calibrated (RMS 2.6 px, see README;
-  checked by the owner in-game on 2026-11-16: exact or 1 game unit off), as a
-  draft map: reachable at `#suotuo` only, not in the region selector, with header-only CSVs in
-  `data/src/suotuo/` waiting for the owner's data.
+- Suotuo City Area: 2048² image in tiles (zoom 0–3, `maxZoom` 5), as a draft map: reachable at `#suotuo`
+  only, not in the region selector. Its CSVs were exported from the game tables and completed by the owner
+  (see "Next steps").
+- Calibration of both maps from the game's `map_position` table (README "Calibration"), since 2026-11-16;
+  before that, least-squares fits of points measured in-game, which it matches within 0.7 (Nuoding) and
+  1.9 (Suotuo) game units.
 - Zoom: fractional fit zoom as `minZoom`, slow wheel (`wheelPxPerZoomLevel` 120), +/- snap to multiples of 0.5.
 - Data pipeline CSV → JSON (`tools/build_data.py`), with validation and id stability checks.
-- Data: Nuoding is fully mapped. 337 markers (264 normal chests, 16 decryption chests, 10 Divine Trials with
-  65 stages, 28 crystals, 5 encounters, 6 teleports, 4 viewpoints, 1 portal, 3 books) and 49 entries, all with
+- Data: Nuoding is fully mapped. 339 markers (264 normal chests, 16 decryption chests, 10 Divine Trials with
+  65 stages, 28 crystals, 5 encounters, 6 teleports, 4 viewpoints, 1 portal, 5 books) and 49 entries, all with
   en/pt/zh names. Marker names, notes and howtos in `marker_texts.csv`; marker tags (e.g. `grappling_hook`).
-  The recommended CP of most combat trial stages is not collected yet (see "Waiting on the owner").
+  Checked against the game tables on 2026-11-16 (`tools/game_data.py compare nuoding`: no differences);
+  the recommended CP of the combat stages, the stars of their layers 4 and 7, two books and the official
+  texts came from there. The two new books (`nuoding-0338`, `0339`) have no note yet.
 - Sidebar: groups/types with checkboxes, the marker's sprite as legend, live `found/total` counters, entry lists with frame-and-highlight,
   exploration value in points with reward milestones and the rules behind an (i) button, hide-found toggle,
   backup export/import.
@@ -60,11 +64,17 @@ are not covered (synthetic input does not zoom headless Chrome).
 Order agreed with the owner on 2026-11-15: the next region comes before rewards, because a new map helps
 players more and rewards need a lot of data collected in-game.
 
-1. **Other regions**, one at a time, each needing a map image, tiles, calibration points (~10), `maps.json`
-   entry (as a draft until its data is in), and CSVs. Suotuo is in as a draft (tiles, calibration, names);
-   next on it: the owner's data in `data/src/suotuo/`, a check of the calibration against known markers,
-   the marker density at full size (see "Known gaps"), its exploration milestones and reference counts
-   (SPEC §11), then dropping `draft`. Five of the eight regions' images are 2048², three are 4096².
+1. **Other regions**, one at a time, each needing a map image, tiles, the calibration (from the game, with
+   a few points to check it), a `maps.json` entry (as a draft until its data is in), and CSVs. Suotuo is
+   in as a draft (tiles, calibration, names, milestones) and its CSVs were exported from the game tables (README "Game data") and completed in-game by the owner
+   (coop players, combat levels, seals, the encounters with no NPC, the pillar, portals): 299 markers,
+   51 entries, positions sampled in-game by the owner; committed once `build_data.py suotuo --check`
+   passes. Next on it: a home for the 30 chests the game lists
+   in no entry and a type for the two Wolf Thief chests (both need a preview; see "Known gaps"), the
+   location-specific tags and the notes on chests at a non-obvious height (the owner, in-game), the ids of
+   the maps its portals lead to, the marker density at full size, then dropping `draft`. Five of the eight
+   regions' images are 2048², three are 4096²; the game tables have the other regions' data and
+   calibration too.
 2. **`links` in the popup**, needed by Suotuo's Ownerless Objects (SPEC §4.7): the encounter's popup lists
    its three chests (found or not, "show on map"), each chest's popup names the encounter. Needs a preview;
    it can be done while the owner collects Suotuo's data, which does not depend on it.
@@ -77,17 +87,24 @@ players more and rewards need a lot of data collected in-game.
 
 ## Waiting on the owner
 
-- Recommended CP of the combat trial stages. It needs a new character leveled to each stage's requirement,
-  so it takes days of play. `cp` is optional in `stages.csv` meanwhile and the build lists the missing stages.
-- Suotuo's data (CSVs), its exploration reward milestones and category totals; map images and calibration
-  points for the regions after it.
+- Suotuo: location-specific tags and height notes (in-game), how to show its 30 chests outside any entry
+  and the Wolf Thief chests (previews), the ids of `tian_dou` and `xing_dou_forest`. Map images for the
+  regions after it.
+- Notes of Nuoding's two new books.
 - Two Mixed Area PT descriptions that were cut off in screenshots.
 - Native review of the ZH UI strings.
 
 ## Known gaps and notes
 
-- Expected `build_data.py nuoding --check` warnings today: the combat trial stages without a recommended CP
-  yet. `suotuo --check` has none (no data yet).
+- Expected `build_data.py --check` warnings today: none for Nuoding; for Suotuo, its portals to
+  `tian_dou` and `xing_dou_forest`, maps that do not exist yet.
+- Suotuo counts 247 normal chests but its entries add up to 217: 30 chests (14 in the south-west, 16 in the
+  south-east) belong to NoteIds 1109 and 1110, which have no entry and no name in the game tables. Checked
+  on a 247/247 character: every entry complete, 217/217. The build requires an entry for `chest_normal`, so
+  they are not in the CSVs yet; `compare` lists them.
+- Suotuo's Wolf Thief Tyrant and Wolf Thief Priest chests are decryption chests behind a boss (a guarded
+  chest's guards are a few weak monsters; these open only once their boss is beaten). The site has no type
+  for them yet, so they are not in the CSVs; `compare` lists them.
 - Marker size follows the tile zoom (full size from `maxNativeZoom` up), not the game's scale. Suotuo has
   1.65 image px per game unit at its native zoom against Nuoding's 3.57, so at full size its markers sit
   about 2.2 times closer together on screen. Look at it once Suotuo has markers; if it crowds, base the
@@ -125,6 +142,8 @@ players more and rewards need a lot of data collected in-game.
 - The "distinct titles" count the browser test prints for the every-marker check varies between runs (e.g.
   274 to 285): a just-closed popup stays in the page while it fades out and is sometimes read instead. Only
   the count is affected; the check itself looks at every title.
+- The browser test's pinch check failed once in three runs on 2026-11-16 ("hidden during the pinch:
+  expected false"), with no change to the pinch code; it passed on the reruns. Watch whether it recurs.
 - The browser test's zoomed-in placement check measures again for up to 3 s: right after a zoom Leaflet can
   still be swapping tile levels (it failed about one run in three before; settled, the icons were always on
   their pixel). If it fails again, look there first.

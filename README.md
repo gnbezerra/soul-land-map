@@ -6,7 +6,7 @@ Live site: <https://gnbezerra.github.io/soul-land-map/>. Repository: <https://gi
 Documentation for contributors and agents: [`CLAUDE.md`](CLAUDE.md) (rules and current decisions),
 [`docs/SPEC.md`](docs/SPEC.md) (design) and [`docs/ROADMAP.md`](docs/ROADMAP.md) (current state, next steps).
 
-Current state: the Nuoding map is calibrated and fully mapped (337 markers); data pipeline, filter sidebar
+Current state: the Nuoding map is calibrated and fully mapped (339 markers); data pipeline, filter sidebar
 with counters, popups, found tracking with backup, en/pt/zh UI and a responsive layout. See the roadmap for
 what comes next.
 
@@ -52,16 +52,29 @@ run `python tools/make_favicon.py` (Pillow) to rebuild `favicon.ico` and `apple-
 ## Calibration
 
 `data/maps.json` holds `scaleX`/`scaleY` (game Y grows upwards, image pixel Y grows downwards, hence the
-negative `scaleY`) and `offsetX`/`offsetY`, fitted per map:
+negative `scaleY`) and `offsetX`/`offsetY`. They come from the game: its `map_position` table places each
+region's map image, and `python tools/game_data.py export <map>` prints the calibration that follows for the
+image width in `maps.json` (`compare` reports a `maps.json` that differs from it). For an image `W` pixels
+wide, with `MapDetailPictureSize` `S`, `MapDetailPictureMultiple` `M` and `MapDetailPicturePosition` `(dx, dy)`:
 
-| Map | Image | Scale (px per game unit) | Offsets | Fit |
+```
+scale   = W / (S × M)                              px per game unit
+centre  = (512 + dx / 2.3, 512 + dy / 2.3)          the game point at the image centre
+offsetX = W/2 − scale × centreX     offsetY = W/2 + scale × centreY     scaleY = −scale
+```
+
+2.3 is `WorldMapMultiple`, the same for every region with a map; dividing the image offset by it is
+inferred, not read from the game code, and was checked against the points the owner measured in-game:
+
+| Map | Image | Scale (px per game unit) | Offsets | Against the measured points |
 |---|---|---|---|---|
-| Nuoding | 4096² | ±25/7 (3.571) | 428.571, 3657.143 | RMS 0.37 px over 11 points |
-| Suotuo | 2048² | 1.644 / −1.648 | 296.627, 1752.758 | RMS 2.6 px (about 1.6 game units), worst 4.8 px, over 10 points |
+| Nuoding | 4096² | ±3.574799 | 424.419577, 3659.14634 | RMS 2.5 px (0.7 game units) over 11 points, a constant 0.65 units in X |
+| Suotuo | 2048² | ±1.645002 | 297.624327, 1751.80611 | RMS 3.1 px (1.9 game units) over 10 points |
 
-Suotuo's points are less precise: in that region the game's own map draws the character a few pixels off
-from where the surroundings say it is. More points, or checking known markers once they exist, can refine
-it without touching any marker (markers store game coordinates).
+The game readout is rounded to whole units and Suotuo's own map draws the character a few pixels off, so
+these errors are within what the points can tell. A least-squares fit of the points (below) is the fallback
+for a region whose `map_position` row is missing or does not match its image. Markers store game coordinates,
+so changing the calibration never touches a marker.
 
 A map that is still being collected has `"draft": true` in `maps.json`: its link (`#<map>`) opens it, but
 the region selector lists it only while it is the current map (`js/maps.js`), so players do not land on an
@@ -69,10 +82,11 @@ empty map. Remove the flag when the map has its data.
 
 - The readout in the bottom-left corner shows game coordinates; a click pins the reading (also logged to the
   console). With offsets set to `null` it shows image pixels only.
-- To fit a new map, fill `data/calibration/<map>.json` with `{"x": ..., "y": ..., "px": ..., "py": ...}` (game
-  coordinates and the observed pixel), then run
+- To check a calibration (or fit one by hand), fill `data/calibration/<map>.json` with
+  `{"x": ..., "y": ..., "px": ..., "py": ...}` (game coordinates and the observed pixel), then run
   `python tools/check_calibration.py data/maps.json <map> data/calibration/<map>.json`. It prints the
-  least-squares fit and each point's error in pixels.
+  least-squares fit and each point's error in pixels. A few points spread over the map are enough to
+  check the game's calibration.
 - Then check that a few known markers land exactly on their in-game positions.
 
 ## Data pipeline
@@ -199,6 +213,46 @@ Warnings:
 - Divine Trials, books, teleports and viewpoints without a name; Divine Trials without stages; combat stages
   without a recommended CP yet; stage levels that go down;
 - marker tags already on the entry.
+
+## Game data
+
+The game client keeps its data in config tables (`.xc`, a format of its own, read by `tools/game_tables.py`;
+the format is described at the top of that file). They hold every object the exploration counters count,
+with its position, so a region's CSVs can start from the game instead of from a walk around the map:
+
+```
+python tools/game_data.py export suotuo --game "C:/Soul Land：New World/app/dldlslkxy"
+python tools/game_data.py compare nuoding --game "C:/Soul Land：New World/app/dldlslkxy"
+```
+
+`--game` is the folder that holds `BuildRes/` and `Res/`. The game files are read in place: nothing from
+them is copied into the repo (SPEC §10), only the CSVs written from them. The region is the game scene whose
+English name equals `map.<map>` in `i18n/en.json`.
+
+- `export` fills an empty map (it refuses a `markers.csv` with rows) and lists what it left out and what is
+  still to fill in by hand. After that the CSVs are the owner's, edited as usual.
+- `compare` checks a map's CSVs against the game: positions, entries and their order, `entry_index`,
+  names and descriptions in the three languages, the tags it can tell, trial stars and CP, milestones and
+  calibration. An entry with no position in the tables (most encounters) is matched by its English name.
+  Run it after a game update.
+
+Names are written in the site's wording (SPEC §5): no closing period, and `: ` between the parts of a
+Divine Trial's English and Portuguese name where the game sometimes writes ` · `. `compare` applies the
+same rule, so it does not report those.
+
+From the game: markers of every type below, with game coordinates (`round(X + 512)`, `round(Z + 512)` of the
+NPC's spawn point; the in-game readout matches them exactly or within 1), entries in the in-game order with
+their official names and descriptions, `entry_index` (the order of the `[Location N]` links), the
+decryption chest kinds and contract elements, the tags `guarded`, `hidden`, `grappling_hook` and
+`purple_demon_eye` (from `box_npc` and the entry descriptions), Divine Trial names, subtypes, stars and
+recommended CP, teleport, viewpoint and book names, encounter names and descriptions (`HandBookTips`) and
+the positions of those triggered by NPCs (with all their points),
+the exploration value cap, the reward milestones and the calibration (`map_position`).
+
+Not in the tables, so still collected in-game: coop chest `players`, combat stage `level` (the game gates
+layers on story quests, not a level), poison or fire seal on Xuanyu Hand chests, the location-specific tags,
+challenge chest pillars, notes and howtos, `links`, portals, seeds, and encounters triggered by an item, a
+task or a mount (Ownerless Objects is one).
 
 ## Site behavior
 
