@@ -1,1 +1,222 @@
-{}
+{
+  "wolf-shadow-highlands-1": {
+    "name": "狼影高地宝箱一",
+    "description": "找到狼影高地内散落的宝箱。(注:狼影高地危险重重，请魂师大人们一定小心)"
+  },
+  "wolf-shadow-highlands-2": {
+    "name": "狼影高地宝箱二",
+    "description": "找到狼影高地内散落的宝箱。(注:狼影高地危险重重，请魂师大人们一定小心)"
+  },
+  "shrine": {
+    "name": "神迹遗址宝箱",
+    "description": "找到白石山道和神迹遗址内散落的宝箱。"
+  },
+  "prospect-isle": {
+    "name": "望崖洲宝箱",
+    "description": "找到望崖洲内散落的宝箱。"
+  },
+  "riverside-farmstead": {
+    "name": "临水农庄宝箱",
+    "description": "找到临水农庄内散落的宝箱。"
+  },
+  "suotuo-city-1": {
+    "name": "索托城宝箱一",
+    "description": "找到索托城内散落的宝箱。"
+  },
+  "suotuo-city-2": {
+    "name": "索托城宝箱二",
+    "description": "找到索托城内散落的宝箱。"
+  },
+  "bountiful-plains": {
+    "name": "丰收平原宝箱",
+    "description": "找到丰收平原上散落的宝箱。"
+  },
+  "suotuo-city-south": {
+    "name": "索托城南宝箱",
+    "description": "找到索托城南门左右两边散落的宝箱。"
+  },
+  "shrek-academy-1": {
+    "name": "史莱克学院宝箱一",
+    "description": "找到史莱克学院内和附近山道上散落的宝箱。"
+  },
+  "shrek-academy-2": {
+    "name": "史莱克学院宝箱二",
+    "description": "找到史莱克学院内和附近山道上散落的宝箱。"
+  },
+  "red-king-ancient-road": {
+    "name": "赤王古道宝箱",
+    "description": "找到赤王古道附近散落的初级宝箱。"
+  },
+  "rose-manor": {
+    "name": "蔷薇庄园宝箱",
+    "description": "找到蔷薇庄园附近散落的宝箱。"
+  },
+  "guardian-1": {
+    "name": "守护宝箱一",
+    "description": "拿到地图内所有被怪物守护的宝箱！"
+  },
+  "guardian-2": {
+    "name": "守护宝箱二",
+    "description": "拿到地图内所有被怪物守护的宝箱！"
+  },
+  "tang-sect-1": {
+    "name": "唐门宝箱一",
+    "description": "使用钩爪，找到地图内所有散落的唐门宝箱。"
+  },
+  "tang-sect-2": {
+    "name": "唐门宝箱二",
+    "description": "使用玄玉手，找到地图内所有散落的唐门宝箱。"
+  },
+  "tang-sect-3": {
+    "name": "唐门宝箱三",
+    "description": "使用紫极魔瞳，找到地图内所有散落的变形唐门宝箱。"
+  },
+  "tang-sect-4": {
+    "name": "唐门宝箱四",
+    "description": "使用紫极魔瞳，找到地图内所有散落的隐形唐门宝箱。"
+  },
+  "hidden-1": {
+    "name": "遮蔽宝箱一",
+    "description": "找到所有散落在索托的遮蔽宝箱。"
+  },
+  "hidden-2": {
+    "name": "遮蔽宝箱二",
+    "description": "找到所有散落在索托的遮蔽宝箱。"
+  },
+  "hidden-3": {
+    "name": "遮蔽宝箱三",
+    "description": "找到所有散落在索托的遮蔽宝箱。"
+  },
+  "unlisted-1": {
+    "name": "游戏列表之外（西南）",
+    "description": "游戏将这些宝箱计入本区域的普通宝箱，但探索列表中没有对应条目，无法显示还剩哪些；可在此标记。"
+  },
+  "unlisted-2": {
+    "name": "游戏列表之外（东南）",
+    "description": "游戏将这些宝箱计入本区域的普通宝箱，但探索列表中没有对应条目，无法显示还剩哪些；可在此标记。"
+  },
+  "coop-1": {
+    "name": "合作宝箱一",
+    "description": "找到索托城内的高级宝箱，与其他魂师合作开启宝箱。"
+  },
+  "coop-2": {
+    "name": "合作宝箱二",
+    "description": "找到沃野平原内的高级宝箱，与其他魂师合作开启宝箱。"
+  },
+  "pillar-empty-path-1": {
+    "name": "空行之柱一",
+    "description": "通过空行之柱，找到索托城墙上隐藏的高级宝箱。"
+  },
+  "dragonwood-coffer-1": {
+    "name": "龙木契匣一",
+    "description": "有神明取东方龙木之精，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "dragonwood-coffer-2": {
+    "name": "龙木契匣二",
+    "description": "有神明取东方龙木之精，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "dragonwood-coffer-3": {
+    "name": "龙木契匣三",
+    "description": "有神明取东方龙木之精，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "desolate-flame-coffer-1": {
+    "name": "荒炎契匣一",
+    "description": "有神明取西方荒炎之火，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "desolate-flame-coffer-2": {
+    "name": "荒炎契匣二",
+    "description": "有神明取西方荒炎之火，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "mysterious-frost-coffer-1": {
+    "name": "玄霜契匣一",
+    "description": "有神明取极北玄霜之气，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "mysterious-frost-coffer-2": {
+    "name": "玄霜契匣二",
+    "description": "有神明取极北玄霜之气，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "wolf-thief-tyrant": {
+    "name": "狼盗暴君宝箱",
+    "description": "找到狼影高地狼盗暴君守护的宝箱。(注:此地危险重重，请魂师大人们一定小心)"
+  },
+  "wolf-thief-priest": {
+    "name": "狼盗祭司宝箱",
+    "description": "找到临水农庄狼盗祭司守护的宝箱。(注:此地危险重重，请魂师大人们一定小心)"
+  },
+  "wolf-shadow-highlands-crystal": {
+    "name": "狼影高地结晶",
+    "description": "找到狼影高地周围散落的修罗神念结晶。"
+  },
+  "shrine-crystal": {
+    "name": "神迹遗址结晶",
+    "description": "沿着白石山道找到周围散落的修罗神念结晶。"
+  },
+  "bountiful-plains-crystal": {
+    "name": "丰收平原结晶",
+    "description": "找到丰收平原内散落的修罗神念结晶。"
+  },
+  "suotuo-city-crystal": {
+    "name": "索托城结晶",
+    "description": "找到索托城内及城西赤王古道附近散落的修罗神念结晶。"
+  },
+  "shrek-academy-crystal": {
+    "name": "史莱克学院结晶",
+    "description": "找到史莱克学院及后山附近散落的修罗神念结晶。"
+  },
+  "western-fertileland-plain-crystal": {
+    "name": "沃野平原西结晶",
+    "description": "找到沃野平原西部散落的修罗神念结晶。"
+  },
+  "giantwood-forest-crystal": {
+    "name": "巨木之森结晶",
+    "description": "找到巨木之森周围散落的修罗神念结晶。"
+  },
+  "scattered-crystals": {
+    "name": "散落的结晶",
+    "description": "找到沃野平原东部风车、沃野农庄南、临水农庄内3颗遗落的修罗神念结晶。"
+  },
+  "wolfs-den-treasure": {
+    "name": "狼窝的秘宝",
+    "description": "索托城狼盗高层的手中藏着族群的宝藏"
+  },
+  "lucky-water-and-cats": {
+    "name": "幸运水与猫",
+    "description": "药剂师协会的尼托·梅勒最近在招募试药员"
+  },
+  "no-ordinary-worker": {
+    "name": "不做打工人",
+    "description": "索托城内摊位最近频发盗窃事件"
+  },
+  "ownerless-objects": {
+    "name": "无主之物",
+    "description": "记录了宝藏传说的“丹书铁卷”散落索托城"
+  },
+  "king-of-onlookers": {
+    "name": "吃瓜之王",
+    "description": "索托城刘家三兄弟卖的瓜包熟、包甜"
+  },
+  "drunk-and-dreamy": {
+    "name": "酒酣梦熟",
+    "description": "索托城老兵酒馆，江湖人士最喜欢的聚集地"
+  },
+  "baboons-gratitude": {
+    "name": "狒的报恩",
+    "description": "前往修罗神神迹遗址的路上传来凄厉猿嚎"
+  },
+  "versatile-kids": {
+    "name": "百变小童",
+    "description": "目击者报告索托城有一个会动的奇怪石头"
+  },
+  "throwing-away-thousands": {
+    "name": "一掷千金",
+    "description": "索托城角落有一个郁郁寡欢的商人"
+  },
+  "light-up-teleport": {
+    "name": "点亮！传送",
+    "description": "点亮地图上所有的传送点。"
+  },
+  "enjoy-the-scenery": {
+    "name": "看遍地图风景",
+    "description": "点亮地图上所有的观景点。"
+  }
+}

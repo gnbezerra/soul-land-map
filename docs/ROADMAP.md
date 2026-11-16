@@ -66,15 +66,14 @@ players more and rewards need a lot of data collected in-game.
 
 1. **Other regions**, one at a time, each needing a map image, tiles, the calibration (from the game, with
    a few points to check it), a `maps.json` entry (as a draft until its data is in), and CSVs. Suotuo is
-   in as a draft (tiles, calibration, names, milestones) and its CSVs were exported from the game tables (README "Game data") and completed in-game by the owner
-   (coop players, combat levels, seals, the encounters with no NPC, the pillar, portals): 299 markers,
-   51 entries, positions sampled in-game by the owner; committed once `build_data.py suotuo --check`
-   passes. Next on it: a home for the 30 chests the game lists
-   in no entry and a type for the two Wolf Thief chests (both need a preview; see "Known gaps"), the
-   location-specific tags and the notes on chests at a non-obvious height (the owner, in-game), the ids of
-   the maps its portals lead to, the marker density at full size, then dropping `draft`. Five of the eight
-   regions' images are 2048², three are 4096²; the game tables have the other regions' data and
-   calibration too.
+   in as a draft (tiles, calibration, names, milestones). Its CSVs were exported from the game tables
+   (README "Game data") and completed in-game by the owner (coop players, combat levels, seals, the
+   encounters with no NPC, the pillar, portals), positions sampled in-game: 331 markers, 55 entries,
+   matching every count of the game (247 normal chests with the 30 in the site's two `unlisted` entries,
+   12 decryption chests with the two `chest_boss`, exploration value 3245). Next on it: the
+   location-specific tags and the notes on chests at a non-obvious height (the owner, in-game), the
+   marker density at full size, then dropping `draft`. Five of the eight regions' images are 2048², three
+   are 4096²; the game tables have the other regions' data and calibration too.
 2. **`links` in the popup**, needed by Suotuo's Ownerless Objects (SPEC §4.7): the encounter's popup lists
    its three chests (found or not, "show on map"), each chest's popup names the encounter. Needs a preview;
    it can be done while the owner collects Suotuo's data, which does not depend on it.
@@ -87,9 +86,7 @@ players more and rewards need a lot of data collected in-game.
 
 ## Waiting on the owner
 
-- Suotuo: location-specific tags and height notes (in-game), how to show its 30 chests outside any entry
-  and the Wolf Thief chests (previews), the ids of `tian_dou` and `xing_dou_forest`. Map images for the
-  regions after it.
+- Suotuo: location-specific tags and height notes (in-game). Map images for the regions after it.
 - Notes of Nuoding's two new books.
 - Two Mixed Area PT descriptions that were cut off in screenshots.
 - Native review of the ZH UI strings.
@@ -97,17 +94,16 @@ players more and rewards need a lot of data collected in-game.
 ## Known gaps and notes
 
 - Expected `build_data.py --check` warnings today: none for Nuoding; for Suotuo, its portals to
-  `tian_dou` and `xing_dou_forest`, maps that do not exist yet.
+  `tian-dou` and `xing-dou-forest` (Xing Dou Great Forest), maps that do not exist yet. Map ids use
+  hyphens, as they go in the address (`#tian-dou`); give the new maps these ids.
 - Suotuo counts 247 normal chests but its entries add up to 217: 30 chests (14 in the south-west, 16 in the
   south-east) belong to NoteIds 1109 and 1110, which have no entry and no name in the game tables. Checked
-  on a 247/247 character: every entry complete, 217/217. The build requires an entry for `chest_normal`, so
-  they are not in the CSVs yet; `compare` lists them.
-- Suotuo's Wolf Thief Tyrant and Wolf Thief Priest chests are decryption chests behind a boss (a guarded
-  chest's guards are a few weak monsters; these open only once their boss is beaten). The site has no type
-  for them yet, so they are not in the CSVs; `compare` lists them.
+  on a 247/247 character: every entry complete, 217/217. They are in the site's `unlisted-1` and
+  `unlisted-2` entries (SPEC §4.3); their names and descriptions are the site's.
 - Marker size follows the tile zoom (full size from `maxNativeZoom` up), not the game's scale. Suotuo has
   1.65 image px per game unit at its native zoom against Nuoding's 3.57, so at full size its markers sit
-  about 2.2 times closer together on screen. Look at it once Suotuo has markers; if it crowds, base the
+  about 2.2 times closer together on screen. Now that Suotuo has markers, it looks crowded at the whole-map
+  view (browser test screenshot, 2026-11-16); judge it on a real screen; if it crowds, base the
   marker scale (and the zooms that frame markers) on px per game unit instead of the native zoom.
 - A map with no data shows an empty sidebar and `0/0` exploration value (only a draft map, today).
 - `type.book/mechanism/portal/boss/arena` UI keys exist only in `en.json` on purpose (fallback to English).

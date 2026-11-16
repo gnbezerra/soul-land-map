@@ -1,1 +1,222 @@
-{}
+{
+  "wolf-shadow-highlands-1": {
+    "name": "Baú de Tesouro Um das Terras Altas da Sombra do Lobo",
+    "description": "Encontre os Baús de Tesouro espalhados pelas Terras Altas da Sombra do Lobo. (Observação: as Terras Altas da Sombra do Lobo são extremamente perigosas. Tenha cuidado!)"
+  },
+  "wolf-shadow-highlands-2": {
+    "name": "Baú de Tesouro Dois das Terras Altas da Sombra do Lobo",
+    "description": "Encontre os Baús de Tesouro espalhados pelas Terras Altas da Sombra do Lobo. (Observação: as Terras Altas da Sombra do Lobo são extremamente perigosas. Tenha cuidado!)"
+  },
+  "shrine": {
+    "name": "Baú de Tesouro do Santuário",
+    "description": "Encontre os Baús de Tesouro espalhados pela Estrada Montanhosa de Pedra Branca e dentro do Local do Santuário."
+  },
+  "prospect-isle": {
+    "name": "Baú de Tesouro da Ilha da Perspectiva",
+    "description": "Encontre os Baús de Tesouro espalhados pela Ilha da Perspectiva."
+  },
+  "riverside-farmstead": {
+    "name": "Baú de Tesouro da Fazenda Ribeirinha",
+    "description": "Encontre os Baús de Tesouro espalhados pela Fazenda Ribeirinha."
+  },
+  "suotuo-city-1": {
+    "name": "Baú de Tesouro Um da Cidade de Suotuo",
+    "description": "Encontre os Baús de Tesouro espalhados pela Cidade de Suotuo."
+  },
+  "suotuo-city-2": {
+    "name": "Baú de Tesouro Dois da Cidade de Suotuo",
+    "description": "Encontre os Baús de Tesouro espalhados pela Cidade de Suotuo."
+  },
+  "bountiful-plains": {
+    "name": "Baú de Tesouro das Planícies Férteis",
+    "description": "Encontre os Baús de Tesouro espalhados pelas Planícies Férteis."
+  },
+  "suotuo-city-south": {
+    "name": "Baú de Tesouro Sul da Cidade de Suotuo",
+    "description": "Encontre os Baús de Tesouro espalhados em ambos os lados do portão sul da Cidade de Suotuo."
+  },
+  "shrek-academy-1": {
+    "name": "Baú de Tesouro Um da Academia Shrek",
+    "description": "Encontre os Baús de Tesouro espalhados pela Academia Shrek e pelas estradas montanhosas próximas."
+  },
+  "shrek-academy-2": {
+    "name": "Segundo Baú de Tesouro da Academia Shrek",
+    "description": "Encontre os Baús de Tesouro espalhados pela Academia Shrek e pelas estradas montanhosas próximas."
+  },
+  "red-king-ancient-road": {
+    "name": "Baú de Tesouro da Estrada Antiga de Chi Wang",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados perto da Antiga Estrada de Chi Wang."
+  },
+  "rose-manor": {
+    "name": "Baú de Tesouro do Solar das Rosas",
+    "description": "Encontre os Baús de Tesouro espalhados perto do Solar das Rosas."
+  },
+  "guardian-1": {
+    "name": "Baú de Tesouro do Guardião Um",
+    "description": "Obtenha todos os Baús de Tesouro protegidos por Monstros no mapa!"
+  },
+  "guardian-2": {
+    "name": "Baú de Tesouro do Guardião Dois",
+    "description": "Obtenha todos os Baús de Tesouro protegidos por Monstros no mapa!"
+  },
+  "tang-sect-1": {
+    "name": "Baú de Tesouro Um da Seita Tang",
+    "description": "Use o Gancho para encontrar todos os Baús de Tesouro da Seita Tang espalhados pelo mapa."
+  },
+  "tang-sect-2": {
+    "name": "Baú Dois da Seita Tang",
+    "description": "Use a Mão de Jade Negra para encontrar todos os Baús de Tesouro da Seita Tang espalhados pelo mapa."
+  },
+  "tang-sect-3": {
+    "name": "Baú Três da Seita Tang",
+    "description": "Use o Olho Demoníaco Púrpura para Encontrar todos os Baús de Tesouro da Seita Tang Transformados espalhados pelo mapa."
+  },
+  "tang-sect-4": {
+    "name": "Baú de Tesouro da Seita Tang IV",
+    "description": "Use o Olho Demoníaco Púrpura para encontrar todos os Baús de Tesouro da Seita Tang espalhados pelo mapa."
+  },
+  "hidden-1": {
+    "name": "Baú de Tesouro Oculto I",
+    "description": "Encontre todos os Baús de Tesouro Ocultos espalhados por Suotuo."
+  },
+  "hidden-2": {
+    "name": "Baú de Tesouro Oculto II",
+    "description": "Encontre todos os Baús de Tesouro Ocultos espalhados por Suotuo."
+  },
+  "hidden-3": {
+    "name": "Baú Oculto III",
+    "description": "Encontre todos os Baús de Tesouro Ocultos espalhados por Suotuo."
+  },
+  "unlisted-1": {
+    "name": "Fora da lista do jogo (sudoeste)",
+    "description": "O jogo conta estes baús entre os baús comuns da região, mas não os lista em nenhuma entrada da lista de exploração, então não mostra quais faltam; marque-os aqui."
+  },
+  "unlisted-2": {
+    "name": "Fora da lista do jogo (sudeste)",
+    "description": "O jogo conta estes baús entre os baús comuns da região, mas não os lista em nenhuma entrada da lista de exploração, então não mostra quais faltam; marque-os aqui."
+  },
+  "coop-1": {
+    "name": "Baú de Tesouro Cooperativo Um",
+    "description": "Encontre os Baús de Tesouro Avançados em Cidade de Suotuo e coopere com outros Mestres Espirituais para abri-los."
+  },
+  "coop-2": {
+    "name": "Baú de Tesouro Cooperativo Dois",
+    "description": "Encontre os Baús de Tesouro Avançados na Planície Fértil e coopere com outros Mestres Espirituais para abri-los."
+  },
+  "pillar-empty-path-1": {
+    "name": "Pilar do Caminho Vazio I",
+    "description": "Use o Pilar do Caminho Vazio para encontrar o Baú de Tesouro Avançado escondido nas muralhas de Cidade de Suotuo."
+  },
+  "dragonwood-coffer-1": {
+    "name": "Baú de Contrato de Madeira de Dragão I",
+    "description": "Deuses retiraram a essência da Madeira-Dragão Oriental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "dragonwood-coffer-2": {
+    "name": "Baú de Contrato de Madeira de Dragão II",
+    "description": "Deuses retiraram a essência da Madeira-Dragão Oriental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "dragonwood-coffer-3": {
+    "name": "Baú de Contrato de Madeira de Dragão III",
+    "description": "Deuses retiraram a essência da Madeira-Dragão Oriental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "desolate-flame-coffer-1": {
+    "name": "Baú de Contrato da Chama Desolada I",
+    "description": "Deuses tomaram o fogo da Chama Desolada ocidental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "desolate-flame-coffer-2": {
+    "name": "Baú de Contrato da Chama Desolada II",
+    "description": "Deuses tomaram o fogo da Chama Desolada ocidental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "mysterious-frost-coffer-1": {
+    "name": "Baú de Contrato da Geada Misteriosa I",
+    "description": "Deuses extraíram a energia da Geada Misteriosa do extremo norte e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "mysterious-frost-coffer-2": {
+    "name": "Baú de Contrato da Geada Misteriosa II",
+    "description": "Deuses extraíram a energia da Geada Misteriosa do extremo norte e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "wolf-thief-tyrant": {
+    "name": "Baú de Tesouro do Lobo Ladrão Tirano",
+    "description": "Encontre o Baú de Tesouro guardado pelo Lobo Ladrão Tirano nas Terras Altas da Sombra do Lobo. (Observação: este lugar é extremamente perigoso, tenha cuidado!)"
+  },
+  "wolf-thief-priest": {
+    "name": "Baú de Tesouro do Lobo Ladrão Sacerdote",
+    "description": "Encontre o Baú de Tesouro guardado pelo Lobo Ladrão Sacerdote na Fazenda Ribeirinha. (Observação: este lugar é extremamente perigoso, tenha cuidado!)"
+  },
+  "wolf-shadow-highlands-crystal": {
+    "name": "Cristal das Terras Altas da Sombra do Lobo",
+    "description": "Encontre os Cristais da Mente Divina do Deus Asura espalhados ao redor das Terras Altas da Sombra do Lobo."
+  },
+  "shrine-crystal": {
+    "name": "Cristal do Local do Santuário",
+    "description": "Encontre os Cristais da Mente Divina do Deus Asura espalhados ao longo da Estrada Montanhosa de Pedra Branca."
+  },
+  "bountiful-plains-crystal": {
+    "name": "Cristal das Planícies Férteis",
+    "description": "Encontre os Cristais da Mente Divina do Deus Asura espalhados pelas Planícies Férteis."
+  },
+  "suotuo-city-crystal": {
+    "name": "Cristal da Cidade de Suotuo",
+    "description": "Encontre os Cristais da Mente Divina do Deus Asura espalhados pela Cidade de Suotuo e perto da Estrada Antiga de Chi Wang, a oeste da cidade."
+  },
+  "shrek-academy-crystal": {
+    "name": "Cristal da Academia Shrek",
+    "description": "Encontre os Cristais da Mente Divina do Deus Asura espalhados ao redor da Academia Shrek e nas montanhas próximas."
+  },
+  "western-fertileland-plain-crystal": {
+    "name": "Cristal da Parte Oeste da Planície Fértil",
+    "description": "Encontre os Cristais da Mente Divina do Deus Asura espalhados pela parte oeste da Planície Fértil."
+  },
+  "giantwood-forest-crystal": {
+    "name": "Cristal da Floresta da Madeira Gigante",
+    "description": "Encontre os Cristais da Mente Divina do Deus Asura espalhados ao redor da Floresta da Madeira Gigante."
+  },
+  "scattered-crystals": {
+    "name": "Cristais Espalhados",
+    "description": "Encontre os três Cristais da Mente Divina do Deus Asura perdidos perto do moinho de vento a leste da Planície Fértil, ao sul da Fazenda Ribeirinha e dentro da Fazenda Ribeirinha."
+  },
+  "wolfs-den-treasure": {
+    "name": "O Tesouro da Toca dos Lobos",
+    "description": "Os líderes do Lobo Ladrão na Cidade de Suotuo escondem o Tesouro da tribo."
+  },
+  "lucky-water-and-cats": {
+    "name": "A Água da Sorte e o Gato",
+    "description": "Nito Leme, da Associação de Alquimistas, está recrutando voluntários para testar poções."
+  },
+  "no-ordinary-worker": {
+    "name": "Não Ser um Trabalhador",
+    "description": "Recentemente, têm ocorrido muitos furtos nas barracas da Cidade de Suotuo."
+  },
+  "ownerless-objects": {
+    "name": "Item Sem Dono",
+    "description": "O “Livro do Elixir e Pergaminho de Ferro”, que registra a lenda de um Tesouro, está espalhado pela Cidade de Suotuo."
+  },
+  "king-of-onlookers": {
+    "name": "Rei dos Melões",
+    "description": "Os três irmãos Liu, na Cidade de Suotuo, vendem melões maduros e doces."
+  },
+  "drunk-and-dreamy": {
+    "name": "Bêbado e Atordoado",
+    "description": "A Taverna dos Veteranos, na Cidade de Suotuo, é o local de reunião favorito dos artistas marciais."
+  },
+  "baboons-gratitude": {
+    "name": "A Retribuição do Babuíno",
+    "description": "A estrada para o Local do Santuário do Deus Asura está repleta de uivos pungentes de macacos."
+  },
+  "versatile-kids": {
+    "name": "Criança Versátil",
+    "description": "Testemunhas relatam que há uma pedra estranha que se move na Cidade de Suotuo."
+  },
+  "throwing-away-thousands": {
+    "name": "Esbanjar",
+    "description": "Há um comerciante melancólico em um canto da Cidade de Suotuo."
+  },
+  "light-up-teleport": {
+    "name": "Acenda! Teletransporte",
+    "description": "Ilumine todos os Pontos de Teletransporte do mapa."
+  },
+  "enjoy-the-scenery": {
+    "name": "Contemple Todas as Paisagens do Mapa",
+    "description": "Ilumine todos os Pontos Panorâmicos do mapa."
+  }
+}

@@ -1,1 +1,222 @@
-{}
+{
+  "wolf-shadow-highlands-1": {
+    "name": "Wolf Shadow Highlands Chest One",
+    "description": "Find the chests scattered within Wolf Shadow Highlands. (Note: Wolf Shadow Highlands are extremely dangerous, please be careful!)"
+  },
+  "wolf-shadow-highlands-2": {
+    "name": "Wolf Shadow Highlands Chest Two",
+    "description": "Find the chests scattered within Wolf Shadow Highlands. (Note: Wolf Shadow Highlands are extremely dangerous, please be careful, Soul Masters!)"
+  },
+  "shrine": {
+    "name": "Shrine Chest",
+    "description": "Find the chests scattered along the White Stone Mountain Road and within the Shrine."
+  },
+  "prospect-isle": {
+    "name": "Prospect Isle Chest",
+    "description": "Find the chests scattered within Prospect Isle."
+  },
+  "riverside-farmstead": {
+    "name": "Riverside Farmstead Chest",
+    "description": "Find the chests scattered within Riverside Farmstead."
+  },
+  "suotuo-city-1": {
+    "name": "Suotuo City Chest One",
+    "description": "Find the chests scattered within Suotuo City."
+  },
+  "suotuo-city-2": {
+    "name": "Suotuo City Chest Two",
+    "description": "Find the chests scattered within Suotuo City."
+  },
+  "bountiful-plains": {
+    "name": "Bountiful Plains Chest",
+    "description": "Find the chests scattered across Bountiful Plains."
+  },
+  "suotuo-city-south": {
+    "name": "Suotuo City South Chest",
+    "description": "Find the chests scattered on both sides of the southern gate of Suotuo City."
+  },
+  "shrek-academy-1": {
+    "name": "Shrek Academy Chest One",
+    "description": "Find the chests scattered within Shrek Academy and the nearby mountain roads."
+  },
+  "shrek-academy-2": {
+    "name": "Shrek Academy Chest Two",
+    "description": "Find the chests scattered within Shrek Academy and the nearby mountain roads."
+  },
+  "red-king-ancient-road": {
+    "name": "Red King Ancient Road Chest",
+    "description": "Find the primary chests scattered near the Red King Ancient Road."
+  },
+  "rose-manor": {
+    "name": "Rose Manor Chest",
+    "description": "Find the chests scattered near the Rose Manor."
+  },
+  "guardian-1": {
+    "name": "Guardian Chest One",
+    "description": "Obtain all the chests guarded by monsters on the map!"
+  },
+  "guardian-2": {
+    "name": "Guardian Chest Two",
+    "description": "Obtain all the chests guarded by monsters on the map!"
+  },
+  "tang-sect-1": {
+    "name": "Tang Sect Chest One",
+    "description": "Use the Grappling Hook to find all the scattered Tang Sect chests on the map."
+  },
+  "tang-sect-2": {
+    "name": "Tang Sect Chest Two",
+    "description": "Use the Xuan Yu Hand to find all the scattered Tang Sect chests on the map."
+  },
+  "tang-sect-3": {
+    "name": "Tang Sect Chest Three",
+    "description": "Use the Purple Demon Eye to locate all the scattered transformed Tang Sect chests on the map."
+  },
+  "tang-sect-4": {
+    "name": "Tang Sect Chest Four",
+    "description": "Use the Purple Demon Eye to locate all the scattered hidden Tang Sect chests on the map."
+  },
+  "hidden-1": {
+    "name": "Hidden Chest I",
+    "description": "Find all hidden chests scattered around Suotuo."
+  },
+  "hidden-2": {
+    "name": "Hidden Chest II",
+    "description": "Find all hidden chests scattered around Suotuo."
+  },
+  "hidden-3": {
+    "name": "Hidden Chest III",
+    "description": "Find all hidden chests scattered around Suotuo."
+  },
+  "unlisted-1": {
+    "name": "Outside the game's list (south-west)",
+    "description": "The game counts these chests among the region's normal chests but lists them in no entry of its exploration list, so it cannot show which are left; mark them here."
+  },
+  "unlisted-2": {
+    "name": "Outside the game's list (south-east)",
+    "description": "The game counts these chests among the region's normal chests but lists them in no entry of its exploration list, so it cannot show which are left; mark them here."
+  },
+  "coop-1": {
+    "name": "Cooperative Chest One",
+    "description": "Locate the advanced chests in Suotuo City and cooperate with other Soul Masters to open them."
+  },
+  "coop-2": {
+    "name": "Cooperative Chest Two",
+    "description": "Locate the advanced chests in the Fertileland Plain and cooperate with other Soul Masters to open them."
+  },
+  "pillar-empty-path-1": {
+    "name": "Pillar of Empty Path I",
+    "description": "Use the Pillar of Empty Path to find the hidden advanced chest on the walls of Suotuo City."
+  },
+  "dragonwood-coffer-1": {
+    "name": "Dragonwood Coffer I",
+    "description": "Gods took the essence of the eastern Dragonwood and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "dragonwood-coffer-2": {
+    "name": "Dragonwood Coffer II",
+    "description": "Gods took the essence of the eastern Dragonwood and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "dragonwood-coffer-3": {
+    "name": "Dragonwood Coffer III",
+    "description": "Gods took the essence of the eastern Dragonwood and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "desolate-flame-coffer-1": {
+    "name": "Desolate Flame Coffer I",
+    "description": "Gods took the fire of the western Desolate Flame and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "desolate-flame-coffer-2": {
+    "name": "Desolate Flame Coffer II",
+    "description": "Gods took the fire of the western Desolate Flame and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "mysterious-frost-coffer-1": {
+    "name": "Mysterious Frost Coffer I",
+    "description": "Gods took the extreme northern Mysterious Frost and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "mysterious-frost-coffer-2": {
+    "name": "Mysterious Frost Coffer II",
+    "description": "Gods took the extreme northern Mysterious Frost and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "wolf-thief-tyrant": {
+    "name": "Wolf Thief Tyrant Chest",
+    "description": "Find the chest guarded by the Wolf Thief Tyrant in Wolf Shadow Highlands. (Note: This place is extremely dangerous, please be careful!)"
+  },
+  "wolf-thief-priest": {
+    "name": "Wolf Thief Priest Chest",
+    "description": "Find the chest guarded by the Wolf Thief Priest in Riverside Farmstead. (Note: This place is extremely dangerous, please be careful!)"
+  },
+  "wolf-shadow-highlands-crystal": {
+    "name": "Wolf Shadow Highlands Crystal",
+    "description": "Find the Asura God Mind Crystals scattered around Wolf Shadow Highlands."
+  },
+  "shrine-crystal": {
+    "name": "Shrine Crystal",
+    "description": "Find the Asura God Mind Crystals scattered along the White Stone Mountain Road."
+  },
+  "bountiful-plains-crystal": {
+    "name": "Bountiful Plains Crystal",
+    "description": "Find the Asura God Mind Crystals scattered within Bountiful Plains."
+  },
+  "suotuo-city-crystal": {
+    "name": "Suotuo City Crystal",
+    "description": "Find the Asura God Mind Crystals scattered within Suotuo City and near the Red King's Road to the west of the city."
+  },
+  "shrek-academy-crystal": {
+    "name": "Shrek Academy Crystal",
+    "description": "Find the Asura God Mind Crystals scattered around Shrek Academy and the nearby mountains."
+  },
+  "western-fertileland-plain-crystal": {
+    "name": "Western Fertileland Plain Crystal",
+    "description": "Find the Asura God Mind Crystals scattered in the western part of the Fertileland Plain."
+  },
+  "giantwood-forest-crystal": {
+    "name": "Giantwood Forest Crystal",
+    "description": "Find the Asura God Mind Crystals scattered around Giantwood Forest."
+  },
+  "scattered-crystals": {
+    "name": "Scattered Crystals",
+    "description": "Find the three lost Asura God Mind Crystals around Windmill Mountain, Riverside Farmstead South, and Riverside Farmstead East."
+  },
+  "wolfs-den-treasure": {
+    "name": "Wolf's Den Treasure",
+    "description": "The top echelons of the Wolf Thief in Suotuo City hide the tribe's treasures."
+  },
+  "lucky-water-and-cats": {
+    "name": "Lucky Water and Cats",
+    "description": "Nito Leme of the Apothecary Association is currently recruiting test subjects."
+  },
+  "no-ordinary-worker": {
+    "name": "No Ordinary Worker",
+    "description": "There have been frequent thefts at the stalls in Suotuo City recently."
+  },
+  "ownerless-objects": {
+    "name": "Ownerless Objects",
+    "description": "The \"Dan Book and Iron Scroll\" that records the legend of treasures is scattered throughout Suotuo City."
+  },
+  "king-of-onlookers": {
+    "name": "King of Onlookers",
+    "description": "The Liu brothers in Suotuo City sell melons that are ripe and sweet."
+  },
+  "drunk-and-dreamy": {
+    "name": "Drunk and Dreamy",
+    "description": "The Old Soldiers Tavern in Suotuo City is the favorite gathering place for martial artists."
+  },
+  "baboons-gratitude": {
+    "name": "Baboon's Gratitude",
+    "description": "The road to the ruins of the Asura God is filled with mournful ape cries."
+  },
+  "versatile-kids": {
+    "name": "Versatile Kids",
+    "description": "Witnesses report a strange stone that moves in Suotuo City."
+  },
+  "throwing-away-thousands": {
+    "name": "Throwing Away Thousands",
+    "description": "There is a gloomy merchant in a corner of Suotuo City."
+  },
+  "light-up-teleport": {
+    "name": "Light Up! Teleport",
+    "description": "Illuminate all the teleport points on the map."
+  },
+  "enjoy-the-scenery": {
+    "name": "Enjoy the Scenery",
+    "description": "Illuminate all the observation points on the map."
+  }
+}

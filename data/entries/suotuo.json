@@ -1,1 +1,253 @@
-{}
+{
+  "wolf-shadow-highlands-1": {
+    "type": "chest_normal",
+    "size": 16
+  },
+  "wolf-shadow-highlands-2": {
+    "type": "chest_normal",
+    "size": 18
+  },
+  "shrine": {
+    "type": "chest_normal",
+    "size": 17
+  },
+  "prospect-isle": {
+    "type": "chest_normal",
+    "size": 6
+  },
+  "riverside-farmstead": {
+    "type": "chest_normal",
+    "size": 6
+  },
+  "suotuo-city-1": {
+    "type": "chest_normal",
+    "size": 13
+  },
+  "suotuo-city-2": {
+    "type": "chest_normal",
+    "size": 12
+  },
+  "bountiful-plains": {
+    "type": "chest_normal",
+    "size": 15
+  },
+  "suotuo-city-south": {
+    "type": "chest_normal",
+    "size": 10
+  },
+  "shrek-academy-1": {
+    "type": "chest_normal",
+    "size": 12
+  },
+  "shrek-academy-2": {
+    "type": "chest_normal",
+    "size": 10
+  },
+  "red-king-ancient-road": {
+    "type": "chest_normal",
+    "size": 3
+  },
+  "rose-manor": {
+    "type": "chest_normal",
+    "size": 5
+  },
+  "guardian-1": {
+    "type": "chest_normal",
+    "size": 8,
+    "tags": [
+      "guarded"
+    ]
+  },
+  "guardian-2": {
+    "type": "chest_normal",
+    "size": 9,
+    "tags": [
+      "guarded"
+    ]
+  },
+  "tang-sect-1": {
+    "type": "chest_normal",
+    "size": 8,
+    "tags": [
+      "grappling_hook"
+    ]
+  },
+  "tang-sect-2": {
+    "type": "chest_normal",
+    "size": 7
+  },
+  "tang-sect-3": {
+    "type": "chest_normal",
+    "size": 11,
+    "tags": [
+      "purple_demon_eye"
+    ]
+  },
+  "tang-sect-4": {
+    "type": "chest_normal",
+    "size": 9,
+    "tags": [
+      "hidden",
+      "purple_demon_eye"
+    ]
+  },
+  "hidden-1": {
+    "type": "chest_normal",
+    "size": 8,
+    "tags": [
+      "hidden"
+    ]
+  },
+  "hidden-2": {
+    "type": "chest_normal",
+    "size": 8,
+    "tags": [
+      "hidden"
+    ]
+  },
+  "hidden-3": {
+    "type": "chest_normal",
+    "size": 6,
+    "tags": [
+      "hidden"
+    ]
+  },
+  "unlisted-1": {
+    "type": "chest_normal",
+    "size": 14,
+    "tags": [
+      "unlisted"
+    ]
+  },
+  "unlisted-2": {
+    "type": "chest_normal",
+    "size": 16,
+    "tags": [
+      "unlisted"
+    ]
+  },
+  "coop-1": {
+    "type": "chest_coop",
+    "size": 1
+  },
+  "coop-2": {
+    "type": "chest_coop",
+    "size": 1
+  },
+  "pillar-empty-path-1": {
+    "type": "chest_challenge",
+    "size": 1
+  },
+  "dragonwood-coffer-1": {
+    "type": "chest_contract",
+    "size": 1
+  },
+  "dragonwood-coffer-2": {
+    "type": "chest_contract",
+    "size": 1
+  },
+  "dragonwood-coffer-3": {
+    "type": "chest_contract",
+    "size": 1
+  },
+  "desolate-flame-coffer-1": {
+    "type": "chest_contract",
+    "size": 1
+  },
+  "desolate-flame-coffer-2": {
+    "type": "chest_contract",
+    "size": 1
+  },
+  "mysterious-frost-coffer-1": {
+    "type": "chest_contract",
+    "size": 1
+  },
+  "mysterious-frost-coffer-2": {
+    "type": "chest_contract",
+    "size": 1
+  },
+  "wolf-thief-tyrant": {
+    "type": "chest_boss",
+    "size": 1
+  },
+  "wolf-thief-priest": {
+    "type": "chest_boss",
+    "size": 1
+  },
+  "wolf-shadow-highlands-crystal": {
+    "type": "crystal",
+    "size": 5
+  },
+  "shrine-crystal": {
+    "type": "crystal",
+    "size": 2
+  },
+  "bountiful-plains-crystal": {
+    "type": "crystal",
+    "size": 4
+  },
+  "suotuo-city-crystal": {
+    "type": "crystal",
+    "size": 6
+  },
+  "shrek-academy-crystal": {
+    "type": "crystal",
+    "size": 4
+  },
+  "western-fertileland-plain-crystal": {
+    "type": "crystal",
+    "size": 3
+  },
+  "giantwood-forest-crystal": {
+    "type": "crystal",
+    "size": 3
+  },
+  "scattered-crystals": {
+    "type": "crystal",
+    "size": 3
+  },
+  "wolfs-den-treasure": {
+    "type": "encounter",
+    "size": 1
+  },
+  "lucky-water-and-cats": {
+    "type": "encounter",
+    "size": 1
+  },
+  "no-ordinary-worker": {
+    "type": "encounter",
+    "size": 1
+  },
+  "ownerless-objects": {
+    "type": "encounter",
+    "size": 1
+  },
+  "king-of-onlookers": {
+    "type": "encounter",
+    "size": 1
+  },
+  "drunk-and-dreamy": {
+    "type": "encounter",
+    "size": 1
+  },
+  "baboons-gratitude": {
+    "type": "encounter",
+    "size": 1
+  },
+  "versatile-kids": {
+    "type": "encounter",
+    "size": 1
+  },
+  "throwing-away-thousands": {
+    "type": "encounter",
+    "size": 1
+  },
+  "light-up-teleport": {
+    "type": "teleport",
+    "size": 8
+  },
+  "enjoy-the-scenery": {
+    "type": "viewpoint",
+    "size": 4
+  }
+}
