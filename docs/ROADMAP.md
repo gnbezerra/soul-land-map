@@ -13,7 +13,7 @@ Working, and verified by the owner in a real browser (Chrome, DevTools mobile em
   map, committed JSON equal to a fresh build, pipeline, unit and browser tests. On `main` it then deploys the
   repo as is to Pages, so a push that fails the checks leaves the previous site up.
 - Nuoding City Area map: 4096² image in 256 px tiles (zoom 0–4, `maxZoom` 5), calibrated, coordinate readout.
-- Suotuo City Area: 2048² image in tiles (zoom 0–3, `maxZoom` 5), in the region selector since 2026-11-16.
+- Suotuo City Area: 2048² image in tiles (zoom 0–3, `maxZoom` 4), in the region selector since 2026-11-16.
   Its CSVs were exported from the game tables and completed by the owner (see "Next steps"); the
   location-specific tags and some height notes are still to come.
 - Calibration of both maps from the game's `map_position` table (README "Calibration"), since 2026-11-16;
@@ -106,8 +106,13 @@ players more and rewards need a lot of data collected in-game.
 - Marker size follows the tile zoom (full size from `maxNativeZoom` up), not the game's scale. Suotuo has
   1.65 image px per game unit at its native zoom against Nuoding's 3.57, so at full size its markers sit
   about 2.2 times closer together on screen. Now that Suotuo has markers, it looks crowded at the whole-map
-  view (browser test screenshot, 2026-11-16); judge it on a real screen, a phone above all; if it crowds,
-  base the marker scale (and the zooms that frame markers) on px per game unit instead of the native zoom.
+  view; on a phone (Samsung A55, 2026-11-16) chests overlap in the city centre and the north-west, and
+  one zoom step separates them. The owner chose to leave it until every region is in, so the marker scale
+  is decided once for all of them; the way then is basing it (and the zooms that frame markers) on px per
+  game unit instead of the native zoom.
+- `maxZoom` is one step above the native zoom on 2048² images (Suotuo: 4), two on 4096² ones (Nuoding: 5),
+  so the most upscaled view is 2× on both. Suotuo at 5 was a 4× blur on a phone (owner, 2026-11-16).
+  Thin seams between tiles showed on the phone at the upscaled zooms; not looked into yet.
 - A map with no data shows an empty sidebar and `0/0` exploration value (a new draft map, before its data).
 - `type.book/mechanism/portal/boss/arena` UI keys exist only in `en.json` on purpose (fallback to English).
 - Unused leftover PT/ZH strings were cut off in the game UI ("Rec.", "Adicionar"); do not rely on them.
