@@ -84,6 +84,9 @@ players more and rewards need a lot of data collected in-game.
 - The official PT texts are translated from Chinese and are not consistent with the English names; keep them
   as the game shows them (SPEC §5).
 - Backup carries `progress` and `trials`; settings are not included.
+- Switching the language reloads the page, so the map goes back to the whole-map view (an open marker
+  opens again through its deep link). The owner judged it minor (2026-11-15); keeping the view would mean
+  saving and restoring it across the reload.
 - Mixed Area's 240 exploration points reconcile only if a seed counts +5 (unconfirmed). Seeds are in no
   `explorationRules` entry until it is: add `seed` to the chests rule (or a rule of its own) once confirmed.
 - Marker scale tunables: `MARKER_SHRINK_PER_ZOOM` 0.25, `MARKER_MIN_SCALE` 0.35 (at 0.5 the whole-map view on a phone was a blur of halos), `TIER_SIZE` in
@@ -103,8 +106,8 @@ players more and rewards need a lot of data collected in-game.
 - The bottom sheet is Leaflet's popup element moved into `#map-wrap` (js/sheet.js). Leaflet keeps writing the
   floating position inline (hence `!important` in `.mk-sheet`), and its `.leaflet-container`-scoped styles
   (the close button) no longer apply there, so the sheet styles them itself. It has no grabber bar on
-  purpose: it cannot be dragged. If a Leaflet update breaks it, look there first. Tested in headless Chrome
-  (emulated phone) only, not on a real phone yet.
+  purpose: it cannot be dragged. If a Leaflet update breaks it, look there first. Checked by the owner on a
+  Samsung A55 (2026-11-15): framing, ring, scrolling with the button in view, pillar, closing, rotation.
 - The "distinct titles" count the browser test prints for the every-marker check varies between runs (e.g.
   274 to 285): a just-closed popup stays in the page while it fades out and is sometimes read instead. Only
   the count is affected; the check itself looks at every title.
