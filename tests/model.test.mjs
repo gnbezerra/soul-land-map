@@ -2,7 +2,7 @@
 // Uses small made-up data, so editing the real CSVs never breaks them.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { buildModel, applyProgress, formatCount, countProgress } from "../js/model.js";
+import { buildModel, applyProgress, formatCount, countProgress, isUnlisted, splitUnlisted } from "../js/model.js";
 
 const categories = {
   groups: [
@@ -102,4 +102,12 @@ test("countProgress: found markers without trials, and trial layers, ignoring st
 
 test("formatCount", () => {
   assert.equal(formatCount(3, 10), "3/10");
+});
+
+test("splitUnlisted: the game's entries in their order, then the site's own (tag unlisted)", () => {
+  const entries = [{ id: "u1", tags: ["unlisted"] }, { id: "a" }, { id: "b", tags: ["hidden"] }, { id: "u2", tags: ["unlisted"] }];
+  const { listed, unlisted } = splitUnlisted(entries);
+  assert.deepEqual(listed.map((e) => e.id), ["a", "b"]);
+  assert.deepEqual(unlisted.map((e) => e.id), ["u1", "u2"]);
+  assert.equal(isUnlisted({}), false);
 });

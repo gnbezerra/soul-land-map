@@ -174,11 +174,23 @@ body.sidebar-hidden #sidebar {
   flex: none;
 }
 
+.dot-ic {
+  position: relative;
+}
+
 .dot-ic img {
   display: block;
   width: 100%;
   height: 100%;
   filter: drop-shadow(0 0 1px #000);
+}
+
+.dot-ic img.dot-badge {
+  position: absolute;
+  left: -4px;
+  top: -4px;
+  width: 11px;
+  height: 11px;
 }
 
 .name {
@@ -203,6 +215,16 @@ body.sidebar-hidden #sidebar {
   list-style: none;
   margin: 0 0 4px;
   padding: 0;
+}
+
+/* The site's own entries (tag "unlisted") come last, after a dashed line, in italics. */
+.entries-sep {
+  margin: 4px 10px 4px 56px;
+  border-top: 1px dashed var(--border);
+}
+
+.entry.unlisted .name {
+  font-style: italic;
 }
 
 .entry {
@@ -340,7 +362,22 @@ body.sidebar-hidden #sidebar {
   box-shadow: 0 0 0 1.5px #10151b;
 }
 
+/* A sprite as the badge (categories.json "badgeIcon"), in the same corner. */
+.mk-ic img.mk-icon-badge {
+  position: absolute;
+  left: -5px;
+  top: -5px;
+  width: 14px;
+  height: 14px;
+  filter: drop-shadow(0 0 1px #000) drop-shadow(0 0 1px #000);
+}
+
+.mk.found .mk-ic img.mk-icon-badge {
+  opacity: .7;
+}
+
 .mk-tiny .mk-type-badge,
+.mk-tiny .mk-icon-badge,
 .mk-tiny .mk.found .mk-ic::after {
   display: none;
 }

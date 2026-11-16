@@ -44,7 +44,8 @@ is the primary point and all rows end up in "points". No other type may repeat a
 
 entries.csv columns
     id, type, name_en, size                required (type is the marker type of its members)
-    tags                                   separated by ';'
+    tags                                   separated by ';' ('unlisted': an entry of the site's own, for
+                                           objects the game counts but lists in no entry)
     name_pt, name_zh, desc_en, desc_pt, desc_zh   optional official texts
 
 marker_texts.csv columns (one row per marker and field)
@@ -71,13 +72,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 
 MARKER_TYPES = {
-    "chest_normal", "chest_coop", "chest_challenge", "chest_contract", "crystal",
+    "chest_normal", "chest_coop", "chest_challenge", "chest_contract", "chest_boss", "crystal",
     "divine_trial", "encounter", "teleport", "viewpoint", "seed", "mechanism",
     "portal", "book", "boss", "arena",
 }
 # Types whose markers belong to an exploration entry (the in-game list).
 ENTRY_TYPES = {
-    "chest_normal", "chest_coop", "chest_challenge", "chest_contract", "crystal",
+    "chest_normal", "chest_coop", "chest_challenge", "chest_contract", "chest_boss", "crystal",
     "encounter", "teleport", "viewpoint", "seed",
 }
 # Extra column -> the only marker types where it may be filled in.

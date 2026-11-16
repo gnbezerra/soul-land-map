@@ -87,8 +87,8 @@ export function createLayers({
   }
 
   // A game sprite when the type has one (an optional second sprite replaces it once found, and an
-  // optional badge tells chests with the same sprite apart: a fixed text, or a field of the marker such
-  // as a co-op chest's number of players); otherwise the colored dot with a letter.
+  // optional badge tells chests with the same sprite apart: a fixed text, a field of the marker such
+  // as a co-op chest's number of players, or a small sprite); otherwise the colored dot with a letter.
   function makeIcon(m, meta) {
     const type = m.type;
     if (!meta.icon) {
@@ -121,6 +121,13 @@ export function createLayers({
       const badge = document.createElement("span");
       badge.className = "mk-type-badge";
       badge.textContent = badgeText;
+      box.append(badge);
+    } else if (meta.badgeIcon) {
+      const badge = document.createElement("img");
+      badge.src = meta.badgeIcon;
+      badge.alt = "";
+      badge.className = "mk-icon-badge";
+      badge.draggable = false;
       box.append(badge);
     }
     return L.divIcon({ html: box, className: `mk mk-${tier}`, iconSize: [size, size] });

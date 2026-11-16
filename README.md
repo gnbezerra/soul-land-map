@@ -243,11 +243,14 @@ same rule, so it does not report those.
 From the game: markers of every type below, with game coordinates (`round(X + 512)`, `round(Z + 512)` of the
 NPC's spawn point; the in-game readout matches them exactly or within 1), entries in the in-game order with
 their official names and descriptions, `entry_index` (the order of the `[Location N]` links), the
-decryption chest kinds and contract elements, the tags `guarded`, `hidden`, `grappling_hook` and
-`purple_demon_eye` (from `box_npc` and the entry descriptions), Divine Trial names, subtypes, stars and
-recommended CP, teleport, viewpoint and book names, encounter names and descriptions (`HandBookTips`) and
-the positions of those triggered by NPCs (with all their points),
-the exploration value cap, the reward milestones and the calibration (`map_position`).
+decryption chest kinds (a guarded one, `box_npc.BoxType` 8, is a `chest_boss`) and contract elements, the
+tags `guarded`, `hidden`, `grappling_hook` and `purple_demon_eye` (from `box_npc` and the entry
+descriptions), Divine Trial names, subtypes, stars and recommended CP, teleport, viewpoint and book names,
+encounter names and descriptions (`HandBookTips`) and the positions of those triggered by NPCs (with all
+their points), the exploration value cap, the reward milestones and the calibration (`map_position`).
+
+Objects the game counts but lists in no entry get an entry of the site's own, `unlisted-<n>`, tagged
+`unlisted` (SPEC §4.3); `export` names them "Outside the game's list" and asks for the area in each name.
 
 Not in the tables, so still collected in-game: coop chest `players`, combat stage `level` (the game gates
 layers on story quests, not a level), poison or fire seal on Xuanyu Hand chests, the location-specific tags,
@@ -262,7 +265,8 @@ task or a mount (Ownerless Objects is one).
   (path in `icons/`; the sidebar shows it too), optional `iconFound` (replaces the icon once found: the opened contract chest),
   `tier`, optional `size` (box in px, overrides the tier: the teleport and scenic spot sprites are thin, so
   they get 26 px to weigh about as much as a chest), and optional `badge` (short text on the icon's corner, for chests that share a sprite) or
-  `badgeField` (the badge shows that marker field instead: a co-op chest shows its `players`, 1 to 4).
+  `badgeField` (the badge shows that marker field instead: a co-op chest shows its `players`, 1 to 4) or
+  `badgeIcon` (a small sprite in the same corner, on the marker and in the sidebar: the boss chest's).
 - Marker size follows the tier (`TIER_SIZE` in `js/layers.js`): `common` 22 px (chests), `major` 38 px with
   a glow in the category color (Divine Trials, crystals, encounters, books, bosses: what the player hunts
   for), `minor` 20 px (teleports, scenic spots, portals, which the game's own minimap already shows; no glow, and

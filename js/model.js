@@ -21,6 +21,18 @@ export function countProgress(markers, foundIds, trials) {
   return { markers: found, layers };
 }
 
+// The tag of the site's own entries for what the game counts but lists in no entry (SPEC 4.3).
+export const UNLISTED_TAG = "unlisted";
+
+export function isUnlisted(entry) {
+  return (entry.tags ?? []).includes(UNLISTED_TAG);
+}
+
+// A type's entries for the sidebar: the game's, in their order, then the site's own.
+export function splitUnlisted(entries) {
+  return { listed: entries.filter((e) => !isUnlisted(e)), unlisted: entries.filter(isUnlisted) };
+}
+
 export function buildModel(categories, entries, markers) {
   const types = new Map();
   const unknownTypes = new Set();

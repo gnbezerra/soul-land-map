@@ -40,7 +40,7 @@ HALF = 512            # game coordinate = world X/Z + 512 (the map is 1024 units
 WORLD_MAP_SCALE = 2.3  # map_position.WorldMapMultiple, the same for every region; divides the image offset
 
 # scene_explore (Type, ShowType) -> marker type. ShowType 2 chests are decryption chests; their kind
-# comes from the entry name (decryption_kind).
+# comes from the entry name (decryption_kind), or from box_npc for a chest behind a boss.
 KINDS = {(1, 1): "chest_normal", (1, 2): "decryption", (2, 3): "divine_trial", (3, 6): "teleport",
          (4, 6): "viewpoint", (5, 4): "crystal", (7, 5): "encounter", (8, 6): "seed"}
 TRIAL_SUBTYPES = {1: "combat", 2: "puzzle"}
@@ -62,7 +62,8 @@ NUMBER_WORDS = {"one": "1", "two": "2", "three": "3", "four": "4", "five": "5", 
 MARKER_HEADER = ["id", "type", "entry", "entry_index", "x", "y", "subtype", "players", "contract",
                  "pillar_x", "pillar_y", "seed", "requires_seed", "species", "to", "links", "tags"]
 ENTRY_HEADER = ["id", "type", "name_en", "size", "tags", "name_pt", "name_zh", "desc_en", "desc_pt", "desc_zh"]
-TYPE_ORDER = ["chest_normal", "chest_coop", "chest_challenge", "chest_contract", "divine_trial", "crystal",
+TYPE_ORDER = ["chest_normal", "chest_coop", "chest_challenge", "chest_contract", "chest_boss", "divine_trial",
+              "crystal",
               "encounter", "teleport", "viewpoint", "book"]
 
 
@@ -165,6 +166,9 @@ class Region:
             index[note_id] += 1
             if kind == "decryption":
                 kind, extra = decryption_kind(entry["name"]["en"])
+                if kind is None and boxes.get(npc_id, {}).get("BoxType") == 8:
+                    # A guarded decryption chest: its guard is a boss (Suotuo's Wolf Thief Tyrant and Priest).
+                    kind = "chest_boss"
                 if kind is None:
                     self.skipped.append(("decryption chest of a kind the site has no type for",
                                          f"{npc_id} in '{entry['name']['en']}'"))
@@ -297,26 +301,50 @@ def calibration_for(region, width):
 
 # ---------------------------------------------------------------------------------------------- export
 
+# A site entry for objects the game counts but lists in no entry (SPEC §4.3, tag `unlisted`). The game gives
+# them no name, so the owner adds the area to each name (e.g. "(south-west)").
+UNLISTED = {
+    "name": {"en": "Outside the game's list", "pt": "Fora da lista do jogo", "zh": "游戏列表之外"},
+    "desc": {"en": "The game counts these chests among the region's normal chests but lists them in no entry "
+                   "of its exploration list, so it cannot show which are left; mark them here.",
+             "pt": "O jogo conta estes baús entre os baús comuns da região, mas não os lista em nenhuma entrada "
+                   "da lista de exploração, então não mostra quais faltam; marque-os aqui.",
+             "zh": "游戏将这些宝箱计入本区域的普通宝箱，但探索列表中没有对应条目，无法显示还剩哪些；可在此标记。"},
+}
+
+
+def entry_order(e):
+    """Position of an entry in its type's list: the game's order, the unlisted ones last."""
+    return e.get("order") or 0 if e.get("listed", True) else float("inf")
+
+
 def export(region, map_id, out_dir):
-    entry_ids, entry_rows = {}, []
+    entry_ids, entry_rows, todo = {}, [], []
+    unlisted_n = 0
     by_note = defaultdict(list)
     for item in region.items:
         if "note" in item:
             by_note[item["note"]].append(item)
     for note_id, e in sorted(region.entries.items(), key=lambda kv: (TYPE_ORDER.index(kv[1]["kind"])
                                                                       if kv[1]["kind"] in TYPE_ORDER else 99,
-                                                                      kv[1]["order"] or 0, kv[0])):
+                                                                      entry_order(kv[1]), kv[0])):
         members = by_note.get(note_id, [])
-        if not e["listed"] and e["kind"] != "encounter":
-            region.skipped.append(("in no entry the game lists (its NoteId has no entry)",
-                                   f"{len(members)} {e['kind']} of NoteId {note_id}: "
-                                   + ", ".join(f"{i['source']} {i['points'][0]}" for i in members)))
-            for i in members:
-                i["skip"] = True
-            continue
         if not members:
             continue
-        eid = slug(e["name"]["en"], e["kind"])
+        unlisted = not e["listed"] and e["kind"] != "encounter"
+        if unlisted:
+            n = sum(1 for x in region.entries.values() if not x["listed"] and x["kind"] == e["kind"])
+            unlisted_n += 1
+            suffix = f" {unlisted_n}" if n > 1 else ""
+            e["name"] = {lang: text + suffix for lang, text in UNLISTED["name"].items()}
+            e["desc"] = UNLISTED["desc"]
+            for i in members:
+                i["tags"] = i["tags"] | {"unlisted"}
+            eid = f"unlisted-{unlisted_n}"
+            todo.append(f"{eid}: an entry the game does not list (NoteId {note_id}, {len(members)} {e['kind']}); "
+                        "add its area to the names")
+        else:
+            eid = slug(e["name"]["en"], e["kind"])
         if eid in entry_ids.values():
             eid = f"{eid}-{note_id}"
         entry_ids[note_id] = eid
@@ -329,12 +357,12 @@ def export(region, map_id, out_dir):
 
     def order(item):
         e = region.entries.get(item.get("note"), {})
-        return (TYPE_ORDER.index(item["type"]), e.get("order") or 0, item.get("note") or 0, item.get("index") or 0,
+        return (TYPE_ORDER.index(item["type"]), entry_order(e), item.get("note") or 0, item.get("index") or 0,
                 item["source"])
 
     exported = [i for i in region.items if not i.get("skip") and i["points"]]
     exported.sort(key=order)
-    marker_rows, text_rows, stage_rows, todo = [], [], [], []
+    marker_rows, text_rows, stage_rows = [], [], []
     for n, item in enumerate(exported, 1):
         mid = f"{map_id}-{n:04d}"
         kind = item["type"]
@@ -344,7 +372,7 @@ def export(region, map_id, out_dir):
             todo.append(f"{mid}: tag poison_seal or fire_seal (Xuanyu Hand chest)")
         if item["extra"].get("subtype") == "combat":
             todo.append(f"{mid}: level of each of its {len(item['stages'])} stages in stages.csv (combat; required)")
-        lists = kind not in ("encounter", "chest_coop", "chest_challenge", "chest_contract")
+        lists = kind not in ("encounter", "chest_coop", "chest_challenge", "chest_contract", "chest_boss")
         for x, y in item["points"]:
             row = dict.fromkeys(MARKER_HEADER, "")
             row.update(id=mid, type=kind, x=x, y=y, entry=entry_ids.get(item.get("note"), ""),
@@ -498,7 +526,7 @@ def compare(region, map_id, src_dir, maps):
     csv_order = [eid for eid in entries if eid in seen]
     note_of = {note_entry[n].most_common(1)[0][0]: n for n in note_entry}
     game_order = sorted(csv_order, key=lambda eid: (region.entries[note_of[eid]]["kind"] != entries[eid]["type"],
-                                                    entries[eid]["type"], region.entries[note_of[eid]]["order"] or 0))
+                                                    entries[eid]["type"], entry_order(region.entries[note_of[eid]])))
     for kind in dict.fromkeys(entries[eid]["type"] for eid in csv_order):
         mine = [eid for eid in csv_order if entries[eid]["type"] == kind]
         theirs = [eid for eid in game_order if entries[eid]["type"] == kind]

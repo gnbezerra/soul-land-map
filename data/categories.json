@@ -1,7 +1,7 @@
 {
   "groups": [
     { "id": "normal_chest",        "types": ["chest_normal"] },
-    { "id": "decryption_chest",    "types": ["chest_coop", "chest_challenge", "chest_contract"] },
+    { "id": "decryption_chest",    "types": ["chest_coop", "chest_challenge", "chest_contract", "chest_boss"] },
     { "id": "divine_trial",        "types": ["divine_trial"] },
     { "id": "divine_mind_crystal", "types": ["crystal"] },
     { "id": "encounter",           "types": ["encounter"] },
@@ -11,7 +11,7 @@
     { "id": "dragon_island",       "types": ["boss", "arena"] }
   ],
   "explorationRules": [
-    { "id": "chests",     "types": ["chest_normal", "chest_coop", "chest_challenge", "chest_contract"], "points": 5 },
+    { "id": "chests",     "types": ["chest_normal", "chest_coop", "chest_challenge", "chest_contract", "chest_boss"], "points": 5 },
     { "id": "teleports",  "types": ["teleport"],     "points": 35 },
     { "id": "viewpoints", "types": ["viewpoint"],    "points": 35 },
     { "id": "crystals",   "types": ["crystal"],      "points": 10 },
@@ -23,6 +23,7 @@
     "chest_coop":      { "color": "#c58bff", "glyph": "2", "icon": "icons/chest.png", "tier": "common", "badgeField": "players" },
     "chest_challenge": { "color": "#c58bff", "glyph": "J", "icon": "icons/chest.png", "tier": "common" },
     "chest_contract":  { "color": "#c58bff", "glyph": "K", "icon": "icons/chest_contract.png", "iconFound": "icons/chest_contract_open.png", "tier": "common" },
+    "chest_boss":      { "color": "#c58bff", "glyph": "H", "icon": "icons/chest.png", "badgeIcon": "icons/boss.png", "tier": "common" },
     "divine_trial":    { "color": "#ff6b6b", "glyph": "D", "icon": "icons/divine_trial.png", "tier": "major" },
     "crystal":         { "color": "#ffa43a", "glyph": "M", "icon": "icons/crystal.png", "tier": "major" },
     "encounter":       { "color": "#4ad6a7", "glyph": "?", "icon": "icons/encounter.png", "tier": "major" },

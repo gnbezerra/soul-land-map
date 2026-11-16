@@ -1,5 +1,6 @@
 // What a marker popup says: title, tags and the extra fields. Pure: no DOM and no Leaflet, so it is easy to
 // test. `i18n` is the object from js/i18n.js loadI18n (t, entry, marker); `entries` is data/entries/<map>.json.
+import { UNLISTED_TAG } from "./model.js";
 
 // Extra marker fields shown in the popup when present. A Divine Trial shows its subtype in the type line
 // instead, and the pillar of a challenge chest is also drawn on the map while its popup is open.
@@ -16,9 +17,10 @@ export function markerTitle(m, i18n) {
   return i18n.t(`type.${m.type}`);
 }
 
-// A marker's requirements: its entry's tags, then its own (SPEC 4.3), without repeats.
+// A marker's requirements: its entry's tags, then its own (SPEC 4.3), without repeats. "unlisted" is not a
+// requirement: the entry's description already says what it means.
 export function effectiveTags(m, entries) {
-  return [...new Set([...(entries[m.entry]?.tags ?? []), ...(m.tags ?? [])])];
+  return [...new Set([...(entries[m.entry]?.tags ?? []), ...(m.tags ?? [])])].filter((t) => t !== UNLISTED_TAG);
 }
 
 // [{ field, value }] for the extra fields this marker has, in POPUP_FIELDS order, with `value` ready to show.

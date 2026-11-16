@@ -1,5 +1,5 @@
 import { h } from "./util.js";
-import { formatCount } from "./model.js";
+import { formatCount, isUnlisted, splitUnlisted } from "./model.js";
 import { milestoneMarks, milestoneStatus } from "./exploration.js";
 
 // Renders the filter sidebar: one row per game category (group), nested rows for its
@@ -19,9 +19,11 @@ export function createSidebar({
   const counters = []; // { el, read: () => [found, total] }
   const t = i18n.t;
 
-  // The legend shows the marker's own sprite; types without one keep the colored dot.
+  // The legend shows the marker's own sprite (with its badge sprite, if any); types without one keep the
+  // colored dot.
   const dot = (type) => type.icon
-    ? h("span", { class: "dot-ic" }, h("img", { src: type.icon, alt: "" }))
+    ? h("span", { class: "dot-ic" }, h("img", { src: type.icon, alt: "" }),
+      ...(type.badgeIcon ? [h("img", { src: type.badgeIcon, alt: "", class: "dot-badge" })] : []))
     : h("span", { class: "dot", style: `background:${type.color}` });
   function count(read) {
     const el = h("span", { class: "count", title: t("ui.countHint") });
@@ -38,14 +40,19 @@ export function createSidebar({
     return row;
   }
 
-  // Entries are listed only when some entry has more than one marker (e.g. chest sets).
+  // Entries are listed only when some entry has more than one marker (e.g. chest sets). The site's own
+  // entries for what the game lists in no entry come last, after a separator (SPEC 4.3).
   function entryList(type) {
     if (!type.entries.some((e) => e.size > 1)) return null;
+    const { listed, unlisted } = splitUnlisted(type.entries);
+    const item = (e) => h("li", {},
+      h("button", { type: "button", class: `entry${isUnlisted(e) ? " unlisted" : ""}`, onclick: () => onFocusEntry(e.id, type.id) },
+        h("span", { class: "name" }, i18n.entry(e.id).name),
+        count(() => [e.found, e.size])));
     const list = h("ul", { class: "entries", hidden: true },
-      ...type.entries.map((e) => h("li", {},
-        h("button", { type: "button", class: "entry", onclick: () => onFocusEntry(e.id, type.id) },
-          h("span", { class: "name" }, i18n.entry(e.id).name),
-          count(() => [e.found, e.size])))));
+      ...listed.map(item),
+      ...(listed.length && unlisted.length ? [h("li", { class: "entries-sep", role: "presentation" })] : []),
+      ...unlisted.map(item));
     const toggle = h("button", { type: "button", class: "expander", "aria-expanded": "false", title: t("ui.expand") }, "▸");
     toggle.addEventListener("click", () => {
       const open = list.hidden;

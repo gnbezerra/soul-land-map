@@ -91,6 +91,7 @@ TABLES = {
         {"Id": 13, "SceneId": SCENE, "Type": 7, "ShowType": 5, "NpcId": "2", "NoteId": 702},
         {"Id": 14, "SceneId": SCENE, "Type": 1, "ShowType": 1, "NpcId": "box_tang", "NoteId": 103},
         {"Id": 15, "SceneId": 5, "Type": 1, "ShowType": 1, "NpcId": "box_other_scene", "NoteId": 101},
+        {"Id": 16, "SceneId": SCENE, "Type": 1, "ShowType": 2, "NpcId": "box_odd", "NoteId": 113},
     ]),
     "scene_explore_note": (cols("Id Type ShowType Scene Order NoteName:string NoteDesc:string"), [
         {"Id": 101, "Order": 2, "NoteName": "N101", "NoteDesc": "D101"},
@@ -98,7 +99,8 @@ TABLES = {
         {"Id": 103, "Order": 3, "NoteName": "N103", "NoteDesc": "D103"},
         {"Id": 110, "Order": 4, "NoteName": "N110"},
         {"Id": 111, "Order": 5, "NoteName": "N111"},
-        {"Id": 112, "Order": 6, "NoteName": "N112"},
+        {"Id": 112, "Order": 6, "NoteName": "N112", "NoteDesc": "D112"},
+        {"Id": 113, "Order": 6, "NoteName": "N113"},
         {"Id": 301, "Order": 7, "NoteName": "N301"},
         {"Id": 701, "Order": 8},
         {"Id": 702, "Order": 9},
@@ -106,14 +108,14 @@ TABLES = {
     "scene_static_npc": (cols("Id SceneID NpcID:string Script:string BornPos:vector3"), [
         npc("box_a", 100, 200), npc("box_b", 110.5, 210.4), npc("box_g", 300, 300),
         npc("box_orphan", 400, 400), npc("box_coop", 500, 500), npc("box_frost", 510, 510),
-        npc("box_boss", 520, 520), npc("box_tang", 530, 530), npc("ts_trial", 600, 600, "ShowNpc"),
+        npc("box_boss", 520, 520), npc("box_odd", 540, 540), npc("box_tang", 530, 530), npc("ts_trial", 600, 600, "ShowNpc"),
         npc("tp_1", 700, 700, "ShowNpc"), npc("meet_npc_1", 800, 800, "ShowNpc"),
         npc("meet_npc_2", 810, 790, "ShowNpc"), npc("npc_book_90101", 900, 900, "ShowNpc"),
         npc("box_a", 1, 1, scene=5),
     ]),
     "box_npc": (cols("Id:string BoxType BoxRare"), [
         {"Id": "box_a", "BoxType": 5, "BoxRare": 1}, {"Id": "box_g", "BoxType": 8, "BoxRare": 1},
-        {"Id": "box_tang", "BoxType": 5, "BoxRare": 2},
+        {"Id": "box_tang", "BoxType": 5, "BoxRare": 2}, {"Id": "box_boss", "BoxType": 8, "BoxRare": 1},
     ]),
     "fortuitousmeet": (cols("FortuitousmeetId ConditionType:string ConditionParameter:string "
                             "ConditionValue:string FortuitousmeetName:string HandBookTips:string"), [
@@ -134,7 +136,7 @@ TABLES = {
 TEXTS = {
     "MapName9": "Test Region", "N101": "Lake Chest One", "D101": "Find the lake chests.",
     "N102": "Guardian Chest", "D102": "Guarded.", "N103": "Tang Sect Chest One", "D103": "Tang.",
-    "N110": "Cooperative Chest One", "N111": "Mysterious Frost Coffer I", "N112": "Boss Chest",
+    "N110": "Cooperative Chest One", "N111": "Mysterious Frost Coffer I", "N112": "Wolf Thief Tyrant Chest", "D112": "Beat the boss.", "N113": "Odd Chest",
     "N301": "Light Up! Teleport", "Name_tp_1": "North Teleport Point", "Meet1": "Two Friends",
     "Meet2": "Lost Items", "Item777": "Old Coin", "TrialName": "Trial of Strength: Test.", "Tips2": "Someone lost coins.", "BookTitle_90101": "A Book",
 }
@@ -261,7 +263,8 @@ class Extraction(unittest.TestCase):
     def test_decryption_chests_by_entry_name(self):
         self.assertEqual([i["source"] for i in self.items("chest_coop")], ["box_coop"])
         self.assertEqual([i["extra"] for i in self.items("chest_contract")], [{"contract": "frost"}])
-        self.assertIn(("decryption chest of a kind the site has no type for", "box_boss in 'Boss Chest'"),
+        self.assertEqual([i["source"] for i in self.items("chest_boss")], ["box_boss"])  # guarded: BoxType 8
+        self.assertIn(("decryption chest of a kind the site has no type for", "box_odd in 'Odd Chest'"),
                       self.region.skipped)
 
     def test_trials_teleports_books_and_encounters(self):
@@ -314,8 +317,12 @@ class CommandLine(unittest.TestCase):
         entries = read_rows(self.src / "entries.csv")
         # Chest entries in the game's order (Order), the unlisted one left out; then decryption, teleports...
         self.assertEqual([e["id"] for e in entries],
-                         ["guardian", "lake-1", "tang-sect-1", "coop-1", "mysterious-frost-coffer-1",
-                          "two-friends", "light-up-teleport"])
+                         ["guardian", "lake-1", "tang-sect-1", "unlisted-1", "coop-1", "mysterious-frost-coffer-1",
+                          "wolf-thief-tyrant", "two-friends", "light-up-teleport"])
+        unlisted = entries[3]
+        self.assertEqual((unlisted["name_en"], unlisted["size"], unlisted["tags"]),
+                         ("Outside the game's list", "1", "unlisted"))
+        self.assertEqual((entries[6]["type"], entries[6]["desc_en"]), ("chest_boss", "Beat the boss."))
         self.assertEqual(entries[0]["tags"], "guarded")
         self.assertEqual(entries[1]["name_pt"], "pt Lake Chest One")
         markers = read_rows(self.src / "markers.csv")
@@ -324,16 +331,16 @@ class CommandLine(unittest.TestCase):
                           ("testmap-0002", "chest_normal", "lake-1", "1", "100", "200"),
                           ("testmap-0003", "chest_normal", "lake-1", "2", "110", "210")])
         meet = [m for m in markers if m["type"] == "encounter"]
-        self.assertEqual([(m["id"], m["x"]) for m in meet], [("testmap-0008", "800"), ("testmap-0008", "810")])
-        self.assertEqual(read_rows(self.src / "stages.csv")[0], {"trial": "testmap-0007", "stage": "1", "stars": "1",
+        self.assertEqual([(m["id"], m["x"]) for m in meet], [("testmap-0010", "800"), ("testmap-0010", "810")])
+        self.assertEqual(read_rows(self.src / "stages.csv")[0], {"trial": "testmap-0009", "stage": "1", "stars": "1",
                                                                  "level": "", "cp": "1000"})
         texts = read_rows(self.src / "marker_texts.csv")
         self.assertEqual({t["marker"]: t["en"] for t in texts},
-                         {"testmap-0007": "Trial of Strength: Test", "testmap-0009": "North Teleport Point",
-                          "testmap-0010": "A Book"})
-        self.assertIn("1 chest_normal of NoteId 199: box_orphan (400, 400)", out)
-        self.assertIn("to fill in: testmap-0005: players", out)
-        self.assertIn("to fill in: testmap-0007: level of each of its 3 stages", out)
+                         {"testmap-0009": "Trial of Strength: Test", "testmap-0011": "North Teleport Point",
+                          "testmap-0012": "A Book"})
+        self.assertIn("to fill in: unlisted-1: an entry the game does not list (NoteId 199, 1 chest_normal)", out)
+        self.assertIn("to fill in: testmap-0006: players", out)
+        self.assertIn("to fill in: testmap-0009: level of each of its 3 stages", out)
 
     def test_export_never_overwrites_a_map_with_markers(self):
         self.src.mkdir(parents=True)
@@ -350,7 +357,7 @@ class CommandLine(unittest.TestCase):
         by_id["testmap-0002"]["x"] = "101"           # off by 1: counted, not listed
         by_id["testmap-0003"]["x"] = "112"           # off by 2: listed
         by_id["testmap-0003"]["entry_index"] = "3"
-        markers = [m for m in markers if m["id"] != "testmap-0010"]  # the book goes missing
+        markers = [m for m in markers if m["id"] != "testmap-0012"]  # the book goes missing
         markers.append({**by_id["testmap-0001"], "id": "testmap-0099", "x": "50", "y": "50"})  # not in the game
         game_data.write_csv(self.src / "markers.csv", game_data.MARKER_HEADER, markers)
         entries = read_rows(self.src / "entries.csv")
@@ -359,7 +366,8 @@ class CommandLine(unittest.TestCase):
         entries[0]["tags"] = ""
         game_data.write_csv(self.src / "entries.csv", game_data.ENTRY_HEADER, entries)
         # An encounter with no position, added by hand: compared by its name.
-        entries.append({**entries[-2], "id": "lost-items", "name_en": "Lost Items", "desc_en": "Coins.",
+        entries.append({**entries[-2], "id": "lost-items", "name_en": "Lost Items", "name_pt": "pt Lost Items",
+                        "name_zh": "Lost Items", "desc_en": "Coins.",
                         "desc_pt": "", "desc_zh": ""})
         game_data.write_csv(self.src / "entries.csv", game_data.ENTRY_HEADER, entries)
         stages = read_rows(self.src / "stages.csv")
@@ -370,19 +378,20 @@ class CommandLine(unittest.TestCase):
         for line in ["1 off by 1",
                      "off by 2: testmap-0003 chest_normal (112, 210) vs game [(110, 210)]",
                      "book npc_book_90101 at (900, 900)",
-                     "chest_normal box_orphan at (400, 400), entry 'NoteId 199' (an entry the game does not list)",
                      "testmap-0099 chest_normal (50, 50)",
                      "testmap-0003: entry_index 3 in the CSV, 2 in the game",
                      "testmap-0001: the game says 'guarded', the CSV does not",
                      "lake-1: size 3 in the CSV, 2 in the game",
                      "lake-1: desc_en 'Old text.' in the CSV, 'Find the lake chests.' in the game",
-                     "testmap-0007 stage 2: 5 stars in the CSV, 2 in the game",
+                     "testmap-0009 stage 2: 5 stars in the CSV, 2 in the game",
                      "lost-items: desc_en 'Coins.' in the CSV, 'Someone lost coins.' in the game",
                      "lost-items: desc_pt empty in the CSV, the game has 'pt Someone lost coins.'",
                      "calibration in maps.json"]:
             self.assertIn(line, out)
         self.assertNotIn("milestones in maps.json", out)
-        self.assertNotIn("Trial of Strength: Test.", out)  # the site's wording is not a difference
+        self.assertNotIn("Trial of Strength: Test.", out)
+        self.assertNotIn("unlisted-1", out)  # the site's own entry: matched by position, names not compared
+        self.assertNotIn("different order", out)  # the site's wording is not a difference
 
     def test_compare_accepts_the_official_calibration(self):
         self.assertEqual(self.run_tool("export")[0], 0)

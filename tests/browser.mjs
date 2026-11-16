@@ -730,9 +730,48 @@ try {
         `${draft}'s tiles`, 10000);
       equal(await mapOptions(), Object.keys(allMaps).map((id) => id + (id === draft ? "*" : "")), "selector on the draft map");
       equal(await ev(`document.querySelector("#map-select option:checked").textContent`), json("i18n/pt.json")[`map.${draft}`] ?? draft, "its name");
-      equal(await ev(`document.querySelectorAll(".leaflet-marker-icon").length`), (json(`data/markers/${draft}.json`) ?? []).length, "markers");
+      // One icon per point: an encounter with several points shows one on each.
+      equal(await ev(`document.querySelectorAll(".leaflet-marker-icon").length`),
+        (json(`data/markers/${draft}.json`) ?? []).reduce((n, m) => n + (m.points?.length ?? 1), 0), "marker icons");
       await wait(500); // tiles fade in after loading
       await shot(`draft-${draft}`);
+    });
+  }
+
+  // The site's own entries (tag "unlisted", SPEC 4.3) and badge sprites (categories.json "badgeIcon"), on the
+  // first map that has them (Suotuo today).
+  const mapWith = (test) => Object.keys(allMaps).find((id) => test(json(`data/entries/${id}.json`) ?? {}, json(`data/markers/${id}.json`) ?? []));
+  const unlistedMap = mapWith((entries) => Object.values(entries).some((e) => e.tags?.includes("unlisted")));
+  if (unlistedMap) {
+    await check(`${unlistedMap}: unlisted entries come last in italics, their popup has no tag; badge sprites`, async () => {
+      const entries = json(`data/entries/${unlistedMap}.json`);
+      const markersOf = json(`data/markers/${unlistedMap}.json`);
+      const [uid, ue] = Object.entries(entries).find(([, e]) => e.tags?.includes("unlisted"));
+      const chest = markersOf.find((m) => m.entry === uid);
+      await load("?lang=en");
+      await load(`?lang=pt#${unlistedMap}/${chest.id}`);
+      await until(`${POPUP}?.querySelector("strong")?.textContent`, "the unlisted chest's popup");
+      const pt = json(`i18n/entries.${unlistedMap}.pt.json`)[uid];
+      equal(await ev(`${POPUP}.querySelector("strong").textContent`), `${pt.name} #${chest.entryIndex}`, "title");
+      equal(await ev(`${POPUP}.querySelector(".desc")?.textContent`), pt.description, "the site's description");
+      equal(await ev(`[...${POPUP}.querySelectorAll(".mk-tag")].map((e) => e.textContent)`), [], "tags");
+      await closePopup();
+      // The type's entry list: the game's entries, a separator, then the site's own, in italics.
+      const names = Object.entries(entries).filter(([, e]) => e.type === ue.type)
+        .map(([id, e]) => [json(`i18n/entries.${unlistedMap}.pt.json`)[id].name, !!e.tags?.includes("unlisted")]);
+      const want = [...names.filter(([, u]) => !u), ["—", false], ...names.filter(([, u]) => u)];
+      const got = await ev(`(() => {
+        const list = [...document.querySelectorAll("ul.entries")].find((ul) => ul.querySelector(".entry.unlisted"));
+        return [...list.children].map((li) => li.classList.contains("entries-sep") ? ["—", false]
+          : [li.querySelector(".name").textContent, getComputedStyle(li.querySelector(".name")).fontStyle === "italic"]);
+      })()`);
+      equal(got, want, "entry list");
+      const badged = Object.keys(categories.types).filter((t) => categories.types[t].badgeIcon);
+      const expected = markersOf.filter((m) => badged.includes(m.type)).length;
+      if (!expected) return;
+      await until(`[...document.querySelectorAll(".mk-icon-badge")].filter((i) => i.complete && i.naturalWidth > 0).length === ${expected}`,
+        `${expected} badge sprites loaded`);
+      equal(await ev(`document.querySelectorAll(".dot-ic .dot-badge").length`), badged.length, "badges in the sidebar legend");
     });
   }
 

@@ -94,6 +94,13 @@ An entry is a row of the game's exploration list. Fields: `id`, `type` (marker t
 are unique per map, not globally (the same slug may exist in two maps); identity is the pair (map, slug).
 Normal chests are partitioned into entries, so `entry` is mandatory for `chest_normal`.
 
+The game can count objects that it lists in no entry: Suotuo counts 247 normal chests, its entries add up to
+217, and the other 30 belong to two groups with no name (NoteIds 1109 and 1110). For those the site makes
+entries of its own, tagged `unlisted` (`unlisted-1`, `unlisted-2`; names by area, "Outside the game's list
+(south-west)", and a description saying why in the three languages, written by the site). The sidebar lists
+them after the game's entries, past a dashed line and in italics; `unlisted` is not a requirement, so the
+popup shows it as no tag. `tools/game_data.py export` writes them for a new region.
+
 Nuoding: 20 normal-chest sets (sum 264), 16 decryption chests (4 cooperative, 6 Pillar of Empty Path, 6 Coffers,
 each an entry of size 1), 6 crystal sets (sum 28), 5 encounters, 2 "Other" entries (Light Up! Teleport 6, Enjoy
 the Scenery 4). Divine Trials are not in the game's list and have no entry. Tags: `grappling_hook`,
@@ -123,6 +130,10 @@ carry no reward; it comes from the category's default loot.
   button on the starting side as the pillar position).
 - `chest_contract`: `contract` = wood | flame | frost (Dragonwood 3, Desolate Flame 2, Mysterious Frost 1 in
   Nuoding) and a cost; the popup warns the contract is permanently consumed.
+- `chest_boss`: a decryption chest behind a boss, which opens only once the boss is beaten (a `guarded`
+  chest's guards are a few weak monsters). Suotuo has two, Wolf Thief Tyrant and Wolf Thief Priest Chest,
+  each an entry of size 1. The chest sprite with the boss sprite as its badge (`badgeIcon`). In the game
+  tables: a decryption chest with `box_npc.BoxType` 8.
 - `crystal`: Divine Mind Crystal.
 - `divine_trial`: section 4.6.
 - `encounter`: section 4.7.

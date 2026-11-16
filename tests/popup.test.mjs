@@ -33,6 +33,8 @@ test("effectiveTags: the entry's tags, then the marker's own, without repeats", 
   assert.deepEqual(effectiveTags({ entry: "set-b" }, entries), []);
   assert.deepEqual(effectiveTags({ tags: ["guarded"] }, entries), ["guarded"], "no entry");
   assert.deepEqual(effectiveTags({ entry: "gone" }, entries), [], "entry not in the data");
+  assert.deepEqual(effectiveTags({ entry: "x", tags: ["guarded"] }, { x: { tags: ["unlisted"] } }), ["guarded"],
+    "unlisted is not a requirement");
 });
 
 test("popupFields: only the fields a marker has, in order, with readable values", () => {

@@ -27,6 +27,7 @@
   "type.chest_coop": "Cooperative chest",
   "type.chest_challenge": "Challenge chest (Pillar of Empty Path)",
   "type.chest_contract": "Contract chest (Coffer)",
+  "type.chest_boss": "Boss chest",
   "type.divine_trial": "Divine Trial",
   "type.crystal": "Divine Mind Crystal",
   "type.encounter": "Encounter",
