@@ -147,11 +147,15 @@ players more and rewards need a lot of data collected in-game.
 - The "distinct titles" count the browser test prints for the every-marker check varies between runs (e.g.
   274 to 285): a just-closed popup stays in the page while it fades out and is sometimes read instead. Only
   the count is affected; the check itself looks at every title.
-- The browser test is flaky, here and for earlier agents: on 2026-11-16 about one run in three failed a
-  check unrelated to the change and passed on a rerun (the pinch check, "hidden during the pinch: expected
-  false"; "timed out waiting for the map"; the language switch timing out on the reload; "fit zoom: no
-  loaded tile"). Most are waits for a page or tiles to load. Worth investigating eventually (the owner,
-  2026-11-16); meanwhile a failure in an unrelated check is rerun before it is trusted.
+- The browser test was flaky (about one run in ten here, and for earlier agents). Investigated on
+  2026-11-16 over ~60 full runs and 60 runs of the pinch check alone: Chrome stalls now and then for several
+  seconds, most often during or right after the "every marker" script (341 popups in one go), and that
+  timed out 5-10 s waits on a page load, a reload or tiles. Those waits now get 15-20 s, `until()` looks once
+  more after its deadline, and the pinch check waits for the animation frame in which Leaflet applies the
+  pinch (it looked right after the last touch; a busy page draws that frame late) and tries a dropped
+  gesture again. Then 25 full runs passed out of 25. Each check prints its time, a timed-out wait prints the
+  page state (and, for tiles, whether the server got the request), and `--only <text>` repeats one check.
+  If a check fails again, rerun it and read those lines before changing anything.
 - The browser test's zoomed-in placement check measures again for up to 3 s: right after a zoom Leaflet can
   still be swapping tile levels (it failed about one run in three before; settled, the icons were always on
   their pixel). If it fails again, look there first.

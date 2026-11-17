@@ -3,6 +3,7 @@
 //
 //   node tests/browser.mjs                    run the checks
 //   node tests/browser.mjs --shots <dir>      also save desktop and mobile screenshots
+//   node tests/browser.mjs --only <text>      run only the checks whose name contains <text> (to repeat one)
 //   CHROME=<path> node tests/browser.mjs      use another Chrome or Chromium binary
 //
 // It is not part of `node --test tests/` (slower, needs Chrome). Expected values come from the generated
@@ -19,6 +20,14 @@
 // - Input.dispatchTouchEvent is silently dropped until the page has drawn a frame: wait for two
 //   animation frames after a load before touching.
 // - Chrome's first start on a fresh machine (a CI runner) can take over 10 s: keep the startup waits generous.
+// - Chrome stalls now and then for several seconds, most often right after the heavy "every marker" script
+//   (341 popups in one go): about one run in ten timed out a 5-10 s wait before the waits below were raised.
+//   Waits on a page load, a reload or tiles get 15-20 s (they return as soon as the page is ready, so this
+//   costs nothing when nothing stalls), and a dropped touch gesture is tried again. Each check prints how
+//   long it took, and a timed-out wait prints what the page looked like.
+// Waits on a page load and on tiles: generous, see above.
+const LOAD_WAIT = 20000;
+const TILE_WAIT = 15000;
 import { spawn } from "node:child_process";
 import { createServer } from "node:http";
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync, mkdirSync } from "node:fs";
@@ -34,6 +43,7 @@ const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const MAP = "nuoding";
 const args = process.argv.slice(2);
 const SHOTS = args.includes("--shots") ? resolve(args[args.indexOf("--shots") + 1]) : null;
+const ONLY = args.includes("--only") ? args[args.indexOf("--only") + 1] : null;
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 const json = (path) => JSON.parse(readFileSync(join(ROOT, path), "utf8"));
 
@@ -72,8 +82,13 @@ const iconPixels = markers.flatMap((m) => (m.points ?? [m]).map((p) => gameToPix
 const TYPES = { ".html": "text/html", ".js": "text/javascript", ".mjs": "text/javascript", ".css": "text/css",
   ".json": "application/json", ".webp": "image/webp", ".png": "image/png", ".svg": "image/svg+xml",
   ".ico": "image/x-icon" };
+// Every request, so a wait that times out can tell whether the server ever saw the file it waited for.
+const served = []; // { path, at (ms since start), ms }
+const started = Date.now();
 const server = createServer((req, res) => {
-  const path = normalize(join(ROOT, decodeURIComponent(new URL(req.url, "http://x").pathname)));
+  const t0 = Date.now();
+  const pathname = new URL(req.url, "http://x").pathname;
+  const path = normalize(join(ROOT, decodeURIComponent(pathname)));
   const file = path.endsWith(sep) ? join(path, "index.html") : path;
   if (!file.startsWith(ROOT) || !existsSync(file)) {
     res.writeHead(404).end();
@@ -81,7 +96,16 @@ const server = createServer((req, res) => {
   }
   res.writeHead(200, { "Content-Type": TYPES[extname(file)] ?? "application/octet-stream" });
   res.end(readFileSync(file));
+  served.push({ path: pathname, at: t0 - started, ms: Date.now() - t0 });
 });
+// "seen 3x, last 812 ms ago" for a URL, or "never asked for".
+function servedNote(url) {
+  const path = new URL(url, BASE).pathname;
+  const hits = served.filter((r) => r.path === path);
+  if (!hits.length) return "never asked for";
+  const last = hits[hits.length - 1];
+  return `served ${hits.length}x, last ${Date.now() - started - last.at} ms ago in ${last.ms} ms`;
+}
 await new Promise((r) => server.listen(0, "127.0.0.1", r));
 const BASE = `http://127.0.0.1:${server.address().port}/`;
 
@@ -171,16 +195,33 @@ async function ev(expression) {
   if (r.result?.exceptionDetails) throw new Error(`${expression}\n${r.result.exceptionDetails.exception?.description}`);
   return r.result?.result?.value;
 }
-// Polls a page expression until it is truthy.
-async function until(expression, label, timeout = 3000) {
+// Polls a page expression until it is truthy. It looks once more after the deadline (an evaluation that
+// was slow to answer must not use up the time). On a timeout, the error says how slow the slowest
+// evaluation was and, given `diagnose` (a page expression), what the page looked like.
+async function until(expression, label, timeout = 3000, diagnose = null) {
   const end = Date.now() + timeout;
-  while (Date.now() < end) {
-    const value = await ev(expression);
+  let slowest = 0;
+  let polls = 0;
+  for (;;) {
+    const t0 = Date.now();
+    const value = await ev(expression).catch(() => undefined);
+    slowest = Math.max(slowest, Date.now() - t0);
+    polls++;
     if (value) return value;
+    if (Date.now() >= end) break;
     await wait(30);
   }
-  throw new Error(`timed out waiting for ${label}`);
+  let state = "";
+  if (diagnose) {
+    const d = await ev(diagnose).catch((e) => `(could not read the page: ${e.message.split("\n")[0]})`);
+    state = `\n${typeof d === "string" ? d : JSON.stringify(d)}`;
+  }
+  throw new Error(`timed out waiting for ${label} (${timeout} ms, ${polls} polls, slowest ${slowest} ms)${state}`);
 }
+// What a page that should be loading looks like.
+const PAGE_STATE = `JSON.stringify({ stale: !!window.__stale, ready: document.readyState, href: location.href,
+  icons: document.querySelectorAll(".leaflet-marker-icon").length, count: !!document.querySelector(".exploration .count"),
+  lang: document.documentElement.lang })`;
 await send("Runtime.enable");
 await send("Network.enable");
 await send("Page.enable");
@@ -188,13 +229,17 @@ await send("DOM.enable");
 
 // --- Checks -------------------------------------------------------------------------------------
 let failures = 0;
+// Each check prints how long it took, so a slow machine or a slow step shows up next to a timeout.
 async function check(name, fn) {
+  if (ONLY && !name.includes(ONLY)) return;
+  const t0 = Date.now();
+  const took = () => `(${((Date.now() - t0) / 1000).toFixed(1)} s)`;
   try {
     await fn();
-    console.log(`ok    ${name}`);
+    console.log(`ok    ${name} ${took()}`);
   } catch (error) {
     failures++;
-    console.log(`FAIL  ${name}\n      ${error.message.split("\n").join("\n      ")}`);
+    console.log(`FAIL  ${name} ${took()}\n      ${error.message.split("\n").join("\n      ")}`);
   }
 }
 function equal(actual, expected, label) {
@@ -215,7 +260,7 @@ async function load(query = "?lang=en") {
   const current = await ev(`window.__stale = true; location.href.split("#")[0]`);
   if (current === url) await send("Page.reload");
   else await send("Page.navigate", { url });
-  await until(`!window.__stale && document.querySelectorAll(".leaflet-marker-icon").length > 0 && !!document.querySelector(".exploration .count")`, "the map", 10000);
+  await until(`!window.__stale && document.querySelectorAll(".leaflet-marker-icon").length > 0 && !!document.querySelector(".exploration .count")`, "the map", LOAD_WAIT, PAGE_STATE);
 }
 async function freshLoad(query) {
   await load(query);
@@ -379,7 +424,7 @@ try {
       select.dispatchEvent(new Event("change"));
     })()`);
     await until(`!window.__stale && document.documentElement.lang === "${code}" && document.querySelectorAll(".leaflet-marker-icon").length > 0`,
-      `the page to reload in ${code} (${label})`, 5000);
+      `the page to reload in ${code} (${label})`, LOAD_WAIT, PAGE_STATE);
   }
 
   await check("the language selector reloads the page in the new language, with or without a hash", async () => {
@@ -405,7 +450,14 @@ try {
     await ev(`document.querySelector(".leaflet-control-zoom-in").click()`);
     await wait(400);
     await ev(`document.querySelector(".leaflet-control-zoom-in").click()`);
-    await until(`!document.querySelector(".leaflet-zoom-anim") && [...document.querySelectorAll("img.leaflet-tile")].every((t) => t.classList.contains("leaflet-tile-loaded"))`, "the zoom and its tiles", 5000);
+    await until(`!document.querySelector(".leaflet-zoom-anim") && [...document.querySelectorAll("img.leaflet-tile")].every((t) => t.classList.contains("leaflet-tile-loaded"))`, "the zoom and its tiles", TILE_WAIT,
+      `JSON.stringify({ anim: !!document.querySelector(".leaflet-zoom-anim"), tiles: document.querySelectorAll("img.leaflet-tile").length,
+        waiting: [...document.querySelectorAll("img.leaflet-tile:not(.leaflet-tile-loaded)")].map((t) => [t.src, t.complete, t.naturalWidth]) })`)
+      .catch((e) => {
+        // Name, for each tile still waiting, whether the server ever got its request.
+        const urls = [...e.message.matchAll(/"(http[^"]+\.webp)"/g)].map((m) => m[1]);
+        throw new Error(`${e.message}\n${urls.map((u) => `${new URL(u).pathname}: ${servedNote(u)}`).join("\n")}`);
+      });
     // Right after the zoom, Leaflet can still be swapping tile levels for a moment (seen on CI about one run
     // in three, never once settled): measure again until it passes, for up to 3 s.
     let zoomed;
@@ -729,11 +781,38 @@ try {
       return Math.hypot(a.x - b.x, a.y - b.y); })()`);
     const before = await spread();
     equal(await paneShown(), true, "shown before");
+    // What the page got: touches on the map, and each time the pinch class came and went.
+    await ev(`(() => {
+      const log = window.__pinch = { start: 0, move: 0, end: 0, on: 0, off: 0 };
+      const el = document.getElementById("map");
+      for (const [type, key] of [["touchstart", "start"], ["touchmove", "move"], ["touchend", "end"]]) {
+        el.addEventListener(type, () => log[key]++, { capture: true });
+      }
+      let was = false;
+      new MutationObserver(() => {
+        const now = el.classList.contains("mk-pinching") || !!el.querySelector(".mk-pinching");
+        if (now !== was) log[now ? "on" : "off"]++;
+        was = now;
+      }).observe(el, { attributes: true, subtree: true, attributeFilter: ["class"] });
+    })()`);
     const touch = (type, d) => send("Input.dispatchTouchEvent", { type, touchPoints: d == null ? [] :
       [{ x: 195 - d, y: 420, id: 0 }, { x: 195 + d, y: 420, id: 1 }] });
-    await touch("touchStart", 40);
-    for (let d = 50; d <= 120; d += 10) { await touch("touchMove", d); await wait(30); }
-    equal(await paneShown(), false, "hidden during the pinch");
+    // Leaflet applies a pinch in an animation frame, and the markers hide on the zoom it fires: wait for
+    // that frame instead of looking right after the last touch (a busy page draws it late). A stalled page
+    // can also drop the touches (see the header): then lift the fingers and try the gesture again.
+    const paneHidden = () => until(`getComputedStyle(document.querySelector(".leaflet-marker-pane")).display === "none"`,
+      "the markers to hide", 1500).then(() => true, () => false);
+    for (let attempt = 1; ; attempt++) {
+      await touch("touchStart", 40);
+      for (let d = 50; d <= 120; d += 10) { await touch("touchMove", d); await wait(30); }
+      if (await paneHidden()) break;
+      if (attempt === 3) {
+        throw new Error(`hidden during the pinch: the markers stayed shown in 3 attempts; the page got ${JSON.stringify(await ev("window.__pinch"))}`);
+      }
+      await touch("touchEnd");
+      await ev(`new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))`);
+      await wait(300);
+    }
     await touch("touchEnd");
     await until(`getComputedStyle(document.querySelector(".leaflet-marker-pane")).display !== "none"`, "markers back after the pinch");
     const after = await spread();
@@ -834,7 +913,7 @@ try {
       await ev(`window.__stale = true`);
       await send("Page.navigate", { url: `${BASE}?lang=pt#${other}` });
       await until(`!window.__stale && [...document.querySelectorAll(".leaflet-tile")].some((t) => t.complete && t.naturalWidth > 0 && t.src.includes("tiles/${other}/"))`,
-        `${other}'s tiles`, 10000);
+        `${other}'s tiles`, LOAD_WAIT);
       equal(await mapOptions(), Object.keys(allMaps).filter((id) => !allMaps[id].draft || id === other)
         .map((id) => id + (id === other ? "*" : "")), "selector");
       equal(await ev(`document.querySelector("#map-select option:checked").textContent`), json("i18n/pt.json")[`map.${other}`] ?? other, "its name");
