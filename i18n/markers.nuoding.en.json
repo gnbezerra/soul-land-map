@@ -26,6 +26,15 @@
   "nuoding-0189": {
     "note": "Grapple onto the top of the stone pillar using the grappling hook."
   },
+  "nuoding-0191": {
+    "note": "At the top of the stone pillar."
+  },
+  "nuoding-0207": {
+    "note": "Below the platform."
+  },
+  "nuoding-0268": {
+    "note": "At the top of the cliff."
+  },
   "nuoding-0281": {
     "name": "Trial of Strength: Shield of Stone"
   },
@@ -118,9 +127,11 @@
     "note": "Volume 3 of the \"Historical Legends\" series"
   },
   "nuoding-0338": {
-    "name": "Hymn to the Goddess"
+    "name": "Hymn to the Goddess",
+    "note": "Volume 1 of the \"Legends of the Divine Realm\" series"
   },
   "nuoding-0339": {
-    "name": "Mysteries Revealed: The Nuoding Chronicles of Shrine"
+    "name": "Mysteries Revealed: The Nuoding Chronicles of Shrine",
+    "note": "Volume 2 of the \"Legends of the Divine Realm\" series"
   }
 }
