@@ -327,6 +327,11 @@ task or a mount (Ownerless Objects is one).
   after a reload (`settings.solo` per map, next to `settings.hidden`); a checkbox ends it and keeps what is on
   screen. While the sidebar is closed (a phone, or "Hide filters"), a chip at the top of the map says the same,
   with its own "Back", centered right of the zoom control; a name too long for it ends in "...".
+  Entries get one too (`canSoloEntry`: several markers, in a type with other entries, so today normal
+  chests and crystals): only that entry's markers stay, framed, and the bar names the entry (`solo.entry`,
+  checked against the map's entries on load). Going to another entry of the type, from its name or a link,
+  ends it as a checkbox would. Entry and item lists share a 34 px indent, and an entry's target sits in the
+  column of the expander arrows, so the names lose no width to it.
 - UI texts live in `i18n/<lang>.json` (flat keys), entry names in `i18n/entries.<map>.<lang>.json` and
   marker names, notes and howtos in `i18n/markers.<map>.<lang>.json`.
   Missing keys fall back to English. To add a language, create `i18n/<lang>.json` with the keys of

@@ -531,6 +531,41 @@ try {
     equal(await shownTypes(), ["book", "crystal"], "a second click gives the filter back");
   });
 
+  // "Only this" on one entry (js/filters.js canSoloEntry): only its markers, its name on the bar, kept after
+  // a reload; going to another entry of the type ends it; a second click gives the filter back.
+  await check("only this on an entry: only its markers, a reload keeps it, another entry ends it", async () => {
+    await freshLoad("?lang=en");
+    const chests = model.types.get("chest_normal");
+    const [first, second] = chests.entries.filter((e) => e.size > 1);
+    const block = (t) => `document.querySelector('.solo[data-types="${t}"]:not([data-entry])').closest(".block")`;
+    const soloOf = (id) => `document.querySelector('.solo[data-entry="${id}"]')`;
+    const shown = () => ev(`${ICONS}.map((e) => e.querySelector("[data-type]")?.dataset.type).reduce((n, t) => (n[t] = (n[t] ?? 0) + 1, n), {})`);
+    const bar = () => ev(`(() => { const b = document.querySelector(".solo-bar"); return b.hidden ? null : b.querySelector("b").textContent; })()`);
+    const ofEntry = (id) => markers.filter((m) => m.entry === id).length;
+    const all = await shown();
+    // Which entries get the button: several markers, in a type with other entries.
+    for (const type of model.types.values()) {
+      const expected = type.entries.length > 1 ? type.entries.filter((e) => e.size > 1).map((e) => e.id) : [];
+      equal(await ev(`[...document.querySelectorAll('.solo[data-entry]')].filter((b) => b.dataset.types === "${type.id}").map((b) => b.dataset.entry)`), expected, `entry buttons of ${type.id}`);
+    }
+    await ev(`${block("chest_normal")}.querySelector(".expander").click()`);
+    await ev(`${soloOf(first.id)}.click()`);
+    equal(await shown(), { chest_normal: ofEntry(first.id) }, "only the entry's chests");
+    equal(await ev(`${soloOf(first.id)}.getAttribute("aria-pressed")`), "true", "its button is on");
+    const names = json(`i18n/entries.${MAP}.en.json`);
+    equal(await bar(), names[first.id].name, "the bar names the entry");
+    await load("?lang=en");
+    equal(await shown(), { chest_normal: ofEntry(first.id) }, "the same after a reload");
+    await ev(`${block("chest_normal")}.querySelector(".expander").click()`);
+    await ev(`${block("chest_normal")}.querySelectorAll(".entry")[${chests.entries.indexOf(second)}].click()`);
+    equal(await shown(), { chest_normal: all.chest_normal }, "another entry's name: every chest, the other types stay hidden");
+    equal(await bar(), null, "and ends only this");
+    await ev(`document.querySelector(".bulk button").click()`);
+    await ev(`${soloOf(second.id)}.click()`);
+    await ev(`${soloOf(second.id)}.click()`);
+    equal(await shown(), all, "a second click gives the filter back");
+  });
+
   // Small types list their markers one by one (js/items.js); an item opens its marker's popup.
   await check("item list: Divine Trials by short name, an item opens its trial", async () => {
     await freshLoad("?lang=pt");
@@ -573,7 +608,7 @@ try {
       const cut = await ev(`(() => {
         const cut = [];
         const back = document.querySelector(".solo-chip button");
-        for (const b of document.querySelectorAll(".solo")) {
+        for (const b of document.querySelectorAll(".solo:not([data-entry])")) {
           b.click();
           const what = document.querySelector(".solo-chip .what");
           if (what.scrollWidth > what.clientWidth + 1) cut.push(what.textContent);

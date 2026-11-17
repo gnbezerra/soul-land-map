@@ -371,7 +371,7 @@ body:not(.sidebar-hidden) .solo-chip-lane {
 
 /* The site's own entries (tag "unlisted") come last, after a dashed line, in italics. */
 .entries-sep {
-  margin: 4px 10px 4px 56px;
+  margin: 4px 10px 4px 34px;
   border-top: 1px dashed var(--border);
 }
 
@@ -379,11 +379,27 @@ body:not(.sidebar-hidden) .solo-chip-lane {
   font-style: italic;
 }
 
+/* An entry with its own "only this": the button sits in the column of the type rows' expander arrow. */
+.entry-line {
+  display: flex;
+  align-items: center;
+}
+
+.entry-line .entry {
+  flex: 1;
+  min-width: 0;
+}
+
+.solo-slot {
+  flex: none;
+  width: 30px;
+}
+
 .entry {
   display: flex;
   gap: 8px;
   width: 100%;
-  padding: 4px 10px 4px 56px;
+  padding: 4px 10px 4px 34px;
   border: 0;
   border-radius: 6px;
   background: none;
@@ -624,6 +640,7 @@ body:not(.sidebar-hidden) .solo-chip-lane {
   }
 
   .solo,
+  .solo-slot,
   .line .expander,
   .expander-slot {
     width: 40px;

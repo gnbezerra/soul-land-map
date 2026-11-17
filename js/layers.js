@@ -34,6 +34,8 @@ export function createLayers({
   const container = map.getContainer();
   let highlighted = null;
   let hideFound = false;
+  // "Only this" on an entry: { type, entry }; the type's markers of other entries are taken off the map.
+  let onlyEntry = null;
   // The record whose popup is open as a sheet (its marker has a ring).
   let selected = null;
   const sheet = createSheet({ map, host: sheetHost });
@@ -81,7 +83,8 @@ export function createLayers({
     record.marker.setZIndexOffset(record === selected ? 2000
       : record.entry != null && record.entry === highlighted ? 1000 : found ? -500
         : TIER_Z[categories.types[record.m.type].tier] ?? 0);
-    const shouldShow = !(hideFound && found);
+    const otherEntry = onlyEntry && record.m.type === onlyEntry.type && record.entry !== onlyEntry.entry;
+    const shouldShow = !(hideFound && found) && !otherEntry;
     if (shouldShow && !record.group.hasLayer(record.marker)) record.group.addLayer(record.marker);
     else if (!shouldShow && record.group.hasLayer(record.marker)) record.group.removeLayer(record.marker);
   }
@@ -443,6 +446,12 @@ export function createLayers({
     // Re-applies the found state: of one marker id, or of all markers when omitted.
     refreshFound(markerId) {
       for (const record of markerId ? recordsById.get(markerId) ?? [] : allRecords()) applyState(record);
+    },
+    // Shows only this entry's markers of its type (null: all of them).
+    setOnlyEntry(entryId) {
+      const type = entryId ? recordsByEntry.get(entryId)?.[0]?.m.type : null;
+      onlyEntry = type ? { type, entry: entryId } : null;
+      allRecords().forEach(applyState);
     },
     setHideFound(value) {
       hideFound = value;

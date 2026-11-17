@@ -284,7 +284,9 @@ Desktop: top bar (title, map selector, language selector, sidebar toggle); left 
 with the exploration bar, "hide found" toggle and filter tree; each group/type has a checkbox and a live
 `found/total` counter and the type's sprite (a colored dot when it has none); entry lists expand under their type and clicking an entry frames and highlights its
 markers; small types list their markers by name instead (trials, encounters, books, decryption chests), and an
-item opens its marker; an "only this" button on each group and type shows that category alone, with a bar to
+item opens its marker; an "only this" button on each group and type shows that category alone, and one on each
+entry of several markers whose type has other entries (chest sets, crystals) shows only that entry's markers
+and frames them (with hide-found: what is left to find there), with a bar to
 go back to the filter from before (also a chip at the top of the map while the sidebar is closed); extras and auxiliary groups are outside the exploration bar. Map: the game's sprites as markers, sized
 by importance (§9); found markers turn grey with a check (or vanish with hide-found), coordinate readout
 bottom-left, zoom control top-right. Markers shrink below the native zoom; under a threshold their badges are

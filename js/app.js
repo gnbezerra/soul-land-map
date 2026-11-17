@@ -251,8 +251,10 @@ if (!calibrated) {
   // stored too, with the filter it replaced (js/filters.js).
   let hidden = new Set(settings.hidden?.[mapId] ?? []);
   const allTypeIds = model.groups.flatMap((g) => g.types.map((x) => x.id));
-  let solo = cleanSolo(settings.solo?.[mapId], allTypeIds);
+  const entryTypes = new Map([...model.types.values()].flatMap((x) => x.entries.map((e) => [e.id, x.id])));
+  let solo = cleanSolo(settings.solo?.[mapId], allTypeIds, entryTypes);
   for (const type of model.types.keys()) layers.setVisible(type, !hidden.has(type));
+  layers.setOnlyEntry(solo?.entry ?? null);
 
   function saveFilters() {
     settings.hidden = { ...settings.hidden, [mapId]: [...hidden] };
@@ -268,14 +270,21 @@ if (!calibrated) {
       layers.setVisible(type, visible);
     }
     solo = null;
+    layers.setOnlyEntry(null);
     saveFilters();
     sidebar.refresh();
   }
+
+  // Whether "only this" on another entry keeps this one off the map; going to it then ends "only this",
+  // as its type's checkbox would.
+  const entryOf = new Map(markers.map((m) => [m.id, m.entry ?? null]));
+  const hidesEntry = (entryId) => !!solo?.entry && solo.entry !== entryId;
 
   function applyFilter(next) {
     hidden = next.hidden;
     solo = next.solo;
     for (const type of model.types.keys()) layers.setVisible(type, !hidden.has(type));
+    layers.setOnlyEntry(solo?.entry ?? null);
     saveFilters();
     sidebar.refresh();
   }
@@ -339,7 +348,11 @@ if (!calibrated) {
     isVisible: (type) => !hidden.has(type),
     onToggle: setTypes,
     getSolo: () => solo,
-    onSolo: (typeIds) => applyFilter(toggleSolo({ hidden, solo }, typeIds, allTypeIds)),
+    // An entry shown alone is also framed, as clicking its name does.
+    onSolo(typeIds, entryId = null) {
+      applyFilter(toggleSolo({ hidden, solo }, typeIds, allTypeIds, entryId));
+      if (solo?.entry) layers.focusEntry(solo.entry);
+    },
     onSoloBack: () => applyFilter(endSolo(solo)),
     isHideFound: () => hideFound,
     onHideFound(value) {
@@ -349,12 +362,12 @@ if (!calibrated) {
       layers.setHideFound(value);
     },
     onFocusEntry(entryId, typeId) {
-      if (hidden.has(typeId)) setTypes([typeId], true);
+      if (hidden.has(typeId) || hidesEntry(entryId)) setTypes([typeId], true);
       layers.focusEntry(entryId);
       closeDrawerIfNarrow();
     },
     onFocusMarker(markerId, typeId) {
-      if (hidden.has(typeId)) setTypes([typeId], true);
+      if (hidden.has(typeId) || hidesEntry(entryOf.get(markerId))) setTypes([typeId], true);
       closeDrawerIfNarrow();
       layers.focusMarker(markerId);
     },
@@ -376,7 +389,7 @@ if (!calibrated) {
       history.replaceState(null, "", mapHash(mapId));
       return;
     }
-    if (hidden.has(type)) setTypes([type], true);
+    if (hidden.has(type) || hidesEntry(entryOf.get(markerId))) setTypes([type], true);
     layers.openMarker(markerId);
   }
   if (link.markerId) openLinkedMarker(link.markerId);

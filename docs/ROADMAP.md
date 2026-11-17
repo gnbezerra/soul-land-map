@@ -28,7 +28,7 @@ Working, and verified by the owner in a real browser (Chrome, DevTools mobile em
   the recommended CP of the combat stages, the stars of their layers 4 and 7, two books and the official
   texts came from there. The two new books (`nuoding-0338`, `0339`) have no note yet.
 - Sidebar: groups/types with checkboxes, the marker's sprite as legend, live `found/total` counters, entry lists with frame-and-highlight,
-  item lists for the small types (an item opens its marker), "only this" per group and type with "Back",
+  item lists for the small types (an item opens its marker), "only this" per group, type and entry with "Back",
   exploration value in points with reward milestones and the rules behind an (i) button, hide-found toggle,
   backup export/import.
 - Popups with title (own name, else entry name, else type), type, tags, description, note, "show solution"
