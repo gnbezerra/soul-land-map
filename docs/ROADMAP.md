@@ -121,8 +121,8 @@ players more and rewards need a lot of data collected in-game.
   headless Chrome at pixel ratios 2, 2.8125 and 3 on both maps, every 0.5 zoom step: lines 20-48 levels
   brighter or darker than their neighbours before, none left after. Cost: a tile's image stretches by
   1/256 (up to 1 CSS px at its far edge, 2 px at Suotuo's zoom 4). The dark lines at whole zooms seen on
-  the phone did not reproduce in headless Chrome (GPU compositing differs): that case is to be checked on
-  the phone. The browser test's icon placement check measures the grid step, not the drawn width.
+  the phone did not reproduce in headless Chrome (GPU compositing differs); the owner checked the fix on the
+  A55 (2026-11-17) at the buttons' whole zooms and at fractional pinch zooms: no seams left. The browser test's icon placement check measures the grid step, not the drawn width.
 - A map with no data shows an empty sidebar and `0/0` exploration value (a new draft map, before its data).
 - `type.book/mechanism/portal/boss/arena` UI keys exist only in `en.json` on purpose (fallback to English).
 - Unused leftover PT/ZH strings were cut off in the game UI ("Rec.", "Adicionar"); do not rely on them.
