@@ -248,8 +248,8 @@ function equal(actual, expected, label) {
   if (a !== e) throw new Error(`${label}: expected ${e}, got ${a}`);
 }
 
-async function viewport(width, height, mobile) {
-  await send("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: 2, mobile });
+async function viewport(width, height, mobile, deviceScaleFactor = 2) {
+  await send("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor, mobile });
   await send("Emulation.setTouchEmulationEnabled", { enabled: mobile });
 }
 // Always a real page load: navigating to the URL already open (or one that differs only in the hash)
@@ -336,7 +336,9 @@ async function iconPlacementError(label) {
     const tiles = [...document.querySelectorAll("img.leaflet-tile-loaded")].map((img) => {
       const [z, x, y] = img.src.match(/(\\d+)\\/(\\d+)\\/(\\d+)\\.webp$/).slice(1).map(Number);
       const b = img.getBoundingClientRect();
-      return { z, x, y, left: b.left, top: b.top, width: b.width };
+      // The tile grid's step on screen: tiles are drawn 1 px larger than the grid to hide the seams
+      // (css/style.css), so the drawn width is scaled back to ${mapCfg.tiles.tileSize} px.
+      return { z, x, y, left: b.left, top: b.top, width: b.width * ${mapCfg.tiles.tileSize} / img.offsetWidth };
     });
     const top = Math.max(...tiles.map((t) => t.z));
     const icons = ${ICONS}.map((e) => { const b = e.getBoundingClientRect(); return [b.left + b.width / 2, b.top + b.height / 2]; });

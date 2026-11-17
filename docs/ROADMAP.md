@@ -113,7 +113,16 @@ players more and rewards need a lot of data collected in-game.
   game unit instead of the native zoom.
 - `maxZoom` is one step above the native zoom on 2048² images (Suotuo: 4), two on 4096² ones (Nuoding: 5),
   so the most upscaled view is 2× on both. Suotuo at 5 was a 4× blur on a phone (owner, 2026-11-16).
-  Thin seams between tiles showed on the phone at the upscaled zooms; not looked into yet.
+- Thin seams between tiles (seen on the owner's Samsung A55, 2026-11-16) are fixed in `css/style.css`: each
+  tile is drawn 1 px larger than the grid and blends normally, instead of Leaflet's `mix-blend-mode:
+  plus-lighter`. Cause: a tile edge between device pixels (zooms of x.5; the A55's 2.8125 pixel ratio) is
+  drawn half transparent on both tiles; plus-lighter adds it to what is behind, which is the previous zoom
+  level that Leaflet keeps for a while (light lines) or the map's background (dark lines). Measured in
+  headless Chrome at pixel ratios 2, 2.8125 and 3 on both maps, every 0.5 zoom step: lines 20-48 levels
+  brighter or darker than their neighbours before, none left after. Cost: a tile's image stretches by
+  1/256 (up to 1 CSS px at its far edge, 2 px at Suotuo's zoom 4). The dark lines at whole zooms seen on
+  the phone did not reproduce in headless Chrome (GPU compositing differs): that case is to be checked on
+  the phone. The browser test's icon placement check measures the grid step, not the drawn width.
 - A map with no data shows an empty sidebar and `0/0` exploration value (a new draft map, before its data).
 - `type.book/mechanism/portal/boss/arena` UI keys exist only in `en.json` on purpose (fallback to English).
 - Unused leftover PT/ZH strings were cut off in the game UI ("Rec.", "Adicionar"); do not rely on them.

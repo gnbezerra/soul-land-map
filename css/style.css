@@ -90,6 +90,19 @@ input[type="checkbox"] {
   background: var(--bg);
 }
 
+/* Tile seams. Where a tile edge falls between device pixels (a zoom of x.5, or a phone whose pixel ratio is
+   not a whole number, like the Samsung A55's 2.8125), the edges of two neighbouring tiles are both drawn
+   half transparent and a thin line shows: dark over the map's background, light over the previous zoom
+   level's tiles, which Leaflet keeps behind for a while. Leaflet's own fix (mix-blend-mode: plus-lighter)
+   adds those edges up with whatever is behind, which is what makes the light lines. Instead, each tile is
+   drawn 1 px larger, so it overlaps its neighbour (the image stretches by 1/256, under a pixel), and
+   blends normally. Measured in headless Chrome at pixel ratios 2, 2.8125 and 3 (ROADMAP "Known gaps"). */
+.leaflet-container img.leaflet-tile {
+  mix-blend-mode: normal;
+  width: 257px !important;
+  height: 257px !important;
+}
+
 body.sidebar-hidden #sidebar {
   display: none;
 }
