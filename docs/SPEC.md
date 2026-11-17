@@ -106,7 +106,11 @@ each an entry of size 1), 6 crystal sets (sum 28), 5 encounters, 2 "Other" entri
 the Scenery 4). Divine Trials are not in the game's list and have no entry. Tags: `grappling_hook`,
 `purple_demon_eye`, `guarded`, `hidden`, `ghostly_trace` (a Tang Sect skill); from Suotuo on, `poison_seal` and `fire_seal`
 (chests in green gas or on fire, opened only with the Tang Sect skill Xuanyu Hand, level 1 for poison and 2 for fire:
-the tag is the seal the player sees, and its hint names the skill level). Filtering by tag is post-MVP. A marker may add
+the tag is the seal the player sees, and its hint names the skill level). A tag names what opening the chest
+needs, so a future tag filter can hide what a player cannot open yet. `hidden` is the game's 遮蔽: a chest
+inside a box, a bush or under a rock, reached by striking it; the Purple Demon Eye only highlights it, so it is
+not tagged. The invisible (隐形) and transformed (变形) Tang Sect chests are `purple_demon_eye` only, although the
+game's English calls the invisible ones "hidden" too. Filtering by tag is post-MVP. A marker may add
 its own tags on top of its entry's (e.g. one Tang Sect Chest Two chest also needs the Grappling Hook); its
 effective tags are the union. The sidebar shows entry tags; the popup shows the effective tags of the marker.
 
