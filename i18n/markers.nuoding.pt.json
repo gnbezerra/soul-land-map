@@ -1,4 +1,43 @@
 {
+  "nuoding-0039": {
+    "note": "No topo do penhasco."
+  },
+  "nuoding-0084": {
+    "note": "Na base do penhasco."
+  },
+  "nuoding-0086": {
+    "note": "No topo do penhasco."
+  },
+  "nuoding-0092": {
+    "note": "No topo do penhasco."
+  },
+  "nuoding-0101": {
+    "note": "Na base do penhasco."
+  },
+  "nuoding-0108": {
+    "note": "Na base do penhasco."
+  },
+  "nuoding-0111": {
+    "note": "Na base do penhasco."
+  },
+  "nuoding-0123": {
+    "note": "Na base do penhasco."
+  },
+  "nuoding-0126": {
+    "note": "Na base do penhasco."
+  },
+  "nuoding-0130": {
+    "note": "Na base do penhasco."
+  },
+  "nuoding-0131": {
+    "note": "Em uma caverna na base do penhasco."
+  },
+  "nuoding-0136": {
+    "note": "Na base do penhasco."
+  },
+  "nuoding-0141": {
+    "note": "Na base do penhasco."
+  },
   "nuoding-0172": {
     "note": "Vá pelo caminho de baixo, perto da Provação Divina."
   },
@@ -9,7 +48,7 @@
     "note": "Vá pela rota que sobe até o platô rochoso."
   },
   "nuoding-0175": {
-    "note": "Vá pela rota que sobe até o platô rochoso."
+    "note": "Siga uma curta distância para o oeste após chegar ao Baú de Desafio em (678, 481)."
   },
   "nuoding-0185": {
     "note": "Suba no telhado usando o gancho."
@@ -32,8 +71,23 @@
   "nuoding-0207": {
     "note": "Abaixo da plataforma."
   },
+  "nuoding-0210": {
+    "note": "No topo do penhasco."
+  },
+  "nuoding-0217": {
+    "note": "Na base do penhasco."
+  },
+  "nuoding-0236": {
+    "note": "Perto do topo da cachoeira."
+  },
   "nuoding-0268": {
     "note": "No topo do penhasco."
+  },
+  "nuoding-0269": {
+    "note": "É possível chegar a este baú sozinho escalando a parede rochosa com saltos duplos."
+  },
+  "nuoding-0273": {
+    "note": "Você também pode fazer um desvio até o Mar de Flores e saltar de lá de cima para alcançar este baú."
   },
   "nuoding-0281": {
     "name": "Provação da Força: Escudo de Pedra"
@@ -65,6 +119,15 @@
   "nuoding-0290": {
     "name": "Provação da Sabedoria: Pilar do Santo Espiritual",
     "note": "O estágio 3 exige a habilidade Rastro Fantasmagórico, da Seita Tang, para ser concluído."
+  },
+  "nuoding-0302": {
+    "note": "Na base do penhasco."
+  },
+  "nuoding-0313": {
+    "note": "Na base do penhasco."
+  },
+  "nuoding-0316": {
+    "note": "Na base do penhasco."
   },
   "nuoding-0318": {
     "note": "No topo do penhasco, após atravessar o Mar de Flores."

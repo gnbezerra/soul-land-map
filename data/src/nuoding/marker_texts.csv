@@ -1,8 +1,21 @@
 marker,field,en,pt,zh
+nuoding-0039,note,At the top of the cliff.,No topo do penhasco.,在悬崖顶部。
+nuoding-0084,note,At the bottom of the cliff.,Na base do penhasco.,在悬崖底部。
+nuoding-0086,note,At the top of the cliff.,No topo do penhasco.,在悬崖顶部。
+nuoding-0092,note,At the top of the cliff.,No topo do penhasco.,在悬崖顶部。
+nuoding-0101,note,At the bottom of the cliff.,Na base do penhasco.,在悬崖底部。
+nuoding-0108,note,At the bottom of the cliff.,Na base do penhasco.,在悬崖底部。
+nuoding-0111,note,At the bottom of the cliff.,Na base do penhasco.,在悬崖底部。
+nuoding-0123,note,At the bottom of the cliff.,Na base do penhasco.,在悬崖底部。
+nuoding-0126,note,At the bottom of the cliff.,Na base do penhasco.,在悬崖底部。
+nuoding-0130,note,At the bottom of the cliff.,Na base do penhasco.,在悬崖底部。
+nuoding-0131,note,In a cave at the bottom of the cliff.,Em uma caverna na base do penhasco.,在悬崖底部的山洞里。
+nuoding-0136,note,At the bottom of the cliff.,Na base do penhasco.,在悬崖底部。
+nuoding-0141,note,At the bottom of the cliff.,Na base do penhasco.,在悬崖底部。
 nuoding-0172,note,"Take the lower path, near the Divine Trial.","Vá pelo caminho de baixo, perto da Provação Divina.",走下方小路，在神意试炼附近。
 nuoding-0173,note,"Take the lower path, near the Divine Trial.","Vá pelo caminho de baixo, perto da Provação Divina.",走下方小路，在神意试炼附近。
 nuoding-0174,note,Take the route up the rock plateau.,Vá pela rota que sobe até o platô rochoso.,走上方岩台路线。
-nuoding-0175,note,Take the route up the rock plateau.,Vá pela rota que sobe até o platô rochoso.,走上方岩台路线。
+nuoding-0175,note,"Head a short distance west after reaching the Challenge Chest at (678, 481).","Siga uma curta distância para o oeste após chegar ao Baú de Desafio em (678, 481).",到达坐标（678，481）处的解密宝箱后，向西走一小段路即可找到。
 nuoding-0185,note,Grapple onto the roof using the grappling hook.,Suba no telhado usando o gancho.,使用飞天神爪登上屋顶。
 nuoding-0186,note,Grapple onto the roof using the grappling hook.,Suba no telhado usando o gancho.,使用飞天神爪登上屋顶。
 nuoding-0187,note,Grapple onto the roof using the grappling hook.,Suba no telhado usando o gancho.,使用飞天神爪登上屋顶。
@@ -10,7 +23,12 @@ nuoding-0188,note,Grapple onto the balcony using the grappling hook.,Suba na var
 nuoding-0189,note,Grapple onto the top of the stone pillar using the grappling hook.,Suba no pilar de pedra usando o gancho.,使用飞天神爪登上石柱顶部。
 nuoding-0191,note,At the top of the stone pillar.,No topo do pilar de pedra.,在石柱顶部。
 nuoding-0207,note,Below the platform.,Abaixo da plataforma.,在平台下方。
+nuoding-0210,note,At the top of the cliff.,No topo do penhasco.,在悬崖顶部。
+nuoding-0217,note,At the bottom of the cliff.,Na base do penhasco.,在悬崖底部。
+nuoding-0236,note,Next to the top of the waterfall.,Perto do topo da cachoeira.,在瀑布顶部旁边。
 nuoding-0268,note,At the top of the cliff.,No topo do penhasco.,在悬崖顶部。
+nuoding-0269,note,It's possible to reach this chest alone by climbing the rock wall with double jumps.,É possível chegar a este baú sozinho escalando a parede rochosa com saltos duplos.,单人也可以直接利用二段跳爬上岩壁拿到该宝箱。
+nuoding-0273,note,You can also take a detour up to the Flower Sea and jump down from above to reach this chest.,Você também pode fazer um desvio até o Mar de Flores e saltar de lá de cima para alcançar este baú.,也可以直接绕路前往高处的花海，然后从上方跳下到达该宝箱。
 nuoding-0281,name,Trial of Strength: Shield of Stone,Provação da Força: Escudo de Pedra,力之试炼·岩之盾
 nuoding-0282,name,Trial of Strength: Feather of the Wind,Provação da Força: Pena do Vento,力之试炼·风之羽
 nuoding-0283,name,Trial of Wisdom: Path of No Regrets,Prova da Sabedoria: Caminho sem Arrependimentos,智之试炼·无悔之路
@@ -22,6 +40,9 @@ nuoding-0288,name,Trial of Strength: Wolf Pack,Provação da Força: Alcateia,�
 nuoding-0289,name,Trial of Wisdom: Memory Link,Provação da Sabedoria: Conexão de Memória,智之试炼·记忆链接
 nuoding-0290,name,Trial of Wisdom: Soul Sanctum,Provação da Sabedoria: Pilar do Santo Espiritual,智之试炼·魂圣石柱
 nuoding-0290,note,Stage 3 requires the Tang Sect skill Ghostly Trace to clear.,"O estágio 3 exige a habilidade Rastro Fantasmagórico, da Seita Tang, para ser concluído.",第3层需要使用鬼影迷踪才能通过。
+nuoding-0302,note,At the bottom of the cliff.,Na base do penhasco.,在悬崖底部。
+nuoding-0313,note,At the bottom of the cliff.,Na base do penhasco.,在悬崖底部。
+nuoding-0316,note,At the bottom of the cliff.,Na base do penhasco.,在悬崖底部。
 nuoding-0318,note,"At the top of the cliff, after crossing the Flower Sea.","No topo do penhasco, após atravessar o Mar de Flores.",穿过花海后，位于悬崖顶部。
 nuoding-0319,howto,"Free the animals in all three cages, in any order. The encounter starts when you free the third one.","Liberte os animais nas três jaulas, em qualquer ordem. O encontro começa quando você liberta o terceiro.",按任意顺序放出三个笼子里的动物，放出第三只后即可触发奇遇。
 nuoding-0320,howto,Get close to the Old Woman.,Chegue perto da Senhora Idosa.,靠近老妇人。

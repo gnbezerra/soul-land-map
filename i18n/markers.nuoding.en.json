@@ -1,4 +1,43 @@
 {
+  "nuoding-0039": {
+    "note": "At the top of the cliff."
+  },
+  "nuoding-0084": {
+    "note": "At the bottom of the cliff."
+  },
+  "nuoding-0086": {
+    "note": "At the top of the cliff."
+  },
+  "nuoding-0092": {
+    "note": "At the top of the cliff."
+  },
+  "nuoding-0101": {
+    "note": "At the bottom of the cliff."
+  },
+  "nuoding-0108": {
+    "note": "At the bottom of the cliff."
+  },
+  "nuoding-0111": {
+    "note": "At the bottom of the cliff."
+  },
+  "nuoding-0123": {
+    "note": "At the bottom of the cliff."
+  },
+  "nuoding-0126": {
+    "note": "At the bottom of the cliff."
+  },
+  "nuoding-0130": {
+    "note": "At the bottom of the cliff."
+  },
+  "nuoding-0131": {
+    "note": "In a cave at the bottom of the cliff."
+  },
+  "nuoding-0136": {
+    "note": "At the bottom of the cliff."
+  },
+  "nuoding-0141": {
+    "note": "At the bottom of the cliff."
+  },
   "nuoding-0172": {
     "note": "Take the lower path, near the Divine Trial."
   },
@@ -9,7 +48,7 @@
     "note": "Take the route up the rock plateau."
   },
   "nuoding-0175": {
-    "note": "Take the route up the rock plateau."
+    "note": "Head a short distance west after reaching the Challenge Chest at (678, 481)."
   },
   "nuoding-0185": {
     "note": "Grapple onto the roof using the grappling hook."
@@ -32,8 +71,23 @@
   "nuoding-0207": {
     "note": "Below the platform."
   },
+  "nuoding-0210": {
+    "note": "At the top of the cliff."
+  },
+  "nuoding-0217": {
+    "note": "At the bottom of the cliff."
+  },
+  "nuoding-0236": {
+    "note": "Next to the top of the waterfall."
+  },
   "nuoding-0268": {
     "note": "At the top of the cliff."
+  },
+  "nuoding-0269": {
+    "note": "It's possible to reach this chest alone by climbing the rock wall with double jumps."
+  },
+  "nuoding-0273": {
+    "note": "You can also take a detour up to the Flower Sea and jump down from above to reach this chest."
   },
   "nuoding-0281": {
     "name": "Trial of Strength: Shield of Stone"
@@ -65,6 +119,15 @@
   "nuoding-0290": {
     "name": "Trial of Wisdom: Soul Sanctum",
     "note": "Stage 3 requires the Tang Sect skill Ghostly Trace to clear."
+  },
+  "nuoding-0302": {
+    "note": "At the bottom of the cliff."
+  },
+  "nuoding-0313": {
+    "note": "At the bottom of the cliff."
+  },
+  "nuoding-0316": {
+    "note": "At the bottom of the cliff."
   },
   "nuoding-0318": {
     "note": "At the top of the cliff, after crossing the Flower Sea."
