@@ -72,9 +72,10 @@ So:
 - Each pure module has a matching `tests/<module>.test.mjs`. UI modules keep only the DOM and Leaflet wiring
   and call into the pure ones.
 - Tests live in `tests/`: unit tests (`*.test.mjs`, Node's built-in runner, made-up data), pipeline tests
-  (`test_*.py`, Python's `unittest`, made-up CSVs in a temporary `--root`, never the real ones) and the
-  browser test (`tests/browser.mjs`; its header lists the gotchas of driving headless Chrome). Extend them
-  with new code instead of writing throwaway scripts.
+  (`test_*.py`, Python's `unittest`, made-up CSVs in a temporary `--root`, never the real ones; the checks of
+  the repo's own consistency, such as `test_docs.py`, read the real files) and the browser test
+  (`tests/browser.mjs`; its header lists the gotchas of driving headless Chrome). Extend them with new code
+  instead of writing throwaway scripts.
 
 ## Before finishing or pushing
 
