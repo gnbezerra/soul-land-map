@@ -1,10 +1,14 @@
 # Soul Land Map — MVP specification
 
 Unofficial fansite for *Soul Land: New World* with interactive, MapGenie-style maps: filterable markers per
-region and personal exploration progress. This file is the design reference. For what is built and what comes
-next, read `docs/ROADMAP.md`. For how to run and feed the data pipeline, read `README.md`.
+region and personal exploration progress.
 
-Where the implementation differs from this spec, the section "Implementation status" says so.
+**This document:** how the site works and why: its principles, data model, storage formats, interface and
+design decisions, including features that are planned but not built (marked "planned" or "not implemented
+yet"). **Not here:** how to edit the data or the assets (`docs/DATA.md`), facts about the game
+(`docs/GAME-NOTES.md`), and what is built now or comes next (`docs/ROADMAP.md`). **Which document holds
+what:** README "Documentation". Other documents cite this one by section number (SPEC §4.5), so add
+subsections instead of renumbering.
 
 ## 1. Principles
 
@@ -34,6 +38,7 @@ the obligation of listing all of them at launch.
 
 ```text
 index.html
+README.md, CLAUDE.md   the documentation map, the rules for working in the repo
 LICENSE, LICENSE-CC-BY.txt   MIT (code) and CC BY 4.0 (the site's own data); scope in docs/LICENSING.md
 favicon.svg, favicon.ico, apple-touch-icon.png   site icon (the .ico and .png from tools/make_favicon.py)
 js/            ES modules: app, layers, sheet, sidebar, util (UI); model, trials, exploration, filters, items, popup, links, maps, storage, i18n, geo (pure)
@@ -57,23 +62,22 @@ tiles/<map>/{z}/{x}/{y}.webp   generated offline by tools/make_tiles.py (committ
 maps/<map>.png  source map image, local only (ignored by git)
 tools/         Python: build_data.py, check_calibration.py, game_data.py and game_tables.py (the game's config tables), make_tiles.py, make_icons.py, make_favicon.py
 tests/         unit tests for the pure js/ modules (node --test tests/), pipeline tests (test_*.py), browser test (browser.mjs)
-docs/          SPEC.md, ROADMAP.md, LICENSING.md, mockup.png
+docs/          DATA.md, SPEC.md, GAME-NOTES.md, ROADMAP.md, LICENSING.md, mockup.png
 ```
 
 ## 4. Data model
 
 ### 4.1 Maps and calibration
 
-`maps.json` per map: image width/height (4096 × 4096 for Nuoding; 2048 × 2048 for Suotuo and four other
-regions of the game's assets, 4096 × 4096 for the other two), tile size 256, `maxNativeZoom` (4 for a 4096
-image, 3 for a 2048 one), `maxZoom` (beyond the native zoom the tiles are upscaled and blurry), the
-calibration, and an optional `draft: true` for a region whose data is still being collected (reachable by
-its link only, outside the region selector). Calibration is two independent linear equations without rotation:
+`maps.json` per map: image width/height (4096 × 4096 or 2048 × 2048, `docs/GAME-NOTES.md` "Regions"), tile
+size 256, `maxNativeZoom` (4 for a 4096 image, 3 for a 2048 one), `maxZoom` (beyond the native zoom the tiles
+are upscaled and blurry), the calibration, the exploration reward milestones, and an optional `draft: true`
+for a region whose data is still being collected (reachable by its link only, outside the region selector).
+Calibration is two independent linear equations without rotation:
 `px = scaleX * x + offsetX`, `py = scaleY * y + offsetY`. The values come from the game's `map_position`
-table (formula in README "Calibration", printed by `tools/game_data.py export`); points measured in-game
-check them (`tools/check_calibration.py`): Nuoding ±3.5748 px per game unit, within 0.7 game units of its
-11 points; Suotuo ±1.6450, within 1.9 units of its 10, the game's own map being imprecise there. Game Y
-grows upward (like Leaflet `CRS.Simple`), image pixel Y grows downward, hence the negative `scaleY`.
+table, and points measured in-game check them (`tools/check_calibration.py`); the formula and each map's
+results are in `docs/DATA.md` "Calibration". Game Y grows upward (like Leaflet `CRS.Simple`), image pixel Y
+grows downward, hence the negative `scaleY`.
 
 Markers store **game units, never pixels**, so fixing the calibration or the image never requires regenerating
 markers and the data stays verifiable in-game. The in-game `[Location]` link walks the character exactly onto
@@ -83,46 +87,70 @@ points at the same X/Y; rare vertical areas (a cave under a plain) are disambigu
 ### 4.2 Categories
 
 The game's exploration UI has 6 categories, mirrored as top-level groups: Normal Chest (`chest_normal`),
-Decryption Chest (`chest_coop`, `chest_challenge`, `chest_contract`, `chest_boss`), Divine Trial (`divine_trial`, counted per
-stage), Divine Mind Crystal (`crystal`), Encounter (`encounter`), Other (`teleport`, `viewpoint`, `seed`).
-Outside the game's checksum and the exploration value: extras (`book`), auxiliary (`mechanism`, `portal`), the respawned
-chests (`chest_respawn`, Nuoding only, 4.5) and Dragon Island (`boss`, `arena`). `categories.json` defines group → types, color and glyph, and the exploration
-rules (§11): one per line of the game's rules popup, with its types and points.
+Decryption Chest (`chest_coop`, `chest_challenge`, `chest_contract`, `chest_boss`), Divine Trial
+(`divine_trial`, counted per stage), Divine Mind Crystal (`crystal`), Encounter (`encounter`), Other
+(`teleport`, `viewpoint`, `seed`). Outside the game's checksum and the exploration value: the respawned chests
+(`chest_respawn`, Nuoding only, 4.5), extras (`book`), auxiliary (`mechanism`, `portal`) and Dragon Island
+(`boss`, `arena`).
+
+`data/categories.json` holds three things:
+
+- `groups`: the sidebar groups, in order, each with its `id` and its `types`.
+- `explorationRules`: one per line of the game's exploration rules popup, with its `types` and `points`
+  (the game's rules: `docs/GAME-NOTES.md` "Exploration value").
+- `types`: per marker type, how it is drawn and listed:
+
+| Field | Required | Meaning |
+|---|---|---|
+| `color` | yes | the category color: glow, pillar line, and the dot of a type with no icon |
+| `glyph` | yes | letter in the colored dot used when a type has no icon (`seed`, `mechanism`, `arena` today) |
+| `icon` | for types with a sprite | path in `icons/`; the sidebar shows it too (§9) |
+| `tier` | yes | `common`, `major` or `minor`: the marker's size and glow (§7.2) |
+| `size` | optional | box in px, overrides the tier: the teleport and scenic spot sprites are thin, so they get 26 px to weigh about as much as a chest |
+| `iconFound` | optional | replaces the icon once found: the opened contract chest |
+| `badge` | optional | short text on the icon's corner, for chests that share a sprite (unused today) |
+| `badgeField` | optional | the badge shows that marker field instead: a co-op chest shows its `players`, 1 to 4 |
+| `badgeIcon` | optional | a small sprite in the same corner, on the marker and in the sidebar: the boss chest's |
+| `defaultHidden` | optional | the type starts hidden (§7.3): the respawned chests |
+| `unlockedBy` | optional | the type whose completion makes this one appear in the game; the sidebar explains it and suggests showing it (§7.3): the respawned chests, by `chest_normal` |
+
+Challenge chests have no badge: the game has no sprite for the pillar (`dt_icon_sj` is the Asura Statue's).
 
 ### 4.3 Entries
 
 An entry is a row of the game's exploration list. Fields: `id`, `type` (marker type of its members), `size`
 (expected marker count, the `11/11` in the game), optional `tags`, official names/descriptions in i18n. Entry ids
 are unique per map, not globally (the same slug may exist in two maps); identity is the pair (map, slug).
-Normal chests are partitioned into entries, so `entry` is mandatory for `chest_normal`.
+Normal chests are partitioned into entries, so `entry` is mandatory for `chest_normal`. Entries keep the
+in-game order (the CSV row order), not alphabetical. Divine Trials are not in the game's list and have no
+entry.
 
-The game can count objects that it lists in no entry: Suotuo counts 247 normal chests, its entries add up to
-217, and the other 30 belong to two groups with no name (NoteIds 1109 and 1110). For those the site makes
-entries of its own, tagged `unlisted` (`unlisted-1`, `unlisted-2`; names by area, "Outside the game's list
-(south-west)", and a description saying why in the three languages, written by the site). The sidebar lists
-them after the game's entries, past a dashed line and in italics; `unlisted` is not a requirement, so the
-popup shows it as no tag. `tools/game_data.py export` writes them for a new region.
+The game can count objects that it lists in no entry (Suotuo: 30 normal chests, `docs/GAME-NOTES.md`
+"Exploration counts"). For those the site makes entries of its own, tagged `unlisted` (`unlisted-1`,
+`unlisted-2`; names by area, "Outside the game's list (south-west)", and a description saying why in the three
+languages, written by the site). The sidebar lists them after the game's entries, past a dashed line and in
+italics; `unlisted` is not a requirement, so the popup shows it as no tag. `tools/game_data.py export` writes
+them for a new region.
 
-Nuoding: 20 normal-chest sets (sum 264), 16 decryption chests (4 cooperative, 6 Pillar of Empty Path, 6 Coffers,
-each an entry of size 1), 6 crystal sets (sum 28), 5 encounters, 2 "Other" entries (Light Up! Teleport 6, Enjoy
-the Scenery 4), and 5 respawned-chest entries of the site's own (sum 150, 4.5). Divine Trials are not in the game's list and have no entry. Tags: `grappling_hook`,
-`purple_demon_eye`, `guarded`, `hidden`, `ghostly_trace` (a Tang Sect skill); from Suotuo on, `poison_seal` and `fire_seal`
-(chests in green gas or on fire, opened only with the Tang Sect skill Xuanyu Hand, level 1 for poison and 2 for fire:
-the tag is the seal the player sees, and its hint names the skill level). A tag names what opening the chest
-needs, so a future tag filter can hide what a player cannot open yet. `hidden` is the game's 遮蔽: a chest
-inside a box, a bush or under a rock, reached by striking it; the Purple Demon Eye only highlights it, so it is
-not tagged. The invisible (隐形) and transformed (变形) Tang Sect chests are `purple_demon_eye` only, although the
-game's English calls the invisible ones "hidden" too. Filtering by tag is post-MVP. A marker may add
-its own tags on top of its entry's (e.g. one Tang Sect Chest Two chest also needs the Grappling Hook); its
-effective tags are the union. The sidebar shows entry tags; the popup shows the effective tags of the marker.
+Tags: `grappling_hook`, `purple_demon_eye`, `guarded`, `hidden`, `ghostly_trace` (a Tang Sect skill); from
+Suotuo on, `poison_seal` and `fire_seal` (chests in green gas or on fire, opened only with the Tang Sect skill
+Xuanyu Hand, level 1 for poison and 2 for fire: the tag is the seal the player sees, and its hint names the
+skill level). A tag names what opening the chest needs, so a future tag filter can hide what a player cannot
+open yet. `hidden` is the game's 遮蔽: a chest inside a box, a bush or under a rock, reached by striking it;
+the Purple Demon Eye only highlights it, so it is not tagged. The invisible (隐形) and transformed (变形) Tang
+Sect chests are `purple_demon_eye` only, although the game's English calls the invisible ones "hidden" too.
+Filtering by tag is post-MVP. A marker may add its own tags on top of its entry's (e.g. one Tang Sect Chest Two
+chest also needs the Grappling Hook); its effective tags are the union. The sidebar shows entry tags
+(planned); the popup shows the effective tags of the marker. A new tag only needs its UI keys (`tag.<id>` and
+an optional `tag.<id>.hint` tooltip).
 
 ### 4.4 Marker common fields
 
 `id` (immutable, assigned once, never reused, e.g. `nuoding-0142`; never derived from row, coordinate or type),
 `type`, `x`, `y` (game units), `entry`, `entry_index` (position in the in-game answer's `[Location N]` order),
-`links` (related marker ids, bidirectional in the UI), optional own `tags` (4.3), optional short `note` and `howto` (i18n texts from
-`marker_texts.csv`: the note is always shown, the howto sits behind a "show solution" button). Normal chests
-carry no reward; it comes from the category's default loot.
+`links` (related marker ids; shown both ways in the UI, planned), optional own `tags` (4.3), optional short
+`note` and `howto` (i18n texts from `marker_texts.csv`: the note is always shown, the howto sits behind a
+"Show solution" button). Normal chests carry no reward; it comes from the category's default loot.
 
 ### 4.5 Marker types
 
@@ -133,12 +161,13 @@ carry no reward; it comes from the category's default loot.
   are `box_npc.BoxType` 23 (`ActivityTreasureBox`), in `activity_explore_value`, and Type 2 in
   `magic_pupil_npc` (needs the Purple Demon Eye); the trigger and the loot are not in the tables. The game
   groups them as `normal_A`, `normal_B`, `good_A`, `good_B`, `good_C` (50, 50, 21, 21, 8; normal and good
-  are two chest models; in the tables the letters differ only in position, but the loot differs by letter, 4.8). Each group is an entry of the site's own
+  are two chest models; in the tables the letters differ only in position, but the loot differs by letter,
+  `docs/GAME-NOTES.md` "Loot observed in-game"). Each group is an entry of the site's own
   (`respawn-normal-a` and so on, names and descriptions written by the site), because the loot goes by group
   (4.8). 119 stand where a normal chest stood, 31 at new places; the owner checked all 31 in-game
   (2026-11-21). The type starts hidden (`defaultHidden`) and is unlocked by `chest_normal` (`unlockedBy`):
   the sidebar explains when they appear, and once every normal chest is marked it suggests showing them
-  (README "Site behavior").
+  (§7.3).
 - `chest_coop`: `players` 1–4; the mechanism is text. A few are tutorials of the mechanic, with the
   unlock button right next to the chest so one player can open them alone (`players: 1`).
 - `chest_challenge`: Pillars of Empty Path jumping puzzle; the location leads to the chest; optional pillar
@@ -190,14 +219,16 @@ Difficulty has no name in the game: it is a row of four-pointed stars (✦), whi
 The ZH terms are kept as they are; EN and PT use the site's own wording where the official one is unclear.
 
 UI: the popup shows the layers done (e.g. 4/10) with a bar, and one row per layer (number, stars, and for
-combat trials the minimum level and the recommended rating, "—" while unknown). Clicking a layer that is not
-done marks it and the earlier ones (8 done, click 10: 10 done); clicking a done layer unmarks it and the later
-ones (8 done, click 5: 4 done); a button marks all of them done (or resets a complete trial). A started trial shows a "4/10" badge next to its marker (hidden when zoomed out,
+combat trials the minimum level and the recommended rating, "—" while unknown), instead of the "found"
+button. Clicking a layer that is not done marks it and the earlier ones (8 done, click 10: 10 done); clicking
+a done layer unmarks it and the later ones (8 done, click 5: 4 done); a button marks all of them done (or
+resets a complete trial). A started trial shows a "4/10" badge next to its marker (hidden when zoomed out,
 like the glyph); a complete trial counts as found (faded, removed by "hide found").
 
 Source data: the marker row in `markers.csv`, the name as a `name` row in `marker_texts.csv` (built into
 `i18n/markers.<map>.<lang>.json`) and the stages in `stages.csv` (one row per stage, columns `trial`, `stage`,
-`stars`, `level`, `cp`; `cp` stays optional until it is collected). Rewards will be extra `stages.csv` columns once items exist (4.8).
+`stars`, `level`, `cp`; `cp` stays optional until it is collected). Rewards will be extra `stages.csv` columns
+once items exist (4.8).
 
 ```json
 { "id": "nuoding-0281", "type": "divine_trial", "subtype": "combat", "x": 386, "y": 786,
@@ -212,10 +243,10 @@ Hidden trigger quests. Answer formats in the game are not uniform (Andy's Dilemm
 real trigger, talking to the NPC repeatedly, is not in the text; Animal Protection has no links and describes
 three cages, freed in any order; freeing the third one starts the encounter wherever the player is, so the
 three cages are its points and the primary one is just where the pin sits). Fields: `points`
-(list of x/y, counted once), the entry description (`desc_*` in `entries.csv`, the game's own text, always
-visible), `howto` (own text in `marker_texts.csv`, behind a "show solution" button) and `reward`. The text of
-the game's Answer button is not stored: its locations are the markers themselves, and anything else worth
-keeping goes into the `howto`. Progress is by marker id.
+(list of x/y, counted once; each point gets its own icon), the entry description (`desc_*` in `entries.csv`,
+the game's own text, always visible), `howto` (own text in `marker_texts.csv`, behind a "Show solution"
+button) and `reward`. The text of the game's Answer button is not stored: its locations are the markers
+themselves, and anything else worth keeping goes into the `howto`. Progress is by marker id.
 
 When the trigger points are markers of their own, the encounter does not sit on them: two icons at the same
 X/Y would stack and the bigger encounter icon would hide the other marker and take its clicks. Suotuo's
@@ -238,65 +269,34 @@ player_level }`); the MVP popup only says it varies. `items.json` is the catalog
 `i18n/items.<lang>.json` (~10–20 distinct items in Divine Trials plus crystals, contracts, Mind Methods).
 Rewards are considered immutable in the game; if they change, edit a `loot.json` entry.
 
-What the owner saw in-game:
-- Normal chests: one table for all, plus a fixed number of blue gems by the chest's look (2 for the common
-  one, 5 for the intermediate, 10 for the most elaborate): a base table and one gem table per look.
+The tables follow what the owner saw in-game (the details and the open questions are in
+`docs/GAME-NOTES.md` "Loot observed in-game"):
+
+- Normal chests: one table for all, plus a fixed number of blue gems by the chest's look: a base table and
+  one gem table per look.
 - Decryption chests: each its own table, even when two give the same.
-- Respawned chests (4.5): one table per game group. A sample of 5 chests per group (2026-11-21; the ranges
-  are what came out, not the game's limits):
+- Respawned chests (4.5): one table per game group.
 
-  | Group | The same in all 5 | Varies |
-  |---|---|---|
-  | `good_A` | 6 Blue Crystal, 20 Fine Gold Fragments, 20 Hidden Weapon Polishing Stone, 500000 Silver Soul Coin, 1 Summon Voucher | Orange Soul Essence Shard 5–10 |
-  | `good_B` | 6 Blue Crystal, 1 Recruitment Crystal | Fading Soul Essence 3–4, Gold Obsidian Shard 6–10, Life Essence 10–14, Soul Crystal Shards 3–5 |
-  | `normal_A` | 3 Blue Crystal, 100000 Silver Soul Coin | Earth Breath 2–4, Life Essence 2–3, White Stone Residue 10 or 14, one item (Electric Crystal or Bursting Fungus Umbrella seen) |
-  | `normal_B` | 3 Blue Crystal, 100000 Silver Soul Coin | Earth Breath 3–5, Footprint Dust 10–17, Shimmering Crystal 1–2, one Spirit Crystal (Stalwart, Shackles, Overlord, Swift Wind seen) |
-  | `good_C` | 100000 Silver Soul Coin | everything else, see below |
+The site may show a pick's options without their odds until the odds are known.
 
-  Each `good_C` chest was a `normal_A` or a `normal_B` chest without its 3 Blue Crystal (both kinds in the
-  same area, so it looks like a draw, not the place), plus one big bonus: 60 Blue Crystal, 10 Recruitment
-  Crystal, 60 Life Essence (next to the base's 3, checked by the owner), 30 Soul Crystal Shards or 30
-  Fading Soul Essence. One of them had a Hallucinogenic Fungus Umbrella, so the `normal_A` pick has at least
-  three options.
+### 4.9 Dragon Island (not implemented yet)
 
-**Open, to settle when loot is implemented** (more chests opened in-game, or the tables if the loot turns out
-to be there after all):
-- which normal chest (entry or marker) has which gem look, and `nuoding-0105`'s;
-- whether "Blue Crystal" is the blue gem of the normal chests (3 in the respawned normal ones, 6 in
-  `good_A`/`good_B`, fits a fixed amount per kind);
-- whether `normal_A` and `normal_B` differ by the letter or by the area (all 5 `normal_A` sampled were in
-  the north, all 5 `normal_B` in the south-east);
-- the full option lists of each pick (the `normal_A` item, the Spirit Crystal, the `good_C` base and bonus), the real
-  ranges and the weights; the site may show the options without the odds until they are known;
-- the class equipment's level cut-offs (low priority).
-
-### 4.9 Dragon Island
-
-One map without exploration, low priority. The game offers two lines with the same map and markers (Combat Zone,
-open PvP; Safe Zone, no PvP): one marker file and a Combat/Safe toggle in the header, only on this map. Types:
-`boss` (9 fixed respawns; field `species`) and `arena` (Ancient Tooth Peak, world-boss events). Same species
-drop the same soul ring. A teleport near Silent Beach (Safe Zone) sits next to a whirlpool portal to Tian Dou
-City Area. No checksum or exploration bar. Positions are collected in-game.
-
-| Spawn location | Boss | Species |
-| --- | --- | --- |
-| Broken Tooth Reefs | Sly Supreme Orangutan | Supreme Orangutan |
-| North Coast Beach | Combatant Diamond Mammoth | Diamond Mammoth |
-| Thunder's Edge | Sly Mighty Kong Bear | Supreme Bear |
-| West Coast Beach | Combatant Supreme Bear | Supreme Bear |
-| East Coast Beach | Combatant Supreme Orangutan | Supreme Orangutan |
-| South Coast Beach | Sly Supreme Orangutan | Supreme Orangutan |
-| Hope Island | Sly Wolf Thief Leader | Wolf Thief |
-| Soul Rest Island (north) | Combatant Wolf Thief Leader | Wolf Thief |
-| Soul Rest Island (south) | Sly Diamond Mammoth | Diamond Mammoth |
-
-The sidebar should filter by species; the popup lists the other locations of the same species.
+One map without exploration, low priority. The game offers two lines with the same map and markers (Combat
+Zone, open PvP; Safe Zone, no PvP): one marker file and a Combat/Safe toggle in the header, only on this map.
+Types: `boss` (fixed respawns; field `species`) and `arena` (Ancient Tooth Peak, world-boss events). No
+checksum or exploration bar. Positions are collected in-game. The sidebar should filter by species; the popup
+lists the other locations of the same species. The bosses and their spawns:
+`docs/GAME-NOTES.md` "Dragon Island".
 
 ## 5. i18n
 
 - `en` is default and fallback per key. A manifest `i18n/languages.json` lists offered languages; only listed
   languages are detected (`?lang=` in any case, saved setting, `navigator.languages`) or shown, so the UI is never half
-  translated.
+  translated. The top bar selector saves the choice; switching reloads the page.
+- Files: UI texts in `i18n/<lang>.json` (flat keys), entry names in `i18n/entries.<map>.<lang>.json`, marker
+  names, notes and howtos in `i18n/markers.<map>.<lang>.json`. To add a language, create `i18n/<lang>.json`
+  with the keys of `i18n/en.json` and list it in `i18n/languages.json` (`{"pt": "Português"}`); try it with
+  `?lang=pt`. Keys missing from a language (for example `type.book`) fall back to English.
 - Data JSONs are language-neutral; all text is in i18n files keyed by id. Marker titles: the marker's own
   name (trials, books, teleports, viewpoints), else the entry name, else the type.
 - The game's official English is inconsistent (Norton/Nuoding, Fugold/Floating Gold, Sunset Forest/Radiant
@@ -307,8 +307,8 @@ The sidebar should filter by species; the popup lists the other locations of the
   " · " (Chinese keeps "·"). Descriptions keep the game's punctuation, full-width in Chinese.
   `tools/game_data.py` applies this rule (`site_name`). The official PT is
   translated from Chinese and is not consistent with the English names; keep it as the game shows it.
-- Official game terms (categories, regions, entry names) vs unofficial site UI translations; the ZH UI needs
-  review by a native speaker.
+- Official game terms (categories, regions, entry names) vs unofficial site UI translations (filters,
+  backup, popups): corrections from native speakers are welcome, and the ZH UI needs review by one.
 
 ## 6. Progress and localStorage
 
@@ -320,11 +320,12 @@ The sidebar should filter by species; the popup lists the other locations of the
 - Divine Trials are never in the found set. A trial id found there (marked found before layer progress
   existed) is moved to `trials` as complete when the map loads or a backup is imported.
 - All reads/writes in try/catch; the site works with empty or unavailable storage.
-- Backup JSON `{ app: "soul-land-map", version: 1, exportedAt, progress, trials }` with validation (not-json,
-  not-a-backup, unsupported-version, malformed); import replaces after confirmation. `trials` (map → id →
-  layers done) is optional, so older backups still import and the version stays 1.
-- Stable ids make progress survive data updates; removed ids are ignored when reading. A breaking format
-  change requires bumping the version and a migration; an optional new field does not.
+- Backup JSON `{ app: "soul-land-map", version: 1, exportedAt, progress, trials }` ("Export"/"Import" in the
+  sidebar) with validation (not-json, not-a-backup, unsupported-version, malformed); import replaces the saved
+  progress after confirmation. `trials` (map → id → layers done) is optional, so older backups still import
+  and the version stays 1. Settings are not in the backup.
+- Stable ids make progress survive data updates; removed ids are ignored when reading and in the counts. A
+  breaking format change requires bumping the version and a migration; an optional new field does not.
 
 ## 7. Interface
 
@@ -333,58 +334,126 @@ MapGenie pattern: category sidebar with counters, full-screen map, popup with "m
 ![MVP layout for the map, containing Desktop and Mobile views](mockup.png "Soul Land Map - MVP layout")
 
 The mockup predates the first screen that was built: it shows the design intent and is out of date (names and
-numbers are placeholders). The text below and README "Site behavior" describe the site as it is.
+numbers are placeholders). The subsections below describe the site as it is.
 
-Desktop: top bar (title, map selector, language selector, sidebar toggle); left sidebar (~320 px, collapsible)
-with the exploration bar, "hide found" toggle and filter tree; each group/type has a checkbox and a live
-`found/total` counter and the type's sprite (a colored dot when it has none); entry lists expand under their type and clicking an entry frames and highlights its
-markers; small types list their markers by name instead (trials, encounters, books, decryption chests), and an
-item opens its marker; an "only this" button on each group and type shows that category alone, and one on each
-entry of several markers whose type has other entries (chest sets, crystals) shows only that entry's markers
-and frames them (with hide-found: what is left to find there), with a bar to
-go back to the filter from before (also a chip at the top of the map while the sidebar is closed); extras and auxiliary groups are outside the exploration bar. Map: the game's sprites as markers, sized
-by importance (§9); found markers turn grey with a check (or vanish with hide-found), coordinate readout
-bottom-left, zoom control top-right. Markers shrink below the native zoom; under a threshold their badges are
-hidden. While a pinch is under way the markers are hidden (moving a few hundred of them every frame stutters
-on phones); they come back when the fingers lift.
+### 7.1 Layout
+
+Desktop: top bar (title, map selector, language selector, sidebar toggle); left sidebar (~320 px, collapsible,
+"Hide filters") with the exploration bar, the "hide found" toggle, the filter tree, backup export/import and the
+disclaimer (§10); the map fills the rest, with the coordinate readout bottom-left (a click pins the reading)
+and the zoom control top-right. Zoom: the fit zoom (fractional) is the `minZoom`, the wheel is slow, and the
++/- buttons snap to multiples of 0.5.
 
 Mobile (< 700 px): the sidebar is a drawer that starts closed; `100dvh`; `pointer: coarse` enlarges touch
-targets (≥ 44 px). The popup is a bottom sheet (chosen with the owner in a preview against a two-step sheet
-that expands by dragging): full width, at most half the map tall, the content scrolling inside and the main
-button and footer pinned at its bottom; the map frames the marker (and a challenge chest's pillar) above it
-and the marker gets an orange ring, since a sheet has no tip pointing at it. It is Leaflet's own popup moved
-out of the map pane, so closing, deep links and popup events behave as on desktop. A phone held sideways is
-wider than 700 px and keeps the floating popup.
+targets (≥ 44 px). The popup is a bottom sheet (`js/sheet.js`; chosen with the owner in a preview against a
+two-step sheet that expands by dragging): full width, at most half the map tall, the content scrolling inside
+and the main button and footer pinned at its bottom; the map frames the marker (and a challenge chest's
+pillar) in the area above it and the marker gets an orange ring, since a sheet has no tip pointing at it. It
+closes with ✕ or a tap on the map. It is Leaflet's own popup moved out of the map pane, so closing, deep links
+and popup events behave as on desktop. Crossing the 700 px breakpoint (turning a phone) closes the open popup;
+a phone held sideways is wider than 700 px and keeps the floating popup.
 
-Popup: title, type, description, note, type-specific fields, "found" button (or the layer list on Divine
-Trials, 4.6), effective tags, howto behind a "show solution" button, coordinates and a copy-link button;
-planned: rewards with icons.
-Popups open below the zoom buttons and scroll inside on short screens.
+### 7.2 Markers
 
-Deep link by simple hash, `#nuoding/nuoding-0142` (only a bare `#name` works on GitHub Pages; no routes or
-query strings). The address bar follows the open popup (history.replaceState, so Back is unaffected).
+The game's sprites as markers (§9), sized by tier (`TIER_SIZE` in `js/layers.js`):
+
+- `major` 38 px with a glow in the category color: Divine Trials, crystals, encounters, books, bosses (what
+  the player hunts for). Drawn above the chests.
+- `common` 22 px: chests.
+- `minor` 20 px, no glow: teleports, scenic spots, portals, which the game's own minimap already shows
+  (teleports and scenic spots override the size, §4.2 `size`).
+
+Found markers turn grey and faded with a green check (the contract chest swaps to the opened sprite), or vanish
+with "hide found". Markers shrink below the native zoom; under a threshold the glyph and the badges are
+hidden. An encounter with several points shows a marker on each point. While a pinch is under way the markers
+are hidden (moving a few hundred of them every frame stutters on phones); they come back when the fingers
+lift.
+
+### 7.3 Sidebar
+
+- A group or type shows up only when the map has entries or markers for it. Each has a checkbox, a live
+  `found/total` counter and the type's sprite as legend (a colored dot when it has none).
+- Checkboxes toggle visibility, the choice is saved per map (`settings.hidden`, §6), and types missing from the
+  saved list default to visible, except those with `defaultHidden` (the respawned chests): they are hidden the
+  first time a map shows them, and `settings.defaultsSeen` remembers that, so a player who turns one on keeps
+  it on. "Show all" leaves them as they are; their checkbox, "only this", a deep link or the hint below turns
+  them on.
+- A type with `unlockedBy` (the respawned chests, by `chest_normal`) shows a hint line under it
+  (`hint.<type>`, with the other type's total), and, once every marker of that type is marked found, a note
+  (`nudge.<type>`) with a "Show on the map" button, until the type has been on the map once by any way
+  (`settings.unlockedShown` per map): "only this" on another category, or hiding it again, does not bring the
+  note back. The site never turns it on by itself: it only knows what the player marked.
+- Counters read `found / total in the game`: the total is the sum of the `size` of the entries of that type
+  (or the number of mapped markers when a type has no entries yet).
+- The bar at the top is the game's exploration value, in points: each rule of `explorationRules` (§4.2) counts
+  its types' counters. Types with no data yet are not part of the total; extras and auxiliary groups are
+  outside it. The map's reward milestones (`exploration.milestones` in `data/maps.json`) are marks on the bar,
+  with the next reward and the points left below it; the (i) button opens the rules with the official texts
+  and the counts done of each.
+- Entry lists (for example the chest sets) expand under their type. Clicking an entry frames and highlights
+  its markers on the map, and shows the type again if it was hidden.
+- Small types whose entries are one marker each, or that have none, list their markers instead (`js/items.js`:
+  Divine Trials, encounters, books, each kind of decryption chest; at most `ITEM_LIST_MAX`, 20, and only when
+  every marker has a name or an entry, so portals are not listed). Clicking an item opens that marker, as a
+  click on the map would. Divine Trials drop their kind from the name ("Memory Link"), and repeated names get
+  a small number (1, 2, 3) in the data's order.
+- "Only this" (the target button on every group and type, `js/filters.js`) shows that category alone; a bar
+  above the filters names it and has "Back". A second click or "Back" restores the filter from before, also
+  after a reload (`settings.solo` per map, next to `settings.hidden`); a checkbox ends it and keeps what is on
+  screen. While the sidebar is closed (a phone, or "Hide filters"), a chip at the top of the map says the same,
+  with its own "Back", centered right of the zoom control; a name too long for it ends in "...".
+  Entries get one too (`canSoloEntry`: several markers, in a type with other entries, so today normal
+  chests and crystals): only that entry's markers stay, framed (with hide-found: what is left to find there),
+  and the bar names the entry (`solo.entry`, checked against the map's entries on load). Going to another
+  entry of the type, from its name or a link, ends it as a checkbox would. Entry and item lists share a 34 px
+  indent, and an entry's target sits in the column of the expander arrows, so the names lose no width to it.
+
+### 7.4 Popups
+
+Clicking a marker opens a popup with, in order: its title (the marker's own name, else the entry name, else
+the type), type, effective tags (4.3) as labels (`tag.<id>` names, optional `tag.<id>.hint` tooltip), the entry
+description, the marker's note, the howto behind "Show solution", type-specific fields, the "found" button (or
+the layer list on Divine Trials, 4.6), and a footer with the coordinates and "Copy link"
+(`makePopup` in `js/layers.js`). Planned: rewards with icons (4.8) and the `links` (4.4).
+
+- Type-specific fields (`subtype`, `players`, `contract`, `pillar`, `species`, `seed`, `requiresSeed`, `to`)
+  appear automatically when a marker has them. Contracts show their official name (`contract.<code>` UI
+  keys) and a warning that opening the chest uses the contract up.
+- A challenge chest's pillar is a pin tied to the chest by a dashed line while its popup is open; "Show on
+  map" closes the popup and frames both, keeping the pin until the next click on the map.
+- Popups pan into view even at the edges of the map (the pan limits are lifted while a popup is open), open
+  below the zoom buttons, and scroll inside on short screens.
+
+### 7.5 Deep links
+
+Deep link by simple hash, `#<map>/<marker id>` (e.g. `#nuoding/nuoding-0142`; only a bare `#name` works on
+GitHub Pages: no routes or query strings). It opens that marker's popup, showing its type again if it was
+hidden; a link typed into the address bar works too, and an unknown marker id leaves just the map. While a
+popup is open the address bar shows its link (`history.replaceState`, so Back is unaffected). "Copy link"
+copies it without `?lang=`, so whoever opens it gets their own language.
+
+### 7.6 Tunables
+
+- Marker size: `TIER_SIZE`, `MARKER_SHRINK_PER_ZOOM` (0.25) and `MARKER_MIN_SCALE` (0.35; at 0.5 the
+  whole-map view on a phone was a blur of halos) in `js/layers.js`; the glyph and the badges are hidden below
+  `MARKER_TINY_SCALE` (0.65); per-type `size` in `data/categories.json`.
+- Zoom: `wheelPxPerZoomLevel` (120) in `js/app.js` (wheel zoom speed), `tiles.maxZoom` in `data/maps.json`.
 
 ## 8. Data pipeline and validation
 
-Flow: spreadsheet → CSV → `tools/build_data.py` → JSON + validation report (details and column tables in
-`README.md`). Collection flow per entry: complete the entry in-game, use Answer to paste the `[Location N]`
-text into chat, click each location (the character stops on the point), and record entry, entry_index, x, y
-exactly as shown, without rounding. Crystals, special chests and sets follow the same flow. Trials, pillars,
-mechanisms and encounter points are noted separately. In regions not completed yet the Answer only exists
-once the entry is complete.
-
-The game's config tables hold most of this (2026-11-16): positions, entries, names in the three languages,
-trial stars and CP, and the map image's placement, so a region's CSVs start from `tools/game_data.py export`
-and the in-game flow above fills in the rest (README "Game data" lists what). Nuoding's hand-collected CSVs
-matched the tables on all 338 points (280 exactly, 58 within 1 unit). Version only derived data, never the
-game files.
+Flow: game tables and in-game collection → CSV → `tools/build_data.py` → JSON + validation report. The game's
+config tables hold most of the data (positions, entries, names in the three languages, trial stars and CP,
+the map image's placement), so a region's CSVs start from `tools/game_data.py export` and in-game collection
+fills in the rest. Version only derived data, never the game files. How to do each step (the CSV columns, the
+commands, collecting in-game) is in `docs/DATA.md`.
 
 Validations: unique never-reused ids; known types; bounds; per-entry marker count ≤ size; category totals equal
-the game's counters (Nuoding 264, 16, 65, 28, 5, 10); trial stage sum equals the game counter; `oneOf`
-weights = 100, stars 1–5, non-decreasing levels; referenced items exist; links point to existing ids; seeds and
-mechanisms consistent; id stability against the previous build. Implemented today: everything except the
-category totals and stage sum against the game counters (the per-entry `size` covers most of it, and the stage
-sum is printed) and the item/loot checks, which arrive with those features. The full list is in `README.md`.
+the game's counters (`docs/GAME-NOTES.md` "Exploration counts"); trial stage sum equals the game counter;
+`oneOf` weights = 100, stars 1–5, non-decreasing levels; referenced items exist; links point to existing ids;
+seeds and mechanisms consistent; id stability against the previous build. Implemented today: everything except
+the category totals and stage sum against the game counters (the per-entry `size` covers most of it, and the
+stage sum is printed) and the item/loot checks, which arrive with those features. The list as implemented is
+in `docs/DATA.md` "Checks".
 
 ## 9. Tiles and icons
 
@@ -397,14 +466,16 @@ square, at most 64 px) and referenced from `categories.json` so they can be swap
 A type that shares a sprite may get a tinted copy instead (`TINTS`: the respawned chest is the chest in
 purple, chosen with the owner over a corner badge, which disappears at the whole-map view).
 Chosen with the owner in a preview against other styles (sprite in a disc, mixed):
+
 - the game's map-legend family (white drawing, dark outline, turquoise detail), alone with a dark outline;
   chests use the game's own player chest marker, which players already use to mark chests;
 - the game does not show chests, crystals, encounters or books on its map; those use the sprite the game
   ties to them elsewhere (crystal: the Purple Demon Eye indicator; encounter: the icon over the next NPC);
-- size by importance to the player, not rarity (tiers in README): what is hunted for is big and glows in its
+- size by importance to the player, not rarity (tiers in §7.2): what is hunted for is big and glows in its
   category color; chests and what the game's minimap already shows are small, without glow (the thin
   teleport and scenic spot sprites get a larger box so they weigh about as much as a chest);
 - found: grey, faded, green check; the contract chest swaps to the game's "opened" sprite.
+
 Types without a sprite keep the colored circle with a letter.
 
 ## 10. Hosting and legal
@@ -416,57 +487,16 @@ fansites, with no guarantee: version only what is needed, no raw dumps, remove a
 monetization, analytics or SEO in the MVP.
 
 Licenses: the code is MIT (`LICENSE`); the site's own data and texts are CC BY 4.0 (`docs/LICENSING.md` lists
-what that covers, `LICENSE-CC-BY.txt` is the legal code); the game's assets and official texts are under neither and are listed there as
-excluded. Contributions come in under the same licenses (inbound = outbound, no CLA).
+what that covers, `LICENSE-CC-BY.txt` is the legal code); the game's assets and official texts are under
+neither and are listed there as excluded. Contributions come in under the same licenses (inbound = outbound,
+no CLA).
 
-## 11. Reference data
-
-- Nuoding City Area: Normal Chest 264, Decryption Chest 16, Divine Trial 65 stages (10 pillars), Divine Mind
-  Crystal 28, Encounter 5, Other 10 (6 teleports + 4 viewpoints).
-- Suotuo City Area (from the game tables): 247 (30 of them in no entry) / 12 (2 of them Wolf Thief chests) /
-  51 stages (10 pillars) / 30 / 9 / 12 (8 teleports + 4 viewpoints); exploration value cap 3245.
-- Mixed Area of Xing Dou Forest: 172 / 9 / 12 / 20 / 2 / 14 (8 seeds + 6 teleports, no viewpoints).
-- Planned regions: Nuoding City Area, Suotuo City Area, Xing Dou Great Forest, Tian Dou City Area, Sunset
-  Forest, Mixed Area of Xing Dou Forest, City of Slaughter, Dragon Island. The first seven follow the same
-  category pattern. Each region is fully separate, linked by portals with loading screens.
-- Exploration value, from the game's rules popup (EN "Area Exploration", PT "Exploração da Área", ZH 区域探索;
-  the points are EN "exploration points" / "exploration value", PT "valor de exploração", ZH 探索值). The
-  popup's own wording for each item is in brackets; "essences" are the Divine Mind Crystals and "scenic spots"
-  the viewpoints:
-
-  | Item | Points | EN | PT | ZH |
-  |---|---|---|---|---|
-  | Chest (any) | +5 each | Opening treasure chests | Abrir baús de tesouro | 开启宝箱 |
-  | Teleport point | +35 each | Activating Teleport Points | Ativar Pontos de Teletransporte | 激活传送点 |
-  | Viewpoint | +35 each | Activating scenic spots | Ativar pontos panorâmicos | 激活观景点 |
-  | Divine Mind Crystal | +10 each | Collecting essences | Coletar essências | 收集精粹 |
-  | Divine Trial | +10 per layer | Completing divine trials (each layer counts as 1 trial in multi-layer challenges) | Concluir Provações Divinas (em desafios com várias camadas, cada camada conta como 1 provação) | 完成神意试炼（多层挑战时，每层算作1个试炼） |
-  | Encounter | +80 each | Completing encounters | Concluir encontros | 完成奇遇 |
-
-  Seeds are not in the list. Nuoding totals 3080 exactly; the Mixed Area's 240 reconciles only if a seed is
-  +5. Reward milestones: 250/500/1000/1500/2000/2500 (Nuoding), 75/150/300/600/900/1200 (Mixed Area).
-
-## 12. Decisions and open points
+## 11. Decisions and open points
 
 Decided: books in the MVP without completeness; equipment level cut-offs irrelevant; community data via GitHub
-PR when there is interest; Leaflet vendored, no CDN or framework; the exploration bar shows the game's exploration
-value in points, with the map's reward milestones (§11); trial progress is a user-entered integer; a trial stage is called a "layer" on the site (4.6).
+PR when there is interest; Leaflet vendored, no CDN or framework; the exploration bar shows the game's
+exploration value in points, with the map's reward milestones; trial progress is a user-entered integer; a
+trial stage is called a "layer" on the site (4.6).
 
-Open: official Chinese texts as source of truth
-(later, non-blocking); Dragon Island positions (in-game collection).
-
-## 13. Implementation status (differences from this spec)
-
-- Done: tiles + calibrated map + readout; pipeline; sidebar with counters and entry lists; popups with found
-  button; progress, hide-found and backup/restore; en/pt/zh with selector; responsive drawer layout; Nuoding
-  fully mapped (339 markers, plus the 150 respawned chests); encounters with several points draw an icon on each point.
-- Divine Trials: pipeline and UI done (4.6): layer list and progress in the popup, badge, counters per layer
-  (65 in Nuoding). The build prints the stage sum but does not check it against the game counter (not stored
-  anywhere yet). Most combat stages have no recommended CP yet. Stage rewards wait for items (4.8).
-- Popup extras done: `note` always shown and `howto` behind "show solution"; effective tags in the popup (not
-  in the sidebar nor filterable yet); contract name and contract-consumed warning; pillar pin and dashed line
-  for `chest_challenge`, with "show on map" for when the popup covers the pillar; deep links and copy-link.
-- Not yet: items/loot/rewards, tags in the sidebar, `links` in the UI, species filter,
-  icons for `seed`/`mechanism`/`arena`, other regions.
-- Backup contains `progress` and `trials` (no settings).
-- Entry order follows the CSV row order, not alphabetical.
+Open: official Chinese texts as source of truth (later, non-blocking); Dragon Island positions (in-game
+collection).

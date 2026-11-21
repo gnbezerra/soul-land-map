@@ -1,7 +1,7 @@
 # Licenses of the data and of third-party material
 
 The code is under the MIT License ([`LICENSE`](../LICENSE)). This file covers everything else in the
-repository.
+repository. **Which document holds what:** README "Documentation".
 
 ## The site's own data and texts: CC BY 4.0
 

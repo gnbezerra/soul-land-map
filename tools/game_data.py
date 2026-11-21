@@ -10,8 +10,8 @@ export   writes data/src/<map>/{markers,entries,marker_texts,stages}.csv from th
          export the CSVs are the owner's, and `compare` is how they are checked against a newer game.
 compare  matches the map's CSVs against the game and prints every difference, plus what it cannot check.
 
-The game files are read in place and never copied into the repo (README "Game data"). The region is found
-by its English name: the scene whose MapName<scene> text equals i18n/en.json "map.<map>".
+The game files are read in place and never copied into the repo (docs/DATA.md "Game data"). The region is
+found by its English name: the scene whose MapName<scene> text equals i18n/en.json "map.<map>".
 
 Where things come from (tables in the game's config folder, read by game_tables.py):
     scene_explore          every object the exploration counters count: type, NPC, entry (NoteId)

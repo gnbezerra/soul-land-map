@@ -1,6 +1,6 @@
 """Read the game's config tables (the .xc files of the installed client).
 
-The game keeps its data tables in a format of its own, reverse-engineered here (see README "Game data"):
+The game keeps its data tables in a format of its own, reverse-engineered here (see docs/DATA.md "Game data"):
 
     'LRGB', then six big-endian u32: column count, row count + 3, three unknown, data size
     column count x 3 header values: description (Chinese), type name, column name
