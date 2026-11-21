@@ -43,13 +43,13 @@ These are today's choices, not bans. Each one is worth revisiting when its trigg
 change (see "Adding complexity").
 
 | Decision | Why | Revisit when |
-|---|---|---|
+| --- | --- | --- |
 | Plain HTML and JS ES modules, no framework, no bundler | ~1k lines of UI; nothing a framework would remove | UI state gets hard to keep consistent by hand, or the site grows many views |
 | Third-party code is vendored (`vendor/leaflet`), no CDN | no third-party requests, reproducible, survives CDN outages | a dependency is impractical to vendor |
-| No `package.json`; Node is a dev tool only (`node --test`, the browser test) | nothing needs npm packages yet | a tool worth having needs them (linter, formatter, bundler) |
+| `package.json` holds dev tools only (today the Markdown linter), pinned by `package-lock.json`; the site has no npm dependency, and Node stays a dev tool | the linter pays for itself; nothing else needs npm | a runtime dependency or a bundler is proposed, or the dev tools get many or slow |
 | Static site, no backend or database; progress lives in the browser | nothing needs accounts or shared state | cross-device sync, user accounts, in-site community contributions |
 | Generated data and tiles are committed; CI deploys the repo as is to Pages | the owner previews the build locally anyway; the diffs are reviewable | repo size or build time hurts, or building the data in CI becomes simpler than committing it |
-| Checks run locally and in CI on every push and pull request; deploy only after they pass; GitHub's own actions only | every push deploys, and the CSVs can be edited without an agent | the checks get slow (over ~5 min) or need secrets or external services |
+| Checks run locally and in CI on every push and pull request; deploy only after they pass; GitHub's own actions only | every push deploys, and the CSVs can be edited without an agent; the npm registry, for `npm ci`, is the one download | the checks get slow (over ~5 min) or need secrets or external services |
 
 ## Adding complexity
 
@@ -84,6 +84,7 @@ So:
   by hand or say they were not checked.
 - `python tools/build_data.py <map> --check` for each map; the expected warnings are listed in ROADMAP
   "Known gaps".
+- `npm run lint:md` (after `npm ci` once): the Markdown lint, rules in `.markdownlint-cli2.jsonc`.
 - CI runs the same list, plus a check that the committed JSON matches the CSVs.
 - Update the docs when behavior or the project state changes: the one that holds that fact, per README
   "Documentation".
