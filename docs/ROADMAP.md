@@ -43,6 +43,8 @@ checks pass (README "CI and deploy").
 - Progress and settings in localStorage, with backup export and import (SPEC §6).
 - The published version under the sidebar's disclaimer: the day the data last changed and the commit (SPEC §7.1),
   since 2026-11-21.
+- "Report a problem" above the sidebar's disclaimer, a new GitHub issue filled in with the open marker and the
+  version (SPEC §7.1), since 2026-11-21.
 - i18n: en/pt/zh UI with a language selector (SPEC §5).
 
 **Tests.** The checks in README "Checks" run on the owner's machine and in CI. The browser test drives

@@ -1103,6 +1103,49 @@ try {
     }
   });
 
+  await check("the sidebar foot links to a new issue, filled in with the page as it is when used", async () => {
+    const sha = "565548f7283584911b7f759afe28b12153cd0b5e";
+    const reportHref = `document.querySelector(".report-line a").href`;
+    const body = async () => new URL(await ev(reportHref)).searchParams.get("body");
+    versionJson = JSON.stringify({ commit: sha, dataDate: "2026-11-21" });
+    try {
+      for (const lang of ["en", "pt", "zh"]) {
+        const strings = { ...json("i18n/en.json"), ...json(`i18n/${lang}.json`) };
+        await load(`?lang=${lang}`);
+        await until(`document.querySelector(".version-line")`, `the version line (${lang})`);
+        equal(await ev(`document.querySelector(".report-line").textContent`),
+          strings["ui.reportLine"].replace("{link}", strings["ui.report"]), `report line (${lang})`);
+        // Above the disclaimer, so it is read before the legal text.
+        equal(await ev(`document.querySelector(".report-line").nextElementSibling.className`), "disclaimer",
+          `placed above the disclaimer (${lang})`);
+        const url = new URL(await ev(reportHref));
+        equal(`${url.origin}${url.pathname}`, "https://github.com/gnbezerra/soul-land-map/issues/new", `issue form (${lang})`);
+        equal(await ev(`document.querySelector(".report-line a").target`), "_blank", `new tab (${lang})`);
+        const text = await body();
+        for (const line of [`**${strings["ui.reportWhat"]}**`, `**${strings["ui.reportScreenshot"]}**`,
+          "Version: 565548f (data 2026-11-21)", `Language: ${lang}`]) {
+          if (!text.split("\n").includes(line)) throw new Error(`body (${lang}) lacks "${line}":\n${text}`);
+        }
+      }
+      // The marker opened after the sidebar was drawn is in the body once the link is pressed (not clicked:
+      // that would open a tab).
+      await load(`?lang=en#${MAP}/${chest.id}`);
+      await until(`${POPUP}?.querySelector("strong")`, "the linked popup");
+      await closePopup();
+      await openIcon(ICONS, 5);
+      const opened = await hash();
+      await ev(`document.querySelector(".report-line a").dispatchEvent(new PointerEvent("pointerdown", { bubbles: true }))`);
+      if (!(await body()).split("\n").includes(`Page: ${BASE}${opened}`)) {
+        throw new Error(`body lacks the open marker ${opened}:\n${await body()}`);
+      }
+    } finally {
+      versionJson = null;
+    }
+    // Locally there is no version: the body leaves that line out.
+    await load("?lang=en");
+    if (/^Version:/m.test(await body())) throw new Error(`a local body names a version:\n${await body()}`);
+  });
+
   await check("no console errors or failed requests", async () => {
     // favicon and every file the site asked for loaded; nothing was logged as an error or warning
     if (pageErrors.length) throw new Error([...new Set(pageErrors)].join("\n"));

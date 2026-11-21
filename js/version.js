@@ -7,7 +7,7 @@
 // The date is the data's, not the deploy's: every push deploys, and a docs-only push must not look like
 // a data update to players.
 
-const REPO = "https://github.com/gnbezerra/soul-land-map";
+export const REPO = "https://github.com/gnbezerra/soul-land-map";
 
 // version.json -> { commit, short, url, dataDate } or null when there is nothing to show (the committed
 // placeholder, a missing file, or anything malformed). A bad date alone drops the date, not the commit.

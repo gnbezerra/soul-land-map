@@ -901,12 +901,26 @@ body:not(.sidebar-hidden) .solo-chip-lane {
   color: var(--accent);
 }
 
-/* Footnote: a rule inset to the text margins, so it reads as a note rather than a new section.
-   #7f8fa3 on the panel is 5.25:1 (WCAG AA), one step below the hints' --muted. */
-.disclaimer {
+/* The foot of the sidebar: "Report a problem" (js/report.js), the disclaimer, the published version.
+   The rule above it is inset to the text margins, so it reads as a note rather than a new section.
+   The report line is one step brighter (--muted, like the hints) and its link is in the accent, so it is
+   found before the legal text. */
+.report-line {
   margin: 16px 10px 8px;
   padding-top: 10px;
   border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.report-line a {
+  color: var(--accent);
+}
+
+/* #7f8fa3 on the panel is 5.25:1 (WCAG AA), one step below the hints' --muted. */
+.disclaimer {
+  margin: 0 10px 8px;
   color: #7f8fa3;
   font-size: 11px;
   line-height: 1.45;

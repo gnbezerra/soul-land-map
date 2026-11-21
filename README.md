@@ -13,9 +13,11 @@ Open <https://gnbezerra.github.io/soul-land-map/> and pick a region in the top b
 - Your progress is saved in this browser only. Another browser or device, or clearing the site's data,
   starts empty: use "Export" in the sidebar to save a backup file, and "Import" to restore it.
 
-Found a mistake (a marker in the wrong place, a missing chest, a wrong name or translation)?
-[Open an issue](https://github.com/gnbezerra/soul-land-map/issues/new) (needs a free GitHub account) with
-the marker's link ("Copy link" in its popup), what is wrong, and a game screenshot if you have one.
+Found a mistake (a marker in the wrong place, a missing chest, a wrong name or translation)? Open the marker's
+popup, then use "Report a problem" at the foot of the sidebar (needs a free GitHub account): it opens a new
+issue that already names the marker and the site's version. Add what is wrong, and a game screenshot if you
+have one. Or [open an issue](https://github.com/gnbezerra/soul-land-map/issues/new) directly, with the
+marker's link ("Copy link" in its popup).
 
 ## Documentation
 

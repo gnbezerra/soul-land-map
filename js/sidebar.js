@@ -4,6 +4,7 @@ import { milestoneMarks, milestoneStatus } from "./exploration.js";
 import { canSoloEntry, isSolo, showAllTypeIds, unlockHints } from "./filters.js";
 import { hasItemList, typeItems } from "./items.js";
 import { formatDataDate } from "./version.js";
+import { reportUrl } from "./report.js";
 
 // Renders the filter sidebar: one row per game category (group), nested rows for its
 // types when it has several, and an optional expandable list: of exploration entries (chest sets,
@@ -18,6 +19,7 @@ import { formatDataDate } from "./version.js";
 // `chipHost`: where the "only this" chip goes (the map), shown by CSS only while the sidebar is closed.
 // `milestones`: the map's exploration reward milestones (data/maps.json), drawn on the exploration bar.
 // `version`: the published version (js/version.js parseVersion), a line under the disclaimer, or null.
+// It also goes into the body of the "Report a problem" issue (js/report.js).
 // Call refresh() after visibility changes and refreshCounts() after progress changes.
 export function createSidebar({
   container, chipHost, model, markers = [], milestones = [], version = null, i18n, isVisible, wasShown = () => false, onToggle, getSolo = () => null, onSolo,
@@ -245,9 +247,24 @@ export function createSidebar({
         fileInput),
       h("p", { class: "hint" }, t("ui.backupHint")),
       message),
+    reportLine(),
     h("p", { class: "disclaimer" }, t("ui.disclaimer")),
     ...versionLine(),
   );
+
+  // "Found a mistake? Report a problem (needs a free GitHub account)." The issue's body names the page as it
+  // is when the link is used (the open marker is in the hash), so the href is rebuilt then: on a pointer
+  // press (any button, or a touch), on keyboard focus, and on the click itself.
+  function reportLine() {
+    const link = h("a", { target: "_blank", rel: "noopener" }, t("ui.report"));
+    const update = () => {
+      link.href = reportUrl({ pageUrl: location.href, version, lang: i18n.lang, t });
+    };
+    update();
+    for (const type of ["pointerdown", "focus", "click"]) link.addEventListener(type, update);
+    const [before, after = ""] = t("ui.reportLine").split("{link}");
+    return h("p", { class: "report-line" }, before, link, after);
+  }
 
   // "Data updated Nov 21, 2026 · 565548f": the date the map data last changed, and the live commit.
   function versionLine() {
