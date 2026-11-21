@@ -108,9 +108,9 @@ helps players more, and rewards need a lot of data collected in-game.
 - **Switching the language reloads the page**, so the map goes back to the whole-map view (an open marker
   opens again through its deep link). The owner judged it minor (2026-11-15); keeping the view would mean
   saving and restoring it across the reload.
-- **Seeds are in no exploration rule** until their points are confirmed (`docs/GAME-NOTES.md` "Exploration
-  value": the Mixed Area reconciles only if a seed is +5). Then add `seed` to the chests rule, or give it a
-  rule of its own.
+- **Seeds are in no exploration rule** until their points are confirmed: the Mixed Area reconciles only if a
+  seed is +5 (`docs/GAME-NOTES.md` "Exploration value"). Then add `seed` to the chests rule, or give it a rule
+  of its own.
 - **The Divine Trial stage total is not checked** against the game's counter, which is stored nowhere yet; the
   build only prints it (SPEC §8).
 - **Major markers may look soft on 2x screens:** the source sprites are 43–57 px and major markers are drawn at
