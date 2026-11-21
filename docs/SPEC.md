@@ -131,7 +131,7 @@ carry no reward; it comes from the category's default loot.
   are `box_npc.BoxType` 23 (`ActivityTreasureBox`), in `activity_explore_value`, and Type 2 in
   `magic_pupil_npc` (needs the Purple Demon Eye); the trigger and the loot are not in the tables. The game
   groups them as `normal_A`, `normal_B`, `good_A`, `good_B`, `good_C` (50, 50, 21, 21, 8; normal and good
-  are two chest models, the letter only the area). Each group is an entry of the site's own
+  are two chest models; in the tables the letters differ only in position, but the loot differs by letter, 4.8). Each group is an entry of the site's own
   (`respawn-normal-a` and so on, names and descriptions written by the site), because the loot goes by group
   (4.8). 119 stand where a normal chest stood, 31 at new places; the owner checked all 31 in-game
   (2026-11-21). The type starts hidden (`defaultHidden`) and is unlocked by `chest_normal` (`unlockedBy`):
@@ -226,22 +226,47 @@ three points because the cages are nothing else.
 
 ### 4.8 Rewards, items and loot (not implemented yet)
 
-A reward list accepts fixed (`item`, `qty`), independent random (`chance`) and exclusive choice (`oneOf` with
-`weight` summing to 100, e.g. normal-chest Mind Method: 80% 2×R or 20% 1×SR). `loot.json` holds named tables,
-and an entry names the tables of its markers; a marker may override with `loot` (table name) or inline
-`reward`. What the owner saw in-game:
-- normal chests: one table for all, plus a fixed number of blue gems by the chest's look (2 for the common
-  one, 5 for the intermediate, 10 for the most elaborate), so a base table and one gem table per look; which
-  entry (or marker) has which look is still to be collected;
-- respawned chests (4.5): one table per game group, each with fixed items and random ones (a sample of 5
-  chests per group, 2026-11-21: e.g. every `good_A` gave 6 Blue Crystal, 20 Fine Gold Fragments, 20 Hidden
-  Weapon Polishing Stone, 500000 Silver Soul Coin and a Summon Voucher, plus 5 to 10 Orange Soul Essence
-  Shard; `good_C` varies the most);
-- decryption chests: each its own table, even when two give the same. One fixed normal-chest reward is a random class equipment that scales with player level
-(`{ item: class_equipment, qty: 1, scales: player_level }`); the MVP popup only says it varies. Level cut-offs
-are unknown and low priority. `items.json` is the catalog (icon per item), names in `i18n/items.<lang>.json`
-(~10–20 distinct items in Divine Trials plus crystals, contracts, Mind Methods). Rewards are considered
-immutable in the game; if they change, edit a `loot.json` entry.
+A reward list accepts fixed (`item`, `qty`), a quantity range (`qty: [min, max]`, shown as "5–10"),
+independent random (`chance`) and exclusive choice (`oneOf` with `weight` summing to 100, e.g. normal-chest
+Mind Method: 80% 2×R or 20% 1×SR); a `oneOf` option may be a whole list. Two lines of the same item stay two
+lines (a base and a bonus), never summed. `loot.json` holds named tables, and an entry names the tables of
+its markers; a marker may override with `loot` (table name) or inline `reward`. One fixed normal-chest reward
+is a random class equipment that scales with player level (`{ item: class_equipment, qty: 1, scales:
+player_level }`); the MVP popup only says it varies. `items.json` is the catalog (icon per item), names in
+`i18n/items.<lang>.json` (~10–20 distinct items in Divine Trials plus crystals, contracts, Mind Methods).
+Rewards are considered immutable in the game; if they change, edit a `loot.json` entry.
+
+What the owner saw in-game:
+- Normal chests: one table for all, plus a fixed number of blue gems by the chest's look (2 for the common
+  one, 5 for the intermediate, 10 for the most elaborate): a base table and one gem table per look.
+- Decryption chests: each its own table, even when two give the same.
+- Respawned chests (4.5): one table per game group. A sample of 5 chests per group (2026-11-21; the ranges
+  are what came out, not the game's limits):
+
+  | Group | The same in all 5 | Varies |
+  |---|---|---|
+  | `good_A` | 6 Blue Crystal, 20 Fine Gold Fragments, 20 Hidden Weapon Polishing Stone, 500000 Silver Soul Coin, 1 Summon Voucher | Orange Soul Essence Shard 5–10 |
+  | `good_B` | 6 Blue Crystal, 1 Recruitment Crystal | Fading Soul Essence 3–4, Gold Obsidian Shard 6–10, Life Essence 10–14, Soul Crystal Shards 3–5 |
+  | `normal_A` | 3 Blue Crystal, 100000 Silver Soul Coin | Earth Breath 2–4, Life Essence 2–3, White Stone Residue 10 or 14, one item (Electric Crystal or Bursting Fungus Umbrella seen) |
+  | `normal_B` | 3 Blue Crystal, 100000 Silver Soul Coin | Earth Breath 3–5, Footprint Dust 10–17, Shimmering Crystal 1–2, one Spirit Crystal (Stalwart, Shackles, Overlord, Swift Wind seen) |
+  | `good_C` | 100000 Silver Soul Coin | everything else, see below |
+
+  Each `good_C` chest was a `normal_A` or a `normal_B` chest without its 3 Blue Crystal (both kinds in the
+  same area, so it looks like a draw, not the place), plus one big bonus: 60 Blue Crystal, 10 Recruitment
+  Crystal, 60 Life Essence (next to the base's 3, checked by the owner), 30 Soul Crystal Shards or 30
+  Fading Soul Essence. One of them had a Hallucinogenic Fungus Umbrella, so the `normal_A` pick has at least
+  three options.
+
+**Open, to settle when loot is implemented** (more chests opened in-game, or the tables if the loot turns out
+to be there after all):
+- which normal chest (entry or marker) has which gem look, and `nuoding-0105`'s;
+- whether "Blue Crystal" is the blue gem of the normal chests (3 in the respawned normal ones, 6 in
+  `good_A`/`good_B`, fits a fixed amount per kind);
+- whether `normal_A` and `normal_B` differ by the letter or by the area (all 5 `normal_A` sampled were in
+  the north, all 5 `normal_B` in the south-east);
+- the full option lists of each pick (the `normal_A` item, the Spirit Crystal, the `good_C` base and bonus), the real
+  ranges and the weights; the site may show the options without the odds until they are known;
+- the class equipment's level cut-offs (low priority).
 
 ### 4.9 Dragon Island
 
