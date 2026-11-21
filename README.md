@@ -94,6 +94,8 @@ data and fails when the result differs from the committed JSON. On `main`, and o
 it publishes the repo as is to GitHub Pages, so a push that fails the checks leaves the previous site up.
 
 - Pages must be set to deploy from Actions: Settings → Pages → Source: "GitHub Actions".
+- The deploy writes `version.json` (the published commit and the day the data last changed) into the published
+  copy, for the line under the sidebar's disclaimer (SPEC §7.1). The repo keeps a placeholder with null fields.
 - When the browser test fails, its screenshots are attached to the run as the `browser-shots` artifact.
 - To redeploy without a new commit, run the workflow by hand on `main`: Actions → CI → Run workflow.
 

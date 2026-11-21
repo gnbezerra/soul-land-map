@@ -85,9 +85,17 @@ const TYPES = { ".html": "text/html", ".js": "text/javascript", ".mjs": "text/ja
 // Every request, so a wait that times out can tell whether the server ever saw the file it waited for.
 const served = []; // { path, at (ms since start), ms }
 const started = Date.now();
+// What /version.json serves when set (the deployed site's file, written by CI); otherwise the committed
+// placeholder. Never cached, so a check can change it between two loads.
+let versionJson = null;
 const server = createServer((req, res) => {
   const t0 = Date.now();
   const pathname = new URL(req.url, "http://x").pathname;
+  if (pathname === "/version.json" && versionJson) {
+    res.writeHead(200, { "Content-Type": "application/json", "Cache-Control": "no-store" }).end(versionJson);
+    served.push({ path: pathname, at: t0 - started, ms: Date.now() - t0 });
+    return;
+  }
   const path = normalize(join(ROOT, decodeURIComponent(pathname)));
   const file = path.endsWith(sep) ? join(path, "index.html") : path;
   if (!file.startsWith(ROOT) || !existsSync(file)) {
@@ -1071,6 +1079,29 @@ try {
       equal(await ev(`document.querySelectorAll(".dot-ic .dot-badge").length`), badgedHere, "badges in the sidebar legend");
     });
   }
+
+  await check("the sidebar foot shows the published version, and nothing locally", async () => {
+    // Locally version.json is the committed placeholder (null fields): no line, and no 404 either.
+    await load("?lang=en");
+    equal(await ev(`document.querySelector(".version-line")`), null, "no version line with the placeholder");
+    const sha = "565548f7283584911b7f759afe28b12153cd0b5e";
+    versionJson = JSON.stringify({ commit: sha, dataDate: "2026-11-21" });
+    try {
+      for (const [lang, text] of [["en", "Data updated Nov 21, 2026 · 565548f"],
+        ["pt", "Dados atualizados em 21 de nov. de 2026 · 565548f"], ["zh", "数据更新于 2026年11月21日 · 565548f"]]) {
+        await load(`?lang=${lang}`);
+        await until(`document.querySelector(".version-line")`, `the version line (${lang})`);
+        equal(await ev(`document.querySelector(".version-line").textContent`), text, `version line (${lang})`);
+        equal(await ev(`document.querySelector(".version-line a").href`),
+          `https://github.com/gnbezerra/soul-land-map/commit/${sha}`, `commit link (${lang})`);
+        // Right under the disclaimer, at the foot of the sidebar.
+        equal(await ev(`document.querySelector(".version-line").previousElementSibling.className`), "disclaimer",
+          `placed under the disclaimer (${lang})`);
+      }
+    } finally {
+      versionJson = null;
+    }
+  });
 
   await check("no console errors or failed requests", async () => {
     // favicon and every file the site asked for loaded; nothing was logged as an error or warning

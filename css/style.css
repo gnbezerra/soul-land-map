@@ -917,6 +917,27 @@ body:not(.sidebar-hidden) .solo-chip-lane {
   font-size: 12px;
 }
 
+/* The published version (js/version.js), one footnote line right under the disclaimer. */
+.version-line {
+  margin: -2px 10px 8px;
+  color: #7f8fa3;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+:lang(zh) .version-line {
+  font-size: 12px;
+}
+
+.version-line a {
+  color: inherit;
+  text-decoration: underline dotted;
+}
+
+.version-line a:hover {
+  color: var(--muted);
+}
+
 .message.error {
   color: #ff8a8a;
 }

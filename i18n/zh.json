@@ -37,6 +37,8 @@
   "ui.import": "导入",
   "ui.backupHint": "进度仅保存在此浏览器中。导出文件可保留副本，或迁移到其他设备。",
   "ui.disclaimer": "本站为《斗罗大陆：史莱克学院》（Soul Land: New World）的非官方玩家自制互动地图，与游戏开发商及发行商无任何关联，亦未获得其认可或赞助。所有游戏素材、名称及商标均归其各自所有者所有。",
+  "ui.dataUpdated": "数据更新于 {date}",
+  "ui.versionCommit": "当前发布的版本（其在 GitHub 上的提交）",
   "ui.exported": "已导出 {n} 个已找到的标记。",
   "ui.importConfirm": "用备份替换当前进度？本地图当前已找到 {current} 个，备份中为 {incoming} 个。",
   "ui.imported": "已导入：本地图已找到 {n} 个标记。",

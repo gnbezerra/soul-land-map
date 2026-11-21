@@ -108,9 +108,21 @@ jobs:
       group: pages
       cancel-in-progress: false
     steps:
+      # The full history, so the next step can find the last commit that changed the data.
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
-      # The repo is published as is, like the branch deploy before (.git and .github are left out).
+      # The version shown under the sidebar's disclaimer (js/version.js): the deployed commit, and the day
+      # the map data last changed (a docs-only push must not look like a data update to players). Written
+      # over the committed placeholder in the published copy only; the repo keeps the placeholder.
+      - name: Write version.json
+        run: |
+          data_date=$(git log -1 --format=%cs -- data/)
+          printf '{ "commit": "%s", "dataDate": "%s" }\n' "$GITHUB_SHA" "$data_date" > version.json
+          cat version.json
+
+      # The repo is published as is, apart from version.json (.git and .github are left out).
       - uses: actions/upload-pages-artifact@v5
         with:
           path: .

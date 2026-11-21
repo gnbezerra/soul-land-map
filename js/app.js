@@ -10,6 +10,7 @@ import { selectableMaps } from "./maps.js";
 import { stageCounts, stagesDone, setTrialProgress, migrateFoundTrials } from "./trials.js";
 import { createLayers } from "./layers.js";
 import { createSidebar } from "./sidebar.js";
+import { parseVersion } from "./version.js";
 import { toggleSolo, endSolo, cleanSolo, applyDefaultHidden, recordShown } from "./filters.js";
 
 const settings = loadSettings();
@@ -24,11 +25,13 @@ const languages = await loadLanguages(fetchJson);
 const lang = detectLang(languages, {
   query: location.search, saved: settings.lang, browser: navigator.languages ?? [navigator.language],
 });
-const [categories, entries, markers, i18n] = await Promise.all([
+const [categories, entries, markers, i18n, version] = await Promise.all([
   fetchJson("data/categories.json"),
   fetchJson(`data/entries/${mapId}.json`, {}),
   fetchJson(`data/markers/${mapId}.json`, []),
   loadI18n(lang, mapId, fetchJson),
+  // The published version (js/version.js); never worth failing the page over.
+  fetchJson("version.json", null).then(parseVersion, () => null),
 ]);
 const t = i18n.t;
 
@@ -361,6 +364,7 @@ if (!calibrated) {
     chipHost: document.getElementById("map-wrap"),
     model,
     milestones: cfg.exploration?.milestones ?? [],
+    version,
     i18n,
     markers,
     isVisible: (type) => !hidden.has(type),

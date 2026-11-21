@@ -3,6 +3,7 @@ import { formatCount, isUnlisted, splitUnlisted } from "./model.js";
 import { milestoneMarks, milestoneStatus } from "./exploration.js";
 import { canSoloEntry, isSolo, showAllTypeIds, unlockHints } from "./filters.js";
 import { hasItemList, typeItems } from "./items.js";
+import { formatDataDate } from "./version.js";
 
 // Renders the filter sidebar: one row per game category (group), nested rows for its
 // types when it has several, and an optional expandable list: of exploration entries (chest sets,
@@ -16,9 +17,10 @@ import { hasItemList, typeItems } from "./items.js";
 //   onExport()                           onImport(file)
 // `chipHost`: where the "only this" chip goes (the map), shown by CSS only while the sidebar is closed.
 // `milestones`: the map's exploration reward milestones (data/maps.json), drawn on the exploration bar.
+// `version`: the published version (js/version.js parseVersion), a line under the disclaimer, or null.
 // Call refresh() after visibility changes and refreshCounts() after progress changes.
 export function createSidebar({
-  container, chipHost, model, markers = [], milestones = [], i18n, isVisible, wasShown = () => false, onToggle, getSolo = () => null, onSolo,
+  container, chipHost, model, markers = [], milestones = [], version = null, i18n, isVisible, wasShown = () => false, onToggle, getSolo = () => null, onSolo,
   onSoloBack, isHideFound, onHideFound, onFocusEntry, onFocusMarker, itemProgress, onExport, onImport,
 }) {
   const typeInputs = new Map();
@@ -244,7 +246,19 @@ export function createSidebar({
       h("p", { class: "hint" }, t("ui.backupHint")),
       message),
     h("p", { class: "disclaimer" }, t("ui.disclaimer")),
+    ...versionLine(),
   );
+
+  // "Data updated Nov 21, 2026 · 565548f": the date the map data last changed, and the live commit.
+  function versionLine() {
+    if (!version) return [];
+    const commit = h("a", { href: version.url, target: "_blank", rel: "noopener", title: t("ui.versionCommit") },
+      version.short);
+    const date = version.dataDate
+      ? [i18n.tf("ui.dataUpdated", { date: formatDataDate(version.dataDate, i18n.lang) }), " · "]
+      : [];
+    return [h("p", { class: "version-line" }, ...date, commit)];
+  }
 
   function refreshCounts() {
     for (const { el, read } of counters) el.textContent = formatCount(...read());
