@@ -10,3 +10,6 @@ CLAUDE.local.md
 
 # Python bytecode (pipeline tests)
 __pycache__/
+
+# npm dev tools (package.json: the Markdown linter)
+node_modules/

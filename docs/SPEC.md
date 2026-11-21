@@ -41,6 +41,7 @@ index.html
 README.md, CLAUDE.md   the documentation map, the rules for working in the repo
 LICENSE, LICENSE-CC-BY.txt   MIT (code) and CC BY 4.0 (the site's own data); scope in docs/LICENSING.md
 favicon.svg, favicon.ico, apple-touch-icon.png   site icon (the .ico and .png from tools/make_favicon.py)
+package.json, package-lock.json, .markdownlint-cli2.jsonc   the Markdown linter, the only npm package (dev only)
 js/            ES modules: app, layers, sheet, sidebar, util (UI); model, trials, exploration, filters, items, popup, links, maps, storage, i18n, geo (pure)
 vendor/leaflet Leaflet 1.9.4 (committed, with its LICENSE)
 css/
@@ -101,7 +102,7 @@ Decryption Chest (`chest_coop`, `chest_challenge`, `chest_contract`, `chest_boss
 - `types`: per marker type, how it is drawn and listed:
 
 | Field | Required | Meaning |
-|---|---|---|
+| --- | --- | --- |
 | `color` | yes | the category color: glow, pillar line, and the dot of a type with no icon |
 | `glyph` | yes | letter in the colored dot used when a type has no icon (`seed`, `mechanism`, `arena` today) |
 | `icon` | for types with a sprite | path in `icons/`; the sidebar shows it too (§9) |
@@ -209,7 +210,7 @@ clash with the player level. The trial window shows one stage at a time, and the
 reference, not the source of truth (several are poor translations):
 
 | Concept | EN (game) | PT (game) | ZH (game) | Site EN / PT / ZH |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | Subtype, combat | Cycle Challenge | Desafio Cíclico | 循环挑战 | Combat / Combate / 循环挑战 |
 | Subtype, puzzle | Decryption Gameplay | Mecânica de (cut off) | 解密玩法 | Puzzle / Quebra-cabeça / 解密玩法 |
 | Required level | Level Requirement: 29 | Nível Atingir29 | 等级达到29解锁 | Min. level / Nível mín. / 等级要求 |

@@ -38,7 +38,7 @@ each item is in the last three columns; "essences" are the Divine Mind Crystals 
 viewpoints:
 
 | Item | Points | EN | PT | ZH |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | Chest (any) | +5 each | Opening treasure chests | Abrir baús de tesouro | 开启宝箱 |
 | Teleport point | +35 each | Activating Teleport Points | Ativar Pontos de Teletransporte | 激活传送点 |
 | Viewpoint | +35 each | Activating scenic spots | Ativar pontos panorâmicos | 激活观景点 |
@@ -61,7 +61,7 @@ How the site will model loot: SPEC §4.8 (not implemented yet). What the owner s
   ranges are what came out, not the game's limits):
 
   | Group | The same in all 5 | Varies |
-  |---|---|---|
+  | --- | --- | --- |
   | `good_A` | 6 Blue Crystal, 20 Fine Gold Fragments, 20 Hidden Weapon Polishing Stone, 500000 Silver Soul Coin, 1 Summon Voucher | Orange Soul Essence Shard 5–10 |
   | `good_B` | 6 Blue Crystal, 1 Recruitment Crystal | Fading Soul Essence 3–4, Gold Obsidian Shard 6–10, Life Essence 10–14, Soul Crystal Shards 3–5 |
   | `normal_A` | 3 Blue Crystal, 100000 Silver Soul Coin | Earth Breath 2–4, Life Essence 2–3, White Stone Residue 10 or 14, one item (Electric Crystal or Bursting Fungus Umbrella seen) |

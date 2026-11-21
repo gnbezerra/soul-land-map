@@ -24,7 +24,7 @@ piece of information goes. Read them in this order: `CLAUDE.md` first (AI agents
 the others from top to bottom. `docs/LICENSING.md` is a reference, read when needed.
 
 | Document | Answers | Put there |
-|---|---|---|
+| --- | --- | --- |
 | [`CLAUDE.md`](CLAUDE.md) | How do I work in this repo? | Rules: invariants, current decisions with the trigger to revisit each, the checks before pushing. Changes need the owner's explicit approval. |
 | `README.md` (this file) | What is this, how do I use the site, how do I run and test it? | The player guide, setup, test and CI commands, and this map. |
 | [`docs/DATA.md`](docs/DATA.md) | How do I add or fix data, or add a region? | Procedures for the data and the assets: CSV columns, the build and its checks, the game tables, collecting in-game, calibration, adding a region, tiles and icons. |
@@ -44,24 +44,44 @@ When something changes, update the one place that holds it.
 
 ## Running it
 
-Tiles and Leaflet 1.9.4 are committed, so a fresh checkout runs as is:
-`python -m http.server 8000` and open <http://localhost:8000>.
+You need Python 3 and a browser. The tiles and Leaflet are committed, so a fresh checkout runs as is:
 
-Unit tests (Node's built-in runner, nothing to install): `node --test tests/`.
-Pipeline tests (Python's `unittest`, made-up CSVs in a temporary directory; about 10 s):
-`python -m unittest discover -s tests`.
-Browser test (needs Chrome; about 15 s): `node tests/browser.mjs`, with `--shots <dir>` to save screenshots
-and `CHROME=<path>` if Chrome is not in a standard place.
+```text
+python -m http.server 8000
+```
 
-CI and deploy: `.github/workflows/ci.yml` runs on every push and pull request. It validates every map in
-`data/maps.json`, rebuilds the data and fails if the result differs from the committed JSON, then runs the
-pipeline, unit and browser tests. On `main`, and only when all of that passes, it publishes the repo as is to
-GitHub Pages (Settings → Pages → Source must be "GitHub Actions"), so a push that fails the checks leaves the
-previous site up. When a browser test fails, its screenshots are attached to the run as the `browser-shots`
-artifact. To redeploy without a new commit, run the workflow by hand (Actions → CI → Run workflow) on `main`.
+Then open <http://localhost:8000>.
 
-Leaflet lives in `vendor/leaflet` (`leaflet.js`, `leaflet.css`, `LICENSE`; its PNG images are
-not needed for now). To update it, download the same files for the new version from
+### Checks
+
+Run them all before pushing (`CLAUDE.md` "Before finishing or pushing"); CI runs the same ones.
+
+| Check | Command | Needs | Time |
+| --- | --- | --- | --- |
+| Unit tests (the pure `js/` modules) | `node --test tests/` | Node | under 1 s |
+| Pipeline tests (`tools/`, on made-up CSVs) | `python -m unittest discover -s tests` | Python | about 10 s |
+| Browser test (the real site in headless Chrome) | `node tests/browser.mjs` | Node, Chrome | about 15 s |
+| Data of each map | `python tools/build_data.py <map> --check` | Python | under 1 s |
+| Markdown lint | `npm run lint:md` (after `npm ci` once) | Node | about 1 s |
+
+The browser test takes `--shots <dir>` to save screenshots, `--only <text>` to run the checks whose name
+contains that text, and `CHROME=<path>` when Chrome is not in a standard place. The lint rules are in
+`.markdownlint-cli2.jsonc`, which the VS Code markdownlint extension reads too.
+
+### CI and deploy
+
+`.github/workflows/ci.yml` runs on every push and pull request. It runs the checks above, and it rebuilds the
+data and fails when the result differs from the committed JSON. On `main`, and only when all of that passes,
+it publishes the repo as is to GitHub Pages, so a push that fails the checks leaves the previous site up.
+
+- Pages must be set to deploy from Actions: Settings → Pages → Source: "GitHub Actions".
+- When the browser test fails, its screenshots are attached to the run as the `browser-shots` artifact.
+- To redeploy without a new commit, run the workflow by hand on `main`: Actions → CI → Run workflow.
+
+### Updating Leaflet
+
+Leaflet lives in `vendor/leaflet`: `leaflet.js`, `leaflet.css` and `LICENSE` (its PNG images are not
+needed). To update it, download the same three files for the new version from
 `https://unpkg.com/leaflet@<version>/dist/` and `https://unpkg.com/leaflet@<version>/LICENSE`.
 
 ## License

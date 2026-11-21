@@ -66,6 +66,14 @@ jobs:
         if: ${{ !cancelled() }}
         run: node --test tests/
 
+      # The linter is the only npm package (package.json, pinned by package-lock.json); the site has none.
+      # Each finding becomes an annotation on its file and line.
+      - name: Markdown lint
+        if: ${{ !cancelled() }}
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm run --silent lint:md 2>&1 | sed -E 's/^([^: ]+):([0-9]+)(:[0-9]+)? error (.*)$/::error file=\1,line=\2::\4/'
+
       - name: Browser test
         if: ${{ !cancelled() }}
         # Each failed check (a "FAIL  <name>" line and its message on the next one) becomes an annotation,

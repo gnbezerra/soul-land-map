@@ -1,0 +1,11 @@
+{
+  "name": "soul-land-map",
+  "private": true,
+  "description": "Development tools only: the site itself has no npm dependencies (CLAUDE.md, \"Current decisions\").",
+  "scripts": {
+    "lint:md": "markdownlint-cli2"
+  },
+  "devDependencies": {
+    "markdownlint-cli2": "0.24.0"
+  }
+}

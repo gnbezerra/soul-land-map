@@ -45,7 +45,7 @@ uses it, and column order does not matter.
 ### `markers.csv`
 
 | Column | Required | Meaning |
-|---|---|---|
+| --- | --- | --- |
 | `id` | always | `<map>-0001`: unique, permanent, never reused |
 | `type` | always | `chest_normal`, `chest_coop`, `chest_challenge`, `chest_contract`, `chest_boss`, `chest_respawn`, `crystal`, `divine_trial`, `encounter`, `teleport`, `viewpoint`, `seed`, `mechanism`, `portal`, `book`, `boss`, `arena` |
 | `x`, `y` | always | game coordinates, as shown in the game UI |
@@ -69,7 +69,7 @@ repeat an id.
 ### `entries.csv`
 
 | Column | Required | Meaning |
-|---|---|---|
+| --- | --- | --- |
 | `id` | yes | lowercase slug, e.g. `nuoding-academy-1`; unique within a map, not across maps |
 | `type` | yes | the marker type of its members (same vocabulary as `markers.csv`) |
 | `name_en` | yes | name exactly as shown in the game |
@@ -85,7 +85,7 @@ equal to the in-game list.
 Texts that belong to one marker, one row per marker and field (rows may be in any order):
 
 | Column | Required | Meaning |
-|---|---|---|
+| --- | --- | --- |
 | `marker` | yes | marker id |
 | `field` | yes | `name`, `note` or `howto` (see below) |
 | `en` | yes | English text (the fallback for every language) |
@@ -112,7 +112,7 @@ Divine Trials have no entry in the game's list. The pillar itself is a `divine_t
 stages live in `stages.csv`, one row per stage (rows may be in any order):
 
 | Column | Required | Meaning |
-|---|---|---|
+| --- | --- | --- |
 | `trial` | yes | id of a `divine_trial` marker |
 | `stage` | yes | 1, 2, 3... in the order the stages are played, no gaps (3 to 10 stages) |
 | `stars` | yes | difficulty, 1 to 5 |
@@ -179,8 +179,8 @@ English name equals `map.<map>` in `i18n/en.json`.
   calibration. An entry with no position in the tables (most encounters) is matched by its English name.
   Run it after a game update.
 
-Names are written in the site's wording (SPEC §5): no closing period, and `: ` between the parts of a
-Divine Trial's English and Portuguese name where the game sometimes writes ` · `. `compare` applies the
+Names are written in the site's wording (SPEC §5): no closing period, and `": "` between the parts of a
+Divine Trial's English and Portuguese name where the game sometimes writes `" · "`. `compare` applies the
 same rule, so it does not report those.
 
 From the game: markers of every type below, with game coordinates (`round(X + 512)`, `round(Z + 512)` of the
@@ -229,7 +229,7 @@ offsetX = W/2 − scale × centreX     offsetY = W/2 + scale × centreY     scal
 inferred, not read from the game code, and was checked against the points the owner measured in-game:
 
 | Map | Image | Scale (px per game unit) | Offsets | Against the measured points |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | Nuoding | 4096² | ±3.574799 | 424.419577, 3659.14634 | RMS 2.5 px (0.7 game units) over 11 points, a constant 0.65 units in X |
 | Suotuo | 2048² | ±1.645002 | 297.624327, 1751.80611 | RMS 3.1 px (1.9 game units) over 10 points |
 
