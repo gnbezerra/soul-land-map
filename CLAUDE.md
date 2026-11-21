@@ -1,9 +1,10 @@
 # CLAUDE.md
 
 **Soul Land Map** is an unofficial interactive-map fansite for *Soul Land: New World*, live at
-<https://gnbezerra.github.io/soul-land-map/> (GitHub Pages, deployed from `main` by CI). Read `README.md` (running it,
-data pipeline), `docs/SPEC.md` (design) and `docs/ROADMAP.md` (state, next steps, known gaps). This file holds
-the rules; the details live there.
+<https://gnbezerra.github.io/soul-land-map/> (GitHub Pages, deployed from `main` by CI). Read `README.md` (running it),
+`docs/DATA.md` (data pipeline, game data, calibration, adding a region), `docs/SPEC.md` (design and behavior),
+`docs/GAME-NOTES.md` (facts about the game: counts, rules, loot) and `docs/ROADMAP.md` (state, next steps,
+known gaps). This file holds the rules; the details live there.
 
 ## Invariants
 
@@ -84,7 +85,8 @@ So:
 - `python tools/build_data.py <map> --check` for each map; the expected warnings are listed in ROADMAP
   "Known gaps".
 - CI runs the same list, plus a check that the committed JSON matches the CSVs.
-- Update README, SPEC or ROADMAP when behavior or the project state changes.
+- Update the docs when behavior or the project state changes: the one that holds that fact, per README
+  "Documentation".
 - When a "Current decisions" row no longer holds (its trigger happened, or a change you are making would
   contradict it), say so and propose the new text for `CLAUDE.md`. Never edit `CLAUDE.md` or
   `CLAUDE.local.md` without the owner's explicit approval of that specific change: show the proposed text
