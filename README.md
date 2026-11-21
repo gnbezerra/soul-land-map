@@ -354,3 +354,11 @@ task or a mount (Ownerless Objects is one).
 - Entries appear in the order of the rows in `entries.csv`, so keep that order equal to the in-game list.
 - Tunables: `MARKER_SHRINK_PER_ZOOM` / `MARKER_MIN_SCALE` in `js/layers.js` (marker size when zoomed out),
   `wheelPxPerZoomLevel` in `js/app.js` (wheel zoom speed), `tiles.maxZoom` in `data/maps.json`.
+
+## License
+
+- Code: MIT, see [`LICENSE`](LICENSE).
+- The site's own data and texts: CC BY 4.0, see [`LICENSE-DATA.md`](LICENSE-DATA.md) (what it covers) and
+  [`LICENSE-CC-BY-4.0.txt`](LICENSE-CC-BY-4.0.txt) (legal code).
+- The game's material (map tiles, icons, official names and descriptions) belongs to its rights holders and
+  is under neither license. Unofficial fan project, not affiliated with the game's developers or publishers.
