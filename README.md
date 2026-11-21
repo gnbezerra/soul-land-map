@@ -78,7 +78,7 @@ Run them all before pushing (`CLAUDE.md` "Before finishing or pushing"); CI runs
 | Check | Command | Needs | Time |
 | --- | --- | --- | --- |
 | Unit tests (the pure `js/` modules) | `node --test tests/` | Node | under 1 s |
-| Pipeline tests (`tools/`, on made-up CSVs) | `python -m unittest discover -s tests` | Python | about 10 s |
+| Pipeline tests (`tools/`, on made-up CSVs) and the docs' cross-references | `python -m unittest discover -s tests` | Python | about 10 s |
 | Browser test (the real site in headless Chrome) | `node tests/browser.mjs` | Node, Chrome | about 15 s |
 | Data of each map | `python tools/build_data.py <map> --check` | Python | under 1 s |
 | Markdown lint | `npm run lint:md` (after `npm ci` once) | Node | about 1 s |
