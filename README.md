@@ -33,14 +33,33 @@ the others from top to bottom. `docs/LICENSING.md` is a reference, read when nee
 | [`docs/ROADMAP.md`](docs/ROADMAP.md) | Where is the project, and what comes next? | Current state, next steps, what waits on the owner, known gaps, maintenance notes for fragile parts. Dated. |
 | [`docs/LICENSING.md`](docs/LICENSING.md) | What may I reuse, and under which license? | What each license covers and what is excluded. |
 
-Where a piece of information goes, when unsure: a fact about the game → GAME-NOTES; a decision about the site
-→ SPEC; a procedure → DATA (data and assets) or this file (running and testing); a status, a plan or a
-date-bound gap → ROADMAP; a rule for how to work → CLAUDE.md (with the owner's approval). Why one piece of
-code is written the way it is goes in a comment next to that code, not in these documents.
+Where a piece of information goes, when unsure:
 
-Each fact lives in one document, and the others point to it by document and section, for example
-`docs/DATA.md` "Calibration" or SPEC §4.5 (SPEC sections are cited by number, so they are never renumbered).
-When something changes, update the one place that holds it.
+| It is... | It goes in |
+| --- | --- |
+| a fact about the game | GAME-NOTES |
+| a decision about the site, or how a feature works | SPEC |
+| a procedure for the data or the assets | DATA |
+| a procedure for running, testing or deploying | this file |
+| a status, a plan, or a gap with a date | ROADMAP |
+| a rule for how to work in the repo | CLAUDE.md, with the owner's approval |
+| why one piece of code is written the way it is | a comment next to that code |
+
+Each fact lives in one document, and the others point to it by document and section: `docs/DATA.md`
+"Calibration", SPEC §4.5. SPEC sections are cited by number, so they are never renumbered. When something
+changes, update the one place that holds it.
+
+### Writing the docs
+
+- English, as everything in the repo. Wrap prose at about 110 columns; `npm run lint:md` enforces 120 and the
+  rest of the Markdown rules (README "Checks").
+- One idea per sentence. A list for three or more parallel items, a table for fields, options or anything
+  compared along the same columns, numbered steps for a procedure.
+- Say what something is or does first, then why.
+- Quote UI labels exactly as the English UI shows them (`i18n/en.json`): "Mark as found", "Show only this".
+- Use the terms of SPEC §4 (map, marker, type, entry, layer...) with that meaning.
+- Write dates as YYYY-MM-DD, and date what was observed or decided ("checked by the owner on 2026-11-17").
+- Mark what is not built yet as "planned" or "not implemented yet".
 
 ## Running it
 
