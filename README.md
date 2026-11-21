@@ -114,7 +114,7 @@ uses it, and column order does not matter.
 | Column | Required | Meaning |
 |---|---|---|
 | `id` | always | `<map>-0001`: unique, permanent, never reused |
-| `type` | always | `chest_normal`, `chest_coop`, `chest_challenge`, `chest_contract`, `crystal`, `divine_trial`, `encounter`, `teleport`, `viewpoint`, `seed`, `mechanism`, `portal`, `book`, `boss`, `arena` |
+| `type` | always | `chest_normal`, `chest_coop`, `chest_challenge`, `chest_contract`, `chest_boss`, `chest_respawn`, `crystal`, `divine_trial`, `encounter`, `teleport`, `viewpoint`, `seed`, `mechanism`, `portal`, `book`, `boss`, `arena` |
 | `x`, `y` | always | game coordinates, as shown in the game UI |
 | `entry` | for chests, crystals, encounters, teleports, viewpoints and seeds | entry id, or its English name |
 | `entry_index` | optional | number of the `[Location N]` link in the in-game answer |

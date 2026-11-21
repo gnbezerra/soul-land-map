@@ -1,7 +1,7 @@
 # Roadmap and handoff
 
-Read order for a new agent: `README.md` (run it, data pipeline) → `CLAUDE.md` (rules) →
-`docs/SPEC.md` (design) → this file (state and next steps). Last updated: 2026-11-16.
+Read order for a new agent: `CLAUDE.md` (rules) → `README.md` (run it, data pipeline) →
+`docs/SPEC.md` (design) → this file (state and next steps).
 
 ## Current state
 
