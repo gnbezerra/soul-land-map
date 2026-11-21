@@ -72,13 +72,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 
 MARKER_TYPES = {
-    "chest_normal", "chest_coop", "chest_challenge", "chest_contract", "chest_boss", "crystal",
+    "chest_normal", "chest_coop", "chest_challenge", "chest_contract", "chest_boss", "chest_respawn", "crystal",
     "divine_trial", "encounter", "teleport", "viewpoint", "seed", "mechanism",
     "portal", "book", "boss", "arena",
 }
 # Types whose markers belong to an exploration entry (the in-game list).
 ENTRY_TYPES = {
-    "chest_normal", "chest_coop", "chest_challenge", "chest_contract", "chest_boss", "crystal",
+    "chest_normal", "chest_coop", "chest_challenge", "chest_contract", "chest_boss", "chest_respawn", "crystal",
     "encounter", "teleport", "viewpoint", "seed",
 }
 # Extra column -> the only marker types where it may be filled in.

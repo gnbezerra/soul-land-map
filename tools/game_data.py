@@ -18,6 +18,9 @@ Where things come from (tables in the game's config folder, read by game_tables.
     scene_explore_note     the entries (in-game list): name, description, order
     scene_static_npc       NPC positions per scene; game coordinates = round(X + 512), round(Z + 512)
     box_npc, nofight_npc   chest kind (guarded, Purple Demon Eye); names of teleports and viewpoints
+    activity_explore_value the chests that appear once all the normal chests are open (Nuoding only), in
+                           groups such as nd_Newactivitybox_good_B_07; no counter in the game lists them
+    magic_pupil_npc        objects that need the Purple Demon Eye (Type 2)
     discover_controller*   Divine Trials: puzzle or combat, trigger NPC, name, stars and CP per layer
     fortuitousmeet         encounters: name and what triggers them (NPCs, an item, a task...)
     scene_explore_control  exploration value cap and reward milestones
@@ -57,6 +60,10 @@ SEAL_HINT = "玄玉手"
 # grappling hook needed by one chest of an entry, are about where the chest is.
 DERIVED_TAGS = {"guarded", "hidden", *DESC_TAGS.values()}
 TEXT_TYPES = {"divine_trial", "teleport", "viewpoint", "book"}
+# Respawned chests (chest_respawn): activity_explore_value ids end in _<rarity>_<letter>_<number>. The game
+# gives the groups no name, so each group is an entry of the site's own (RESPAWN_TEXTS in export).
+RESPAWN_ID = re.compile(r"_(normal|good)_([A-Z])_(\d+)$")
+RESPAWN_RARITIES = ("normal", "good")
 NUMBER_WORDS = {"one": "1", "two": "2", "three": "3", "four": "4", "five": "5", "six": "6",
                 "i": "1", "ii": "2", "iii": "3", "iv": "4", "v": "5", "vi": "6"}
 MARKER_HEADER = ["id", "type", "entry", "entry_index", "x", "y", "subtype", "players", "contract",
@@ -64,7 +71,7 @@ MARKER_HEADER = ["id", "type", "entry", "entry_index", "x", "y", "subtype", "pla
 ENTRY_HEADER = ["id", "type", "name_en", "size", "tags", "name_pt", "name_zh", "desc_en", "desc_pt", "desc_zh"]
 TYPE_ORDER = ["chest_normal", "chest_coop", "chest_challenge", "chest_contract", "chest_boss", "divine_trial",
               "crystal",
-              "encounter", "teleport", "viewpoint", "book"]
+              "encounter", "teleport", "viewpoint", "book", "chest_respawn"]
 
 
 def game_xy(pos):
@@ -126,6 +133,7 @@ class Region:
         self.skipped = []   # (reason, description) of what export leaves out
         self.entries = {}   # note id -> {"kind", "name", "desc", "order", "count"}
         self._read_explore()
+        self._read_respawn()
         self._read_books()
         control = next((r for r in game.rows("scene_explore_control") if r["Id"] == scene), {})
         self.value_cap = control.get("ExploreValueMax")
@@ -216,6 +224,42 @@ class Region:
                                      f"{cid}: {layers} in scene_explore, {len(stages)} in discover_controller_level"))
             if not npc:
                 self.skipped.append(("no position for the trial's trigger NPC", f"{cid} ({c.get('TriggerNpc')})"))
+
+    def _optional_rows(self, name):
+        try:
+            return self.game.rows(name)
+        except FileNotFoundError:
+            return []
+
+    def _read_respawn(self):
+        """The chests that appear, a single time, after every normal chest of the region is open (SPEC 4.5).
+        Their entries are the site's own (not listed), one per group of the game, keyed by the entry id."""
+        eye = {r["Id"] for r in self._optional_rows("magic_pupil_npc") if r["Type"] == 2}
+        for r in self._optional_rows("activity_explore_value"):
+            if r["SceneId"] != self.scene:
+                continue
+            npc_id = r["ActivityExploreId"]
+            m = RESPAWN_ID.search(npc_id)
+            if not m or m.group(1) not in RESPAWN_RARITIES:
+                self.skipped.append(("respawned chest outside the known groups", npc_id))
+                continue
+            rarity, letter, number = m.group(1), m.group(2), int(m.group(3))
+            key = f"respawn-{rarity}-{letter.lower()}"
+            if key not in self.entries:
+                self.entries[key] = {
+                    "kind": "chest_respawn", "listed": False, "count": 0, "order": None,
+                    "site_order": (RESPAWN_RARITIES.index(rarity), letter), "respawn": (rarity, letter),
+                    "name": {lang: "" for lang in LANGS}, "desc": {lang: "" for lang in LANGS},
+                }
+            self.entries[key]["count"] += 1
+            npc = self.npc.get(npc_id)
+            if npc is None:
+                self.skipped.append(("no position in scene_static_npc", f"{npc_id} (chest_respawn)"))
+                continue
+            item = self._item("chest_respawn", npc_id, game_xy(npc["BornPos"]), note=key, index=number,
+                              height=npc["BornPos"][1])
+            if npc_id in eye:
+                item["tags"].add("purple_demon_eye")
 
     def _entry(self, note_id, note, kind):
         if note_id not in self.entries:
@@ -313,8 +357,30 @@ UNLISTED = {
 }
 
 
+# The site's own entries for the respawned chests (chest_respawn), one per group of the game: "Common Chests A"
+# for nd_Newactivitybox_normal_A_*, "Fine Chests B" for ..._good_B_*. The descriptions say what the game does
+# not: when they appear and that nothing in the game counts them.
+RESPAWN_TEXTS = {
+    "name": {"normal": {"en": "Respawned Common Chests {}", "pt": "Baús Comuns Reaparecidos {}", "zh": "刷新普通宝箱{}"},
+             "good": {"en": "Respawned Fine Chests {}", "pt": "Baús Refinados Reaparecidos {}", "zh": "刷新精良宝箱{}"}},
+    "desc": {"en": "Once every normal chest of the region is open, these chests appear, a single time and "
+                   "invisible: only the Purple Demon Eye shows them. The game counts them nowhere, so mark them here.",
+             "pt": "Depois que todos os baús comuns da região são abertos, estes baús aparecem, uma única vez e "
+                   "invisíveis: só o Olho Demoníaco Púrpura os mostra. O jogo não os conta em lugar nenhum, então "
+                   "marque-os aqui.",
+             "zh": "区域内所有普通宝箱开启后，这些宝箱会出现一次，且为隐形：只有紫极魔瞳能看到。游戏不会统计它们，可在此标记。"},
+}
+
+
+def note_key(note_id):
+    """Sort key for the region's entries: the game's NoteIds, then the site's own (string keys)."""
+    return (1, 0, note_id) if isinstance(note_id, str) else (0, note_id, "")
+
+
 def entry_order(e):
     """Position of an entry in its type's list: the game's order, the unlisted ones last."""
+    if "site_order" in e:
+        return e["site_order"]
     return e.get("order") or 0 if e.get("listed", True) else float("inf")
 
 
@@ -327,12 +393,17 @@ def export(region, map_id, out_dir):
             by_note[item["note"]].append(item)
     for note_id, e in sorted(region.entries.items(), key=lambda kv: (TYPE_ORDER.index(kv[1]["kind"])
                                                                       if kv[1]["kind"] in TYPE_ORDER else 99,
-                                                                      entry_order(kv[1]), kv[0])):
+                                                                      entry_order(kv[1]), note_key(kv[0]))):
         members = by_note.get(note_id, [])
         if not members:
             continue
-        unlisted = not e["listed"] and e["kind"] != "encounter"
-        if unlisted:
+        unlisted = not e["listed"] and e["kind"] not in ("encounter", "chest_respawn")
+        if e.get("respawn"):
+            rarity, letter = e["respawn"]
+            e["name"] = {lang: text.format(letter) for lang, text in RESPAWN_TEXTS["name"][rarity].items()}
+            e["desc"] = RESPAWN_TEXTS["desc"]
+            eid = note_id
+        elif unlisted:
             n = sum(1 for x in region.entries.values() if not x["listed"] and x["kind"] == e["kind"])
             unlisted_n += 1
             suffix = f" {unlisted_n}" if n > 1 else ""
@@ -357,8 +428,8 @@ def export(region, map_id, out_dir):
 
     def order(item):
         e = region.entries.get(item.get("note"), {})
-        return (TYPE_ORDER.index(item["type"]), entry_order(e), item.get("note") or 0, item.get("index") or 0,
-                item["source"])
+        return (TYPE_ORDER.index(item["type"]), entry_order(e), note_key(item.get("note") or 0),
+                item.get("index") or 0, item["source"])
 
     exported = [i for i in region.items if not i.get("skip") and i["points"]]
     exported.sort(key=order)
@@ -411,6 +482,7 @@ def read_csv(path):
 
 # --------------------------------------------------------------------------------------------- compare
 
+# Respawned chests are a family of their own: most stand exactly where a normal chest stood.
 CHESTS = {"chest_normal", "chest_coop", "chest_challenge", "chest_contract"}
 
 
@@ -488,7 +560,7 @@ def compare(region, map_id, src_dir, maps):
                 problems.append(f"{m['id']}: in entry '{csv_name}' in the CSV, '{e['name']['en']}' in the game")
             if m["entry_index"] and item.get("index") and int(m["entry_index"]) != item["index"]:
                 problems.append(f"{m['id']}: entry_index {m['entry_index']} in the CSV, {item['index']} in the game")
-        if m["type"] == "chest_normal":
+        if m["type"] in ("chest_normal", "chest_respawn"):
             have = set(filter(None, m["tags"].split(";"))) | set(filter(None, entries.get(m["entry"], {}).get("tags", "").split(";")))
             # Only this way round: a CSV tag the game does not tell may be about where that one chest is.
             for tag in sorted((item["tags"] - have) & DERIVED_TAGS):
@@ -500,7 +572,7 @@ def compare(region, map_id, src_dir, maps):
     problems = []
     seen = set()
     by_name = {(row["type"], row["name_en"]): eid for eid, row in entries.items()}
-    for note, e in sorted(region.entries.items()):
+    for note, e in sorted(region.entries.items(), key=lambda kv: note_key(kv[0])):
         ids = note_entry.get(note)
         if not ids and (e["kind"], e["name"]["en"]) in by_name:
             # an entry whose objects have no position in the tables (most encounters): match it by name

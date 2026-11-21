@@ -112,6 +112,24 @@ TABLES = {
         npc("tp_1", 700, 700, "ShowNpc"), npc("meet_npc_1", 800, 800, "ShowNpc"),
         npc("meet_npc_2", 810, 790, "ShowNpc"), npc("npc_book_90101", 900, 900, "ShowNpc"),
         npc("box_a", 1, 1, scene=5),
+        # Respawned chests: one where box_a stands, listed out of order to check the numbers give the index.
+        npc("nd_Newactivitybox_normal_A_02", 150, 150, "ActivityTreasureBox"),
+        npc("nd_Newactivitybox_normal_A_01", 100, 200, "ActivityTreasureBox"),
+        npc("nd_Newactivitybox_good_B_01", 250, 250, "ActivityTreasureBox"),
+        npc("nd_Newactivitybox_rare_A_01", 260, 260, "ActivityTreasureBox"),
+    ]),
+    "activity_explore_value": (cols("Id ActivityExploreId:string SceneId ExploreValue"), [
+        {"Id": 1, "ActivityExploreId": "nd_Newactivitybox_normal_A_02", "SceneId": SCENE, "ExploreValue": 1},
+        {"Id": 2, "ActivityExploreId": "nd_Newactivitybox_normal_A_01", "SceneId": SCENE, "ExploreValue": 1},
+        {"Id": 3, "ActivityExploreId": "nd_Newactivitybox_good_B_01", "SceneId": SCENE, "ExploreValue": 1},
+        {"Id": 4, "ActivityExploreId": "nd_Newactivitybox_rare_A_01", "SceneId": SCENE, "ExploreValue": 1},
+        {"Id": 5, "ActivityExploreId": "nd_Newactivitybox_good_B_02", "SceneId": 5, "ExploreValue": 1},
+    ]),
+    "magic_pupil_npc": (cols("Id:string Level Type Guide"), [
+        {"Id": "nd_Newactivitybox_normal_A_01", "Level": 1, "Type": 2, "Guide": 1},
+        {"Id": "nd_Newactivitybox_normal_A_02", "Level": 1, "Type": 2, "Guide": 1},
+        {"Id": "nd_Newactivitybox_good_B_01", "Level": 1, "Type": 2, "Guide": 1},
+        {"Id": "box_a", "Level": 1, "Type": 1, "Guide": 1},
     ]),
     "box_npc": (cols("Id:string BoxType BoxRare"), [
         {"Id": "box_a", "BoxType": 5, "BoxRare": 1}, {"Id": "box_g", "BoxType": 8, "BoxRare": 1},
@@ -284,6 +302,24 @@ class Extraction(unittest.TestCase):
                       self.region.skipped)
         self.assertEqual(self.region.entries[702]["desc"]["en"], "Someone lost coins.")  # from HandBookTips
 
+    def test_respawned_chests_by_group(self):
+        chests = {i["source"]: i for i in self.items("chest_respawn")}
+        self.assertEqual(set(chests), {"nd_Newactivitybox_normal_A_01", "nd_Newactivitybox_normal_A_02",
+                                       "nd_Newactivitybox_good_B_01"})  # this scene only, known groups only
+        a1 = chests["nd_Newactivitybox_normal_A_01"]
+        self.assertEqual((a1["note"], a1["index"], a1["points"], a1["tags"]),
+                         ("respawn-normal-a", 1, [(100, 200)], {"purple_demon_eye"}))
+        self.assertEqual(chests["nd_Newactivitybox_normal_A_02"]["index"], 2)
+        entry = self.region.entries["respawn-normal-a"]
+        self.assertEqual((entry["kind"], entry["listed"], entry["count"]), ("chest_respawn", False, 2))
+        self.assertIn(("respawned chest outside the known groups", "nd_Newactivitybox_rare_A_01"), self.region.skipped)
+
+    def test_a_game_without_respawned_chests(self):
+        tables = {k: v for k, v in TABLES.items() if k not in ("activity_explore_value", "magic_pupil_npc")}
+        with tempfile.TemporaryDirectory() as tmp:
+            region = game_data.Region(make_game(Path(tmp), tables), SCENE)
+        self.assertFalse([i for i in region.items if i["type"] == "chest_respawn"])
+
     def test_region_values_and_calibration(self):
         self.assertEqual((self.region.value_cap, self.region.milestones), (300, [10, 20, 30]))
         # 0.25 x 4096 = 1024 game units across the image; centre at (512 + 23/2.3, 512 - 46/2.3) = (522, 492).
@@ -318,7 +354,13 @@ class CommandLine(unittest.TestCase):
         # Chest entries in the game's order (Order), the unlisted one left out; then decryption, teleports...
         self.assertEqual([e["id"] for e in entries],
                          ["guardian", "lake-1", "tang-sect-1", "unlisted-1", "coop-1", "mysterious-frost-coffer-1",
-                          "wolf-thief-tyrant", "two-friends", "light-up-teleport"])
+                          "wolf-thief-tyrant", "two-friends", "light-up-teleport", "respawn-normal-a",
+                          "respawn-good-b"])
+        respawn = entries[-1]
+        self.assertEqual((respawn["type"], respawn["name_en"], respawn["name_pt"], respawn["size"], respawn["tags"]),
+                         ("chest_respawn", "Respawned Fine Chests B", "Baús Refinados Reaparecidos B", "1",
+                          "purple_demon_eye"))
+        self.assertIn("Purple Demon Eye", respawn["desc_en"])
         unlisted = entries[3]
         self.assertEqual((unlisted["name_en"], unlisted["size"], unlisted["tags"]),
                          ("Outside the game's list", "1", "unlisted"))
@@ -330,6 +372,10 @@ class CommandLine(unittest.TestCase):
                          [("testmap-0001", "chest_normal", "guardian", "1", "300", "300"),
                           ("testmap-0002", "chest_normal", "lake-1", "1", "100", "200"),
                           ("testmap-0003", "chest_normal", "lake-1", "2", "110", "210")])
+        self.assertEqual([(m["id"], m["entry"], m["entry_index"], m["x"], m["tags"]) for m in markers[-3:]],
+                         [("testmap-0013", "respawn-normal-a", "1", "100", ""),
+                          ("testmap-0014", "respawn-normal-a", "2", "150", ""),
+                          ("testmap-0015", "respawn-good-b", "1", "250", "")])
         meet = [m for m in markers if m["type"] == "encounter"]
         self.assertEqual([(m["id"], m["x"]) for m in meet], [("testmap-0010", "800"), ("testmap-0010", "810")])
         self.assertEqual(read_rows(self.src / "stages.csv")[0], {"trial": "testmap-0009", "stage": "1", "stars": "1",
@@ -366,7 +412,8 @@ class CommandLine(unittest.TestCase):
         entries[0]["tags"] = ""
         game_data.write_csv(self.src / "entries.csv", game_data.ENTRY_HEADER, entries)
         # An encounter with no position, added by hand: compared by its name.
-        entries.append({**entries[-2], "id": "lost-items", "name_en": "Lost Items", "name_pt": "pt Lost Items",
+        meet = next(e for e in entries if e["type"] == "encounter")
+        entries.append({**meet, "id": "lost-items", "name_en": "Lost Items", "name_pt": "pt Lost Items",
                         "name_zh": "Lost Items", "desc_en": "Coins.",
                         "desc_pt": "", "desc_zh": ""})
         game_data.write_csv(self.src / "entries.csv", game_data.ENTRY_HEADER, entries)
@@ -391,6 +438,7 @@ class CommandLine(unittest.TestCase):
         self.assertNotIn("milestones in maps.json", out)
         self.assertNotIn("Trial of Strength: Test.", out)
         self.assertNotIn("unlisted-1", out)  # the site's own entry: matched by position, names not compared
+        self.assertNotIn("respawn-", out)  # the respawned chest at box_a's place is not taken for box_a
         self.assertNotIn("different order", out)  # the site's wording is not a difference
 
     def test_compare_accepts_the_official_calibration(self):
