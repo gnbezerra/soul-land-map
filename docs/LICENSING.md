@@ -1,11 +1,12 @@
 # Licenses of the data and of third-party material
 
-The code is under the MIT License (`LICENSE`). This file covers everything else in the repository.
+The code is under the MIT License ([`LICENSE`](../LICENSE)). This file covers everything else in the
+repository.
 
 ## The site's own data and texts: CC BY 4.0
 
 Copyright (c) 2026 George Bezerra. Licensed under the Creative Commons Attribution 4.0 International
-License (CC BY 4.0). The full legal code is in `LICENSE-CC-BY-4.0.txt`, as published at
+License (CC BY 4.0). The full legal code is in [`LICENSE-CC-BY.txt`](../LICENSE-CC-BY.txt), as published at
 <https://creativecommons.org/licenses/by/4.0/legalcode.txt>; a summary is at
 <https://creativecommons.org/licenses/by/4.0/>.
 
@@ -22,8 +23,8 @@ This covers the data collected and written for this site:
 Positions, counts and other facts about the game are not owned by anyone. The license covers the selection,
 the arrangement and the collection work, to the extent that copyright or database rights apply to them.
 
-To credit this work, name the project and link to it, for example: "Data from Soul Land Map
-(https://github.com/gnbezerra/soul-land-map), CC BY 4.0". Say whether you changed it.
+To credit this work, name the project and link to it, for example:
+`Data from Soul Land Map (https://github.com/gnbezerra/soul-land-map), CC BY 4.0`. Say whether you changed it.
 
 ## Not covered: the game's material
 
@@ -40,4 +41,4 @@ request: open an issue at <https://github.com/gnbezerra/soul-land-map/issues>.
 
 ## Bundled third-party code
 
-- Leaflet (`vendor/leaflet/`): BSD 2-Clause License, see `vendor/leaflet/LICENSE`.
+- Leaflet (`vendor/leaflet/`): BSD 2-Clause License, see [`vendor/leaflet/LICENSE`](../vendor/leaflet/LICENSE).

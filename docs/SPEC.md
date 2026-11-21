@@ -411,8 +411,8 @@ holders (`ui.disclaimer`, a footnote at the bottom of the sidebar; the ZH text n
 fansites, with no guarantee: version only what is needed, no raw dumps, remove anything on request. No
 monetization, analytics or SEO in the MVP.
 
-Licenses: the code is MIT (`LICENSE`); the site's own data and texts are CC BY 4.0 (`LICENSE-DATA.md` lists
-what that covers, `LICENSE-CC-BY-4.0.txt` is the legal code); the game's assets and official texts are under neither and are listed there as
+Licenses: the code is MIT (`LICENSE`); the site's own data and texts are CC BY 4.0 (`docs/LICENSING.md` lists
+what that covers, `LICENSE-CC-BY.txt` is the legal code); the game's assets and official texts are under neither and are listed there as
 excluded. Contributions come in under the same licenses (inbound = outbound, no CLA).
 
 ## 11. Reference data

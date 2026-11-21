@@ -358,7 +358,7 @@ task or a mount (Ownerless Objects is one).
 ## License
 
 - Code: MIT, see [`LICENSE`](LICENSE).
-- The site's own data and texts: CC BY 4.0, see [`LICENSE-DATA.md`](LICENSE-DATA.md) (what it covers) and
-  [`LICENSE-CC-BY-4.0.txt`](LICENSE-CC-BY-4.0.txt) (legal code).
+- The site's own data and texts: CC BY 4.0, see [`docs/LICENSING.md`](docs/LICENSING.md) (what it covers) and
+  [`LICENSE-CC-BY.txt`](LICENSE-CC-BY.txt) (legal code).
 - The game's material (map tiles, icons, official names and descriptions) belongs to its rights holders and
   is under neither license. Unofficial fan project, not affiliated with the game's developers or publishers.
