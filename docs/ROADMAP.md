@@ -23,12 +23,15 @@ Working, and verified by the owner in a real browser (Chrome, DevTools mobile em
 - Data pipeline CSV → JSON (`tools/build_data.py`), with validation and id stability checks.
 - Data: Nuoding is fully mapped. 339 markers (264 normal chests, 16 decryption chests, 10 Divine Trials with
   65 stages, 28 crystals, 5 encounters, 6 teleports, 4 viewpoints, 1 portal, 5 books) and 49 entries, all with
-  en/pt/zh names. Marker names, notes and howtos in `marker_texts.csv`; marker tags (e.g. `grappling_hook`).
+  en/pt/zh names. Plus the 150 chests that respawn once after the 264 (`chest_respawn`, SPEC §4.5), in 5
+  entries of the site's own, from the game tables; the owner checked in-game the 31 at new places and
+  sampled the others (2026-11-21). Marker names, notes and howtos in `marker_texts.csv`; marker tags (e.g. `grappling_hook`).
   Checked against the game tables on 2026-11-16 (`tools/game_data.py compare nuoding`: no differences);
   the recommended CP of the combat stages, the stars of their layers 4 and 7, two books and the official
   texts came from there. The two new books (`nuoding-0338`, `0339`) have no note yet.
 - Sidebar: groups/types with checkboxes, the marker's sprite as legend, live `found/total` counters, entry lists with frame-and-highlight,
-  item lists for the small types (an item opens its marker), "only this" per group, type and entry with "Back",
+  item lists for the small types (an item opens its marker), types hidden by default with a hint and a
+  nudge once the type that unlocks them is complete (the respawned chests), "only this" per group, type and entry with "Back",
   exploration value in points with reward milestones and the rules behind an (i) button, hide-found toggle,
   backup export/import.
 - Popups with title (own name, else entry name, else type), type, tags, description, note, "show solution"
@@ -87,6 +90,8 @@ players more and rewards need a lot of data collected in-game.
 
 ## Waiting on the owner
 
+- Nuoding: which normal chests have the 2, 5 and 10 blue gem looks (for the loot, SPEC §4.8); names of the
+  respawned-chest entries are provisional, and their ZH needs a native speaker.
 - Suotuo: location-specific tags and height notes (in-game). Map images for the regions after it.
 - Notes of Nuoding's two new books.
 - Two Mixed Area PT descriptions that were cut off in screenshots.

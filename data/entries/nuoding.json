@@ -212,5 +212,40 @@
   "enjoy-the-scenery": {
     "type": "viewpoint",
     "size": 4
+  },
+  "respawn-normal-a": {
+    "type": "chest_respawn",
+    "size": 50,
+    "tags": [
+      "purple_demon_eye"
+    ]
+  },
+  "respawn-normal-b": {
+    "type": "chest_respawn",
+    "size": 50,
+    "tags": [
+      "purple_demon_eye"
+    ]
+  },
+  "respawn-good-a": {
+    "type": "chest_respawn",
+    "size": 21,
+    "tags": [
+      "purple_demon_eye"
+    ]
+  },
+  "respawn-good-b": {
+    "type": "chest_respawn",
+    "size": 21,
+    "tags": [
+      "purple_demon_eye"
+    ]
+  },
+  "respawn-good-c": {
+    "type": "chest_respawn",
+    "size": 8,
+    "tags": [
+      "purple_demon_eye"
+    ]
   }
 }

@@ -38,6 +38,43 @@ export function endSolo(solo) {
   return { hidden: new Set(solo?.previous ?? []), solo: null };
 }
 
+// Types that start hidden (categories.json `defaultHidden`, e.g. the respawned chests, which only matter once
+// every normal chest is open). Each one is hidden the first time a map shows it and then remembered in
+// `seen`, so a player who turns it on keeps it on. Returns { hidden, seen, changed } (new sets;
+// `changed`: there is something to save).
+export function applyDefaultHidden(hidden, seen, defaultHiddenIds) {
+  const next = { hidden: new Set(hidden), seen: new Set(seen), changed: false };
+  for (const id of defaultHiddenIds) {
+    if (next.seen.has(id)) continue;
+    next.hidden.add(id);
+    next.seen.add(id);
+    next.changed = true;
+  }
+  return next;
+}
+
+// What "Show all" turns on: every type but the default-hidden ones, which only their own checkbox (or
+// "only this", or a link to one of their markers) turns on. `types`: the model's type id -> type.
+export function showAllTypeIds(allTypeIds, types) {
+  return allTypeIds.filter((id) => !types.get(id)?.defaultHidden);
+}
+
+// Types that only matter once every marker of another type is found (categories.json `unlockedBy`, e.g.
+// the respawned chests after the normal chests). For each: { id, after, total } (`total`: how many of
+// `after` there are, for the sidebar's hint) and `nudge`: they are all found and the type is still hidden,
+// so the sidebar suggests showing it. The site only knows what the player marked, so it never turns the
+// type on by itself.
+export function unlockHints(types, isHidden) {
+  const out = [];
+  for (const type of types.values()) {
+    const after = type.unlockedBy && types.get(type.unlockedBy);
+    if (!after) continue;
+    const complete = after.total > 0 && after.found >= after.total;
+    out.push({ id: type.id, after: after.id, total: after.total, nudge: complete && isHidden(type.id) });
+  }
+  return out;
+}
+
 // A saved solo, kept only if it is well formed and names types this map has, and, for an entry, an entry
 // of that type (`entryTypes`: entry id -> type id); anything else is dropped.
 export function cleanSolo(value, allTypeIds, entryTypes = new Map()) {

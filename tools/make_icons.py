@@ -10,7 +10,7 @@ ExportedProject/Assets/ui/atlas/ with the atlas PNG and one <sprite>.asset (YAML
 The sprite's m_Rect is its place in the atlas, in pixels, with y counted from the bottom.
 Only plain rectangles are supported (settingsRaw 0: not rotated, not tightly packed).
 
-Output: one PNG per entry of ICONS, trimmed to the drawing (alpha > ALPHA_CUT) and centered on a
+Output: one PNG per entry of ICONS, plus one per entry of TINTS (an icon of ICONS multiplied by a color), trimmed to the drawing (alpha > ALPHA_CUT) and centered on a
 transparent square, so every icon fills its box the same way. Icons larger than MAX_SIZE are
 scaled down. data/categories.json refers to the output names.
 
@@ -38,6 +38,12 @@ ICONS = {
     "portal": ("worldmappanel", "dt_icon_csd"),
     "book": ("commonui", "handbook_icon_title"),
     "boss": ("worldmappanel", "sjsl_icon_boss"),
+}
+# Output name -> (icon of ICONS, RGB it is multiplied by): white turns into the color, the outline stays dark.
+# The respawned chests are the chest in purple, after the Purple Demon Eye that shows them (chosen with the
+# owner in a preview against a badge, which the map hides when zoomed out).
+TINTS = {
+    "chest_respawn": ("chest", (214, 120, 255)),
 }
 ALPHA_CUT = 16
 MAX_SIZE = 64
@@ -94,6 +100,13 @@ def cut(atlas, rect):
     return square
 
 
+def tint(icon, rgb):
+    """The icon with each channel multiplied by `rgb` (0-255); alpha unchanged."""
+    r, g, b, a = icon.split()
+    r, g, b = (band.point(lambda v, k=k: v * k // 255) for band, k in zip((r, g, b), rgb))
+    return Image.merge("RGBA", (r, g, b, a))
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     root = Path(__file__).resolve().parent.parent
@@ -103,6 +116,7 @@ def main(argv=None):
 
     atlases, errors = {}, []
     a.out.mkdir(parents=True, exist_ok=True)
+    icons = {}
     for name, (atlas, sprite) in ICONS.items():
         try:
             folder = atlas_dir(a.raw, atlas)
@@ -110,9 +124,16 @@ def main(argv=None):
                 atlases[atlas] = load_atlas(folder)
             icon = cut(atlases[atlas], sprite_rect(folder, sprite))
             icon.save(a.out / f"{name}.png", optimize=True)
+            icons[name] = icon
             print(f"{name}.png  {icon.width}x{icon.height}  ({atlas}/{sprite})")
         except (IconError, OSError) as e:
             errors.append(f"ERROR {name}: {e}")
+    for name, (base, rgb) in TINTS.items():
+        if base not in icons:
+            errors.append(f"ERROR {name}: its base icon '{base}' was not made")
+            continue
+        tint(icons[base], rgb).save(a.out / f"{name}.png", optimize=True)
+        print(f"{name}.png  {base}.png tinted {rgb}")
     for e in errors:
         print(e, file=sys.stderr)
     return 1 if errors else 0

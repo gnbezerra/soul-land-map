@@ -20,7 +20,7 @@ try:
 except ImportError:
     Image = make_icons = None
 needs_pillow = unittest.skipIf(Image is None, "Pillow is not installed")
-# The output names the tool writes (its ICONS table), read without importing it.
+# The output names the tool writes (its ICONS and TINTS tables), read without importing it.
 ICON_NAMES = set(re.findall(r'^    "(\w+)": \(', TOOL.read_text(encoding="utf-8"), flags=re.MULTILINE))
 
 ASSET = """%YAML 1.1
@@ -74,6 +74,14 @@ class CutTest(unittest.TestCase):
         icon = make_icons.cut(atlas, make_icons.sprite_rect(self.folder, "big"))
         self.assertEqual(icon.size, (make_icons.MAX_SIZE, make_icons.MAX_SIZE))
 
+    def test_tint_multiplies_the_color_and_keeps_alpha(self):
+        icon = Image.new("RGBA", (2, 1))
+        icon.putpixel((0, 0), (255, 255, 255, 255))
+        icon.putpixel((1, 0), (20, 60, 200, 128))
+        out = make_icons.tint(icon, (214, 120, 255))
+        self.assertEqual(out.getpixel((0, 0)), (214, 120, 255, 255), "white becomes the color")
+        self.assertEqual(out.getpixel((1, 0)), (16, 28, 200, 128), "darker stays darker, alpha kept")
+
     def test_errors(self):
         make_atlas(self.folder, {
             "rotated": (0, 0, 16, 16, (0, 0, 16, 16), 3),
@@ -98,7 +106,7 @@ class CliTest(unittest.TestCase):
             r = subprocess.run([sys.executable, str(TOOL), "--raw", str(Path(tmp) / "raw"), "--out", str(Path(tmp) / "out")],
                                capture_output=True, text=True)
             self.assertEqual(r.returncode, 1)
-            self.assertEqual(r.stderr.count("ERROR"), len(make_icons.ICONS))
+            self.assertEqual(r.stderr.count("ERROR"), len(make_icons.ICONS) + len(make_icons.TINTS))
 
     def test_every_icon_is_referenced_by_categories(self):
         import json
@@ -107,7 +115,7 @@ class CliTest(unittest.TestCase):
         self.assertTrue(ICON_NAMES, "ICONS table found in the tool")
         self.assertEqual(used, {f"icons/{n}.png" for n in ICON_NAMES}, "categories.json and ICONS agree")
         if make_icons:
-            self.assertEqual(ICON_NAMES, set(make_icons.ICONS))
+            self.assertEqual(ICON_NAMES, set(make_icons.ICONS) | set(make_icons.TINTS))
         for f in used:
             self.assertTrue((ROOT / f).exists(), f"{f} is committed")
 

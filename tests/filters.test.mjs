@@ -1,7 +1,7 @@
 // Tests for js/filters.js. Run: node --test tests/
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { isSolo, toggleSolo, endSolo, cleanSolo, canSoloEntry } from "../js/filters.js";
+import { isSolo, toggleSolo, endSolo, cleanSolo, canSoloEntry, applyDefaultHidden, showAllTypeIds, unlockHints } from "../js/filters.js";
 
 const ALL = ["chest", "coop", "crystal", "trial"];
 
@@ -80,4 +80,50 @@ test("cleanSolo keeps an entry only if it is known and of the solo's type", () =
   assert.equal(cleanSolo({ types: ["chest", "coop"], previous: [], entry: "village" }, ALL, entryTypes), null, "several types");
   assert.equal(cleanSolo({ types: ["chest"], previous: [], entry: 3 }, ALL, entryTypes), null, "not a string");
   assert.deepEqual(cleanSolo({ types: ["chest"], previous: [] }, ALL), { types: ["chest"], previous: [] }, "a saved type solo, as before");
+});
+
+test("default-hidden types start hidden once, then the player's choice stays", () => {
+  const first = applyDefaultHidden(new Set(["trial"]), [], ["respawn"]);
+  assert.deepEqual([...first.hidden].sort(), ["respawn", "trial"]);
+  assert.deepEqual([...first.seen], ["respawn"]);
+  assert.equal(first.changed, true);
+  // The player turned it on: seen already, so it is not hidden again.
+  const later = applyDefaultHidden(new Set(["trial"]), ["respawn"], ["respawn"]);
+  assert.deepEqual([...later.hidden], ["trial"]);
+  assert.equal(later.changed, false);
+});
+
+test("applyDefaultHidden leaves its inputs alone and ignores types with no default", () => {
+  const hidden = new Set();
+  const seen = [];
+  const out = applyDefaultHidden(hidden, seen, []);
+  assert.equal(out.changed, false);
+  assert.deepEqual([...out.hidden], []);
+  applyDefaultHidden(hidden, seen, ["respawn"]);
+  assert.equal(hidden.size, 0);
+  assert.equal(seen.length, 0);
+});
+
+test("show all leaves the default-hidden types alone", () => {
+  const types = new Map([["chest", { id: "chest" }], ["respawn", { id: "respawn", defaultHidden: true }]]);
+  assert.deepEqual(showAllTypeIds(["chest", "respawn", "gone"], types), ["chest", "gone"]);
+});
+
+test("unlock hints: the total to find, and a nudge once it is all found and the type is hidden", () => {
+  const types = new Map([
+    ["chest", { id: "chest", total: 3, found: 2 }],
+    ["respawn", { id: "respawn", unlockedBy: "chest" }],
+    ["crystal", { id: "crystal", total: 1, found: 1 }],
+    ["orphan", { id: "orphan", unlockedBy: "missing" }],
+  ]);
+  const hidden = new Set(["respawn"]);
+  assert.deepEqual(unlockHints(types, (id) => hidden.has(id)), [{ id: "respawn", after: "chest", total: 3, nudge: false }]);
+  types.get("chest").found = 3;
+  assert.equal(unlockHints(types, (id) => hidden.has(id))[0].nudge, true, "all found, still hidden");
+  hidden.clear();
+  assert.equal(unlockHints(types, (id) => hidden.has(id))[0].nudge, false, "already shown");
+  types.get("chest").total = 0;
+  types.get("chest").found = 0;
+  hidden.add("respawn");
+  assert.equal(unlockHints(types, (id) => hidden.has(id))[0].nudge, false, "nothing to find is not complete");
 });

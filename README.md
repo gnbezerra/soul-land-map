@@ -6,7 +6,8 @@ Live site: <https://gnbezerra.github.io/soul-land-map/>. Repository: <https://gi
 Documentation for contributors and agents: [`CLAUDE.md`](CLAUDE.md) (rules and current decisions),
 [`docs/SPEC.md`](docs/SPEC.md) (design) and [`docs/ROADMAP.md`](docs/ROADMAP.md) (current state, next steps).
 
-Current state: two regions, Nuoding (339 markers) and Suotuo (331 markers, from the game tables); data
+Current state: two regions, Nuoding (489 markers, 150 of them the chests that respawn
+once) and Suotuo (331 markers, from the game tables); data
 pipeline, filter sidebar with counters, popups, found tracking with backup, en/pt/zh UI and a responsive
 layout. See the roadmap for what comes next.
 
@@ -42,7 +43,8 @@ not needed for now). To update it, download the same files for the new version f
 Marker icons (`icons/*.png`) are sprites from the game's UI atlases. To regenerate them, export each atlas
 with AssetRipper ("Export project") into `maps/icons/raw/<atlas>/` (ignored, like the map images: currently
 `worldmappanel`, `worlduipanel` and `commonui`) and run `python tools/make_icons.py` (Pillow). Which sprite
-becomes which icon is the `ICONS` table at the top of the script; it reads each sprite's rectangle from its
+becomes which icon is the `ICONS` table at the top of the script (and `TINTS`, icons made by tinting
+another: the purple respawned chest); it reads each sprite's rectangle from its
 `.asset` file, trims it to the drawing and centers it on a square. Like the tiles, rerun it only when a sprite
 changes.
 
@@ -246,6 +248,7 @@ their official names and descriptions, `entry_index` (the order of the `[Locatio
 decryption chest kinds (a guarded one, `box_npc.BoxType` 8, is a `chest_boss`) and contract elements, the
 tags `guarded`, `hidden`, `grappling_hook` and `purple_demon_eye` (from `box_npc` and the entry
 descriptions), Divine Trial names, subtypes, stars and recommended CP, teleport, viewpoint and book names,
+Nuoding's respawned chests (`activity_explore_value`, `magic_pupil_npc`: one site entry per game group, SPEC §4.5),
 encounter names and descriptions (`HandBookTips`) and the positions of those triggered by NPCs (with all
 their points), the exploration value cap, the reward milestones and the calibration (`map_position`).
 
@@ -274,7 +277,14 @@ task or a mount (Ownerless Objects is one).
   markers are drawn above the chests. Found markers turn grey with a green check.
 - A group or type shows up only when the map has entries or markers for it. Checkboxes toggle visibility,
   the choice is saved per map in `localStorage` (`slmap:v1:settings`), and types missing from the saved list
-  default to visible.
+  default to visible, except those with `defaultHidden` in `categories.json` (the respawned chests): they are
+  hidden the first time a map shows them, and `settings.defaultsSeen` remembers that, so a player who turns
+  one on keeps it on. "Show all" leaves them as they are; their checkbox, "only this", a deep link or the
+  hint below turns them on.
+- A type with `unlockedBy` (the respawned chests, by `chest_normal`) shows a hint line under it in the
+  sidebar (`hint.<type>`, with the other type's total), and, once every marker of that type is marked found
+  while it is still hidden, a note (`nudge.<type>`) with a "Show on the map" button. The site never turns it
+  on by itself: it only knows what the player marked.
 - Counters read `found / total in the game`: the total is the sum of the `size` of the entries of that type
   (or the number of mapped markers when a type has no entries yet).
 - The bar at the top of the sidebar is the game's exploration value, in points: `explorationRules` in

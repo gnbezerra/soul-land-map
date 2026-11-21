@@ -194,5 +194,25 @@
   "enjoy-the-scenery": {
     "name": "Enjoy the Scenery",
     "description": "Illuminate all the observation points on the map."
+  },
+  "respawn-normal-a": {
+    "name": "Respawned Common Chests A",
+    "description": "Once every normal chest of the region is open, these chests appear, a single time and invisible: only the Purple Demon Eye shows them. The game counts them nowhere, so mark them here."
+  },
+  "respawn-normal-b": {
+    "name": "Respawned Common Chests B",
+    "description": "Once every normal chest of the region is open, these chests appear, a single time and invisible: only the Purple Demon Eye shows them. The game counts them nowhere, so mark them here."
+  },
+  "respawn-good-a": {
+    "name": "Respawned Fine Chests A",
+    "description": "Once every normal chest of the region is open, these chests appear, a single time and invisible: only the Purple Demon Eye shows them. The game counts them nowhere, so mark them here."
+  },
+  "respawn-good-b": {
+    "name": "Respawned Fine Chests B",
+    "description": "Once every normal chest of the region is open, these chests appear, a single time and invisible: only the Purple Demon Eye shows them. The game counts them nowhere, so mark them here."
+  },
+  "respawn-good-c": {
+    "name": "Respawned Fine Chests C",
+    "description": "Once every normal chest of the region is open, these chests appear, a single time and invisible: only the Purple Demon Eye shows them. The game counts them nowhere, so mark them here."
   }
 }

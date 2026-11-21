@@ -194,5 +194,25 @@
   "enjoy-the-scenery": {
     "name": "Contemple Todas as Paisagens do Mapa",
     "description": "Ilumine todos os Pontos Panorâmicos do mapa."
+  },
+  "respawn-normal-a": {
+    "name": "Baús Comuns Reaparecidos A",
+    "description": "Depois que todos os baús comuns da região são abertos, estes baús aparecem, uma única vez e invisíveis: só o Olho Demoníaco Púrpura os mostra. O jogo não os conta em lugar nenhum, então marque-os aqui."
+  },
+  "respawn-normal-b": {
+    "name": "Baús Comuns Reaparecidos B",
+    "description": "Depois que todos os baús comuns da região são abertos, estes baús aparecem, uma única vez e invisíveis: só o Olho Demoníaco Púrpura os mostra. O jogo não os conta em lugar nenhum, então marque-os aqui."
+  },
+  "respawn-good-a": {
+    "name": "Baús Refinados Reaparecidos A",
+    "description": "Depois que todos os baús comuns da região são abertos, estes baús aparecem, uma única vez e invisíveis: só o Olho Demoníaco Púrpura os mostra. O jogo não os conta em lugar nenhum, então marque-os aqui."
+  },
+  "respawn-good-b": {
+    "name": "Baús Refinados Reaparecidos B",
+    "description": "Depois que todos os baús comuns da região são abertos, estes baús aparecem, uma única vez e invisíveis: só o Olho Demoníaco Púrpura os mostra. O jogo não os conta em lugar nenhum, então marque-os aqui."
+  },
+  "respawn-good-c": {
+    "name": "Baús Refinados Reaparecidos C",
+    "description": "Depois que todos os baús comuns da região são abertos, estes baús aparecem, uma única vez e invisíveis: só o Olho Demoníaco Púrpura os mostra. O jogo não os conta em lugar nenhum, então marque-os aqui."
   }
 }

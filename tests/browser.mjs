@@ -284,6 +284,10 @@ async function shotChip(lang) {
 }
 
 const ICONS = `[...document.querySelectorAll(".leaflet-marker-icon")]`;
+// Types that start hidden (categories.json `defaultHidden`) and have markers on this map; a type's checkbox.
+const defaultHiddenHere = Object.keys(categories.types).filter((t) => categories.types[t].defaultHidden &&
+  markers.some((m) => m.type === t));
+const typeBox = (t) => `document.querySelector('.solo[data-types="${t}"]:not([data-entry])').closest(".line").querySelector("input")`;
 const iconsOf = (type) => `${ICONS}.filter((e) => e.querySelector("[data-type]")?.dataset.type === "${type}")`;
 const TRIAL_ICONS = iconsOf("divine_trial");
 const POPUP = `document.querySelector(".leaflet-popup .mk-popup")`;
@@ -448,6 +452,9 @@ try {
   });
 
   await check("every icon sits on its image pixel (fit zoom, then zoomed in)", async () => {
+    // Every type on, the default-hidden ones too (by their own checkbox: "Show all" leaves them alone).
+    await ev(`document.querySelector(".bulk button").click()`);
+    for (const t of defaultHiddenHere) await ev(`${typeBox(t)}.checked || ${typeBox(t)}.click()`);
     const fit = await iconPlacementError("fit zoom");
     await ev(`document.querySelector(".leaflet-control-zoom-in").click()`);
     await wait(400);
@@ -531,6 +538,46 @@ try {
     equal(await shownTypes(), ["book", "crystal"], "a second click gives the filter back");
   });
 
+  // Types with `defaultHidden` (categories.json): off on a first visit, "Show all" leaves them off, and once
+  // turned on they stay on.
+  await check("default-hidden types start hidden, Show all leaves them, turned on they stay on", async () => {
+    const ids = defaultHiddenHere;
+    if (!ids.length) return;
+    await freshLoad("?lang=en");
+    const shown = (t) => ev(`${ICONS}.some((e) => e.querySelector('[data-type="${t}"]'))`);
+    const box = typeBox;
+    await ev(`document.querySelector(".bulk button").click()`);
+    for (const t of ids) {
+      equal(await shown(t), false, `${t} off at first`);
+      equal(await ev(`${box(t)}.checked`), false, `${t} unchecked`);
+      await ev(`${box(t)}.click()`);
+      equal(await shown(t), true, `${t} on`);
+    }
+    await load("?lang=en");
+    for (const t of ids) equal(await shown(t), true, `${t} still on after a reload`);
+  });
+
+  // categories.json `unlockedBy` (respawned chests after the normal chests): a hint line, and a nudge once
+  // the player has marked them all, whose button shows the type.
+  await check("unlocked types: hint line, nudge once all are marked, its button shows them", async () => {
+    const type = [...model.types.values()].find((x) => x.unlockedBy && model.types.has(x.unlockedBy));
+    if (!type) return;
+    const after = markers.filter((m) => m.type === type.unlockedBy).map((m) => m.id);
+    const n = model.types.get(type.unlockedBy).total;
+    const block = `${typeBox(type.id)}.closest(".block")`;
+    await freshLoad("?lang=en");
+    equal(await ev(`${block}.querySelector(".unlock-hint").textContent`), ui.en[`hint.${type.id}`].replace("{n}", n), "hint");
+    equal(await ev(`${block}.querySelector(".unlock-nudge").hidden`), true, "no nudge before they are all marked");
+    await ev(`localStorage.setItem("slmap:v1:progress:${MAP}", ${JSON.stringify(JSON.stringify(after))})`);
+    await load("?lang=en");
+    equal(await ev(`${block}.querySelector(".unlock-nudge").hidden`), false, "nudge once all are marked");
+    equal(await ev(`${block}.querySelector(".unlock-nudge span").textContent`), ui.en[`nudge.${type.id}`].replace("{n}", n), "nudge text");
+    await ev(`${block}.querySelector(".unlock-nudge button").click()`);
+    equal(await ev(`${typeBox(type.id)}.checked`), true, "its button shows the type");
+    equal(await ev(`${block}.querySelector(".unlock-nudge").hidden`), true, "and the nudge goes");
+    equal(await ev(`${ICONS}.some((e) => e.querySelector('[data-type="${type.id}"]'))`), true, "on the map");
+  });
+
   // "Only this" on one entry (js/filters.js canSoloEntry): only its markers, its name on the bar, kept after
   // a reload; going to another entry of the type ends it; a second click gives the filter back.
   await check("only this on an entry: only its markers, a reload keeps it, another entry ends it", async () => {
@@ -561,9 +608,11 @@ try {
     equal(await shown(), { chest_normal: all.chest_normal }, "another entry's name: every chest, the other types stay hidden");
     equal(await bar(), null, "and ends only this");
     await ev(`document.querySelector(".bulk button").click()`);
+    const sorted = (counts) => Object.fromEntries(Object.entries(counts).sort(([a], [b]) => a.localeCompare(b)));
+    equal(sorted(await shown()), sorted(all), "show all: what a first visit shows (not the default-hidden types)");
     await ev(`${soloOf(second.id)}.click()`);
     await ev(`${soloOf(second.id)}.click()`);
-    equal(await shown(), all, "a second click gives the filter back");
+    equal(sorted(await shown()), sorted(all), "a second click gives the filter back");
   });
 
   // Small types list their markers one by one (js/items.js); an item opens its marker's popup.
@@ -699,6 +748,7 @@ try {
 
   await check("marker icons: sprite per type, size per tier, contract sprite once found", async () => {
     await freshLoad("?lang=en");
+    for (const t of defaultHiddenHere) await ev(`${typeBox(t)}.click()`); // their sprites too
     // The markers appear before their sprites finish loading: wait for them (a broken one fails below).
     await until(`${ICONS}.every((e) => { const i = e.querySelector(".ic-main"); return !i || (i.complete && i.naturalWidth > 0); })`,
       "the sprites to load", 5000).catch(() => {});
@@ -995,7 +1045,9 @@ try {
       if (!expected) return;
       await until(`[...document.querySelectorAll(".mk-icon-badge")].filter((i) => i.complete && i.naturalWidth > 0).length === ${expected}`,
         `${expected} badge sprites loaded`);
-      equal(await ev(`document.querySelectorAll(".dot-ic .dot-badge").length`), badged.length, "badges in the sidebar legend");
+      // One legend badge per badged type this map has (chest_respawn, for one, is Nuoding's only).
+      const badgedHere = new Set(markersOf.filter((m) => badged.includes(m.type)).map((m) => m.type)).size;
+      equal(await ev(`document.querySelectorAll(".dot-ic .dot-badge").length`), badgedHere, "badges in the sidebar legend");
     });
   }
 

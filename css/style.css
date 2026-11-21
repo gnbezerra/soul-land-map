@@ -168,6 +168,39 @@ body.sidebar-hidden #sidebar {
   font-weight: 600;
 }
 
+/* A type that only matters once another is all found (respawned chests): what unlocks it, and a nudge to
+   show it once the player has marked them all (js/sidebar.js unlockNotes). */
+.unlock-hint {
+  margin: 0 10px 6px 34px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.unlock-nudge {
+  margin: 0 10px 8px 34px;
+  padding: 8px 10px;
+  border: 1px solid #6b3f80;
+  border-radius: 6px;
+  background: #2a1c33;
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.unlock-nudge[hidden] {
+  display: none;
+}
+
+.unlock-nudge button {
+  display: block;
+  margin-top: 6px;
+  padding: 4px 12px;
+  border: 1px solid #7d4f96;
+  border-radius: 16px;
+  background: #3a2647;
+  color: var(--text);
+}
+
 .row.off {
   opacity: .45;
 }
@@ -671,7 +704,8 @@ body:not(.sidebar-hidden) .solo-chip-lane {
 
   .topbar select,
   .topbar button,
-  .bulk button {
+  .bulk button,
+  .unlock-nudge button {
     min-height: 40px;
   }
 

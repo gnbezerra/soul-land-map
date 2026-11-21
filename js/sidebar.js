@@ -1,7 +1,7 @@
 import { h } from "./util.js";
 import { formatCount, isUnlisted, splitUnlisted } from "./model.js";
 import { milestoneMarks, milestoneStatus } from "./exploration.js";
-import { canSoloEntry, isSolo } from "./filters.js";
+import { canSoloEntry, isSolo, showAllTypeIds, unlockHints } from "./filters.js";
 import { hasItemList, typeItems } from "./items.js";
 
 // Renders the filter sidebar: one row per game category (group), nested rows for its
@@ -111,11 +111,28 @@ export function createSidebar({
         count(() => itemProgress(item.id))))));
   }
 
+  // A type that only matters once another is all found (js/filters.js unlockHints): a line that says so,
+  // and a nudge to show it once the player has marked them all.
+  const nudges = []; // { el, id }
+  function unlockNotes(type) {
+    if (!type.unlockedBy || !model.types.has(type.unlockedBy)) return [];
+    const n = model.types.get(type.unlockedBy).total;
+    const nudge = h("div", { class: "unlock-nudge", role: "status", hidden: true },
+      h("span", {}, i18n.tf(`nudge.${type.id}`, { n })),
+      h("button", { type: "button", onclick: () => onToggle([type.id], true) }, t("ui.unlockShow")));
+    nudges.push({ el: nudge, id: type.id });
+    return [h("p", { class: "unlock-hint" }, i18n.tf(`hint.${type.id}`, { n })), nudge];
+  }
+  function refreshNudges() {
+    const on = new Set(unlockHints(model.types, (id) => !isVisible(id)).filter((x) => x.nudge).map((x) => x.id));
+    for (const { el, id } of nudges) el.hidden = !on.has(id);
+  }
+
   function typeBlock(type, label, nested) {
     const list = entryList(type) ?? itemList(type);
     const line = h("div", { class: "line" }, typeCheckbox(type, label, nested), soloButton([type.id], label),
       list ? list.toggle : expanderSlot());
-    return h("div", { class: "block" }, line, ...(list ? [list.list] : []));
+    return h("div", { class: "block" }, line, ...unlockNotes(type), ...(list ? [list.list] : []));
   }
 
   function groupBlock(group) {
@@ -213,7 +230,7 @@ export function createSidebar({
     h("h2", {}, t("ui.filters")),
     soloBar,
     h("div", { class: "bulk" },
-      h("button", { type: "button", onclick: () => onToggle(allTypeIds, true) }, t("ui.showAll")),
+      h("button", { type: "button", onclick: () => onToggle(showAllTypeIds(allTypeIds, model.types), true) }, t("ui.showAll")),
       h("button", { type: "button", onclick: () => onToggle(allTypeIds, false) }, t("ui.hideAll"))),
     h("label", { class: "row" }, hideFoundInput, h("span", { class: "name" }, t("ui.hideFound"))),
     ...model.groups.map(groupBlock),
@@ -231,10 +248,12 @@ export function createSidebar({
   function refreshCounts() {
     for (const { el, read } of counters) el.textContent = formatCount(...read());
     refreshExploration();
+    refreshNudges();
   }
 
   function refresh() {
     hideFoundInput.checked = isHideFound();
+    refreshNudges();
     for (const [id, input] of typeInputs) {
       input.checked = isVisible(id);
       input.closest(".row").classList.toggle("off", !input.checked);

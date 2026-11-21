@@ -83,8 +83,8 @@ points at the same X/Y; rare vertical areas (a cave under a plain) are disambigu
 The game's exploration UI has 6 categories, mirrored as top-level groups: Normal Chest (`chest_normal`),
 Decryption Chest (`chest_coop`, `chest_challenge`, `chest_contract`), Divine Trial (`divine_trial`, counted per
 stage), Divine Mind Crystal (`crystal`), Encounter (`encounter`), Other (`teleport`, `viewpoint`, `seed`).
-Outside the game's checksum and the exploration value: extras (`book`), auxiliary (`mechanism`, `portal`) and
-Dragon Island (`boss`, `arena`). `categories.json` defines group → types, color and glyph, and the exploration
+Outside the game's checksum and the exploration value: extras (`book`), auxiliary (`mechanism`, `portal`), the respawned
+chests (`chest_respawn`, Nuoding only, 4.5) and Dragon Island (`boss`, `arena`). `categories.json` defines group → types, color and glyph, and the exploration
 rules (§11): one per line of the game's rules popup, with its types and points.
 
 ### 4.3 Entries
@@ -103,7 +103,7 @@ popup shows it as no tag. `tools/game_data.py export` writes them for a new regi
 
 Nuoding: 20 normal-chest sets (sum 264), 16 decryption chests (4 cooperative, 6 Pillar of Empty Path, 6 Coffers,
 each an entry of size 1), 6 crystal sets (sum 28), 5 encounters, 2 "Other" entries (Light Up! Teleport 6, Enjoy
-the Scenery 4). Divine Trials are not in the game's list and have no entry. Tags: `grappling_hook`,
+the Scenery 4), and 5 respawned-chest entries of the site's own (sum 150, 4.5). Divine Trials are not in the game's list and have no entry. Tags: `grappling_hook`,
 `purple_demon_eye`, `guarded`, `hidden`, `ghostly_trace` (a Tang Sect skill); from Suotuo on, `poison_seal` and `fire_seal`
 (chests in green gas or on fire, opened only with the Tang Sect skill Xuanyu Hand, level 1 for poison and 2 for fire:
 the tag is the seal the player sees, and its hint names the skill level). A tag names what opening the chest
@@ -124,7 +124,19 @@ carry no reward; it comes from the category's default loot.
 
 ### 4.5 Marker types
 
-- `chest_normal`: default loot table `normal_chest`.
+- `chest_normal`: loot from the shared normal-chest table plus blue gems by the chest's look (4.8).
+- `chest_respawn` (Nuoding only): after every normal chest of the region is open, 150 chests appear a single
+  time, all invisible (`purple_demon_eye`), with better loot. The game lists them in no entry and has no
+  counter for them, so they count in no total of the game and in no exploration rule. In the game tables they
+  are `box_npc.BoxType` 23 (`ActivityTreasureBox`), in `activity_explore_value`, and Type 2 in
+  `magic_pupil_npc` (needs the Purple Demon Eye); the trigger and the loot are not in the tables. The game
+  groups them as `normal_A`, `normal_B`, `good_A`, `good_B`, `good_C` (50, 50, 21, 21, 8; normal and good
+  are two chest models, the letter only the area). Each group is an entry of the site's own
+  (`respawn-normal-a` and so on, names and descriptions written by the site), because the loot goes by group
+  (4.8). 119 stand where a normal chest stood, 31 at new places; the owner checked all 31 in-game
+  (2026-11-21). The type starts hidden (`defaultHidden`) and is unlocked by `chest_normal` (`unlockedBy`):
+  the sidebar explains when they appear, and once every normal chest is marked it suggests showing them
+  (README "Site behavior").
 - `chest_coop`: `players` 1–4; the mechanism is text. A few are tutorials of the mechanic, with the
   unlock button right next to the chest so one player can open them alone (`players: 1`).
 - `chest_challenge`: Pillars of Empty Path jumping puzzle; the location leads to the chest; optional pillar
@@ -215,9 +227,17 @@ three points because the cages are nothing else.
 ### 4.8 Rewards, items and loot (not implemented yet)
 
 A reward list accepts fixed (`item`, `qty`), independent random (`chance`) and exclusive choice (`oneOf` with
-`weight` summing to 100, e.g. normal-chest Mind Method: 80% 2×R or 20% 1×SR). `loot.json` holds named tables;
-all normal chests in all regions share one `normal_chest` table. A marker may override with `loot` (table name)
-or inline `reward`. One fixed normal-chest reward is a random class equipment that scales with player level
+`weight` summing to 100, e.g. normal-chest Mind Method: 80% 2×R or 20% 1×SR). `loot.json` holds named tables,
+and an entry names the tables of its markers; a marker may override with `loot` (table name) or inline
+`reward`. What the owner saw in-game:
+- normal chests: one table for all, plus a fixed number of blue gems by the chest's look (2 for the common
+  one, 5 for the intermediate, 10 for the most elaborate), so a base table and one gem table per look; which
+  entry (or marker) has which look is still to be collected;
+- respawned chests (4.5): one table per game group, each with fixed items and random ones (a sample of 5
+  chests per group, 2026-11-21: e.g. every `good_A` gave 6 Blue Crystal, 20 Fine Gold Fragments, 20 Hidden
+  Weapon Polishing Stone, 500000 Silver Soul Coin and a Summon Voucher, plus 5 to 10 Orange Soul Essence
+  Shard; `good_C` varies the most);
+- decryption chests: each its own table, even when two give the same. One fixed normal-chest reward is a random class equipment that scales with player level
 (`{ item: class_equipment, qty: 1, scales: player_level }`); the MVP popup only says it varies. Level cut-offs
 are unknown and low priority. `items.json` is the catalog (icon per item), names in `i18n/items.<lang>.json`
 (~10–20 distinct items in Divine Trials plus crystals, contracts, Mind Methods). Rewards are considered
@@ -267,7 +287,8 @@ The sidebar should filter by species; the popup lists the other locations of the
 
 - Keys are prefixed and versioned: `slmap:v1:progress:<map>` (set of found marker ids),
   `slmap:v1:trials:<map>` (Divine Trial id → layers done, positive integers only) and `slmap:v1:settings`
-  (lang, current map, hidden types per map, hide-found per map).
+  (lang, current map, hidden types per map, hide-found per map, "only this" per map, and per map the
+  default-hidden types already applied once, `defaultsSeen`, so turning one on sticks).
 - Divine Trials are never in the found set. A trial id found there (marked found before layer progress
   existed) is moved to `trials` as complete when the map loads or a backup is imported.
 - All reads/writes in try/catch; the site works with empty or unavailable storage.
@@ -343,6 +364,8 @@ Markers: a few hundred per map, no clustering, hidden while a pinch is under way
 stuttered on a phone); the canvas renderer only if markers must stay visible then, or a map gets far more. Icons: the game's
 own sprites (atlases exported with AssetRipper), cut by `tools/make_icons.py` into `icons/` (PNG, trimmed
 square, at most 64 px) and referenced from `categories.json` so they can be swapped without touching the rest.
+A type that shares a sprite may get a tinted copy instead (`TINTS`: the respawned chest is the chest in
+purple, chosen with the owner over a corner badge, which disappears at the whole-map view).
 Chosen with the owner in a preview against other styles (sprite in a disc, mixed):
 - the game's map-legend family (white drawing, dark outline, turquoise detail), alone with a dark outline;
   chests use the game's own player chest marker, which players already use to mark chests;
@@ -402,7 +425,7 @@ Open: official Chinese texts as source of truth
 
 - Done: tiles + calibrated map + readout; pipeline; sidebar with counters and entry lists; popups with found
   button; progress, hide-found and backup/restore; en/pt/zh with selector; responsive drawer layout; Nuoding
-  fully mapped (339 markers); encounters with several points draw an icon on each point.
+  fully mapped (339 markers, plus the 150 respawned chests); encounters with several points draw an icon on each point.
 - Divine Trials: pipeline and UI done (4.6): layer list and progress in the popup, badge, counters per layer
   (65 in Nuoding). The build prints the stage sum but does not check it against the game counter (not stored
   anywhere yet). Most combat stages have no recommended CP yet. Stage rewards wait for items (4.8).

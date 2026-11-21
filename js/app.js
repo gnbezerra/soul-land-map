@@ -10,7 +10,7 @@ import { selectableMaps } from "./maps.js";
 import { stageCounts, stagesDone, setTrialProgress, migrateFoundTrials } from "./trials.js";
 import { createLayers } from "./layers.js";
 import { createSidebar } from "./sidebar.js";
-import { toggleSolo, endSolo, cleanSolo } from "./filters.js";
+import { toggleSolo, endSolo, cleanSolo, applyDefaultHidden } from "./filters.js";
 
 const settings = loadSettings();
 const maps = await fetchJson("data/maps.json");
@@ -247,10 +247,14 @@ if (!calibrated) {
   const migrated = migrateTrials(found, trials);
   applyProgress(model, found, trials);
   layers.setHideFound(hideFound);
-  // Hidden types are stored (not visible ones), so new types default to visible. "Only this" (solo) is
-  // stored too, with the filter it replaced (js/filters.js).
+  // Hidden types are stored (not visible ones), so new types default to visible, except the
+  // `defaultHidden` ones, hidden once and then remembered as seen (js/filters.js). "Only this" (solo) is
+  // stored too, with the filter it replaced.
   let hidden = new Set(settings.hidden?.[mapId] ?? []);
   const allTypeIds = model.groups.flatMap((g) => g.types.map((x) => x.id));
+  const defaults = applyDefaultHidden(hidden, settings.defaultsSeen?.[mapId] ?? [],
+    allTypeIds.filter((id) => model.types.get(id).defaultHidden));
+  hidden = defaults.hidden;
   const entryTypes = new Map([...model.types.values()].flatMap((x) => x.entries.map((e) => [e.id, x.id])));
   let solo = cleanSolo(settings.solo?.[mapId], allTypeIds, entryTypes);
   for (const type of model.types.keys()) layers.setVisible(type, !hidden.has(type));
@@ -258,9 +262,11 @@ if (!calibrated) {
 
   function saveFilters() {
     settings.hidden = { ...settings.hidden, [mapId]: [...hidden] };
+    settings.defaultsSeen = { ...settings.defaultsSeen, [mapId]: [...defaults.seen] };
     settings.solo = { ...settings.solo, [mapId]: solo };
     saveSettings(settings);
   }
+  if (defaults.changed) saveFilters();
 
   // A checkbox (or anything that shows a type again) ends "only this": the filter on screen stays.
   function setTypes(typeIds, visible) {
