@@ -576,6 +576,27 @@ try {
     equal(await ev(`${typeBox(type.id)}.checked`), true, "its button shows the type");
     equal(await ev(`${block}.querySelector(".unlock-nudge").hidden`), true, "and the nudge goes");
     equal(await ev(`${ICONS}.some((e) => e.querySelector('[data-type="${type.id}"]'))`), true, "on the map");
+    // Once shown, it is never suggested again: not while "only this" hides it, nor when hidden by hand.
+    const nudgeHidden = () => ev(`${block}.querySelector(".unlock-nudge").hidden`);
+    const other = [...model.types.keys()].find((t) => t !== type.id && t !== type.unlockedBy);
+    const soloOther = `document.querySelector('.solo[data-types="${other}"]:not([data-entry])')`;
+    await ev(`${soloOther}.click()`);
+    equal(await ev(`${typeBox(type.id)}.checked`), false, `only ${other}: the type is off`);
+    equal(await nudgeHidden(), true, "no nudge during only this");
+    await ev(`${soloOther}.click()`);
+    await ev(`${typeBox(type.id)}.click()`);
+    equal(await ev(`${typeBox(type.id)}.checked`), false, "hidden by hand");
+    equal(await nudgeHidden(), true, "no nudge after hiding it again");
+    await load("?lang=en");
+    equal(await nudgeHidden(), true, "nor after a reload");
+    // A player who had it on before the site remembered this: recorded on load.
+    await freshLoad("?lang=en");
+    await ev(`localStorage.setItem("slmap:v1:progress:${MAP}", ${JSON.stringify(JSON.stringify(after))})`);
+    await ev(`localStorage.setItem("slmap:v1:settings", ${JSON.stringify(JSON.stringify({ hidden: { [MAP]: [] }, defaultsSeen: { [MAP]: [type.id] } }))})`);
+    await load("?lang=en");
+    equal(await nudgeHidden(), true, "on already: no nudge");
+    await ev(`${typeBox(type.id)}.click()`);
+    equal(await nudgeHidden(), true, "and none once hidden");
   });
 
   // "Only this" on one entry (js/filters.js canSoloEntry): only its markers, its name on the bar, kept after

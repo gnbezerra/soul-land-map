@@ -10,7 +10,7 @@ import { selectableMaps } from "./maps.js";
 import { stageCounts, stagesDone, setTrialProgress, migrateFoundTrials } from "./trials.js";
 import { createLayers } from "./layers.js";
 import { createSidebar } from "./sidebar.js";
-import { toggleSolo, endSolo, cleanSolo, applyDefaultHidden } from "./filters.js";
+import { toggleSolo, endSolo, cleanSolo, applyDefaultHidden, recordShown } from "./filters.js";
 
 const settings = loadSettings();
 const maps = await fetchJson("data/maps.json");
@@ -260,13 +260,25 @@ if (!calibrated) {
   for (const type of model.types.keys()) layers.setVisible(type, !hidden.has(type));
   layers.setOnlyEntry(solo?.entry ?? null);
 
+  // The unlocked types (categories.json `unlockedBy`) the player has had on the map at least once: the
+  // sidebar stops suggesting them after that (js/filters.js unlockHints).
+  const unlockedIds = allTypeIds.filter((id) => model.types.get(id).unlockedBy);
+  let shown = new Set(settings.unlockedShown?.[mapId] ?? []);
+  const noteShown = () => {
+    const next = recordShown(shown, unlockedIds, (id) => !hidden.has(id));
+    shown = next.shown;
+    return next.changed;
+  };
+
   function saveFilters() {
+    noteShown();
     settings.hidden = { ...settings.hidden, [mapId]: [...hidden] };
     settings.defaultsSeen = { ...settings.defaultsSeen, [mapId]: [...defaults.seen] };
+    settings.unlockedShown = { ...settings.unlockedShown, [mapId]: [...shown] };
     settings.solo = { ...settings.solo, [mapId]: solo };
     saveSettings(settings);
   }
-  if (defaults.changed) saveFilters();
+  if (noteShown() || defaults.changed) saveFilters();
 
   // A checkbox (or anything that shows a type again) ends "only this": the filter on screen stays.
   function setTypes(typeIds, visible) {
@@ -352,6 +364,7 @@ if (!calibrated) {
     i18n,
     markers,
     isVisible: (type) => !hidden.has(type),
+    wasShown: (type) => shown.has(type),
     onToggle: setTypes,
     getSolo: () => solo,
     // An entry shown alone is also framed, as clicking its name does.

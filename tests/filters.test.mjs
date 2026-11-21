@@ -1,7 +1,7 @@
 // Tests for js/filters.js. Run: node --test tests/
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { isSolo, toggleSolo, endSolo, cleanSolo, canSoloEntry, applyDefaultHidden, showAllTypeIds, unlockHints } from "../js/filters.js";
+import { isSolo, toggleSolo, endSolo, cleanSolo, canSoloEntry, applyDefaultHidden, showAllTypeIds, unlockHints, recordShown } from "../js/filters.js";
 
 const ALL = ["chest", "coop", "crystal", "trial"];
 
@@ -109,21 +109,34 @@ test("show all leaves the default-hidden types alone", () => {
   assert.deepEqual(showAllTypeIds(["chest", "respawn", "gone"], types), ["chest", "gone"]);
 });
 
-test("unlock hints: the total to find, and a nudge once it is all found and the type is hidden", () => {
+test("unlock hints: the total to find, and a nudge once it is all found and the type was never shown", () => {
   const types = new Map([
     ["chest", { id: "chest", total: 3, found: 2 }],
     ["respawn", { id: "respawn", unlockedBy: "chest" }],
     ["crystal", { id: "crystal", total: 1, found: 1 }],
     ["orphan", { id: "orphan", unlockedBy: "missing" }],
   ]);
-  const hidden = new Set(["respawn"]);
-  assert.deepEqual(unlockHints(types, (id) => hidden.has(id)), [{ id: "respawn", after: "chest", total: 3, nudge: false }]);
+  const shown = new Set();
+  const was = (id) => shown.has(id);
+  assert.deepEqual(unlockHints(types, was), [{ id: "respawn", after: "chest", total: 3, nudge: false }]);
   types.get("chest").found = 3;
-  assert.equal(unlockHints(types, (id) => hidden.has(id))[0].nudge, true, "all found, still hidden");
-  hidden.clear();
-  assert.equal(unlockHints(types, (id) => hidden.has(id))[0].nudge, false, "already shown");
+  assert.equal(unlockHints(types, was)[0].nudge, true, "all found, never shown");
+  shown.add("respawn");
+  assert.equal(unlockHints(types, was)[0].nudge, false, "shown once: no nudge, even when hidden again");
+  shown.clear();
   types.get("chest").total = 0;
   types.get("chest").found = 0;
-  hidden.add("respawn");
-  assert.equal(unlockHints(types, (id) => hidden.has(id))[0].nudge, false, "nothing to find is not complete");
+  assert.equal(unlockHints(types, was)[0].nudge, false, "nothing to find is not complete");
+});
+
+test("recordShown keeps what was shown and adds what is visible now", () => {
+  const visible = new Set(["respawn"]);
+  const first = recordShown([], ["respawn", "other"], (id) => visible.has(id));
+  assert.deepEqual([...first.shown], ["respawn"]);
+  assert.equal(first.changed, true);
+  visible.clear();
+  const again = recordShown(first.shown, ["respawn", "other"], (id) => visible.has(id));
+  assert.deepEqual([...again.shown], ["respawn"], "hidden again: still shown once");
+  assert.equal(again.changed, false);
+  assert.notEqual(again.shown, first.shown, "a new set");
 });

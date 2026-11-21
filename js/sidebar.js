@@ -8,6 +8,7 @@ import { hasItemList, typeItems } from "./items.js";
 // types when it has several, and an optional expandable list: of exploration entries (chest sets,
 // crystals), or of single markers for small types (trials, encounters, books; js/items.js).
 //   isVisible(typeId) -> boolean         onToggle(typeIds, visible)
+//   wasShown(typeId) -> boolean          (ever on the map: no more unlock nudge; js/filters.js unlockHints)
 //   getSolo() -> solo | null             onSolo(typeIds, entryId?)    onSoloBack()    ("only this", js/filters.js)
 //   isHideFound() -> boolean             onHideFound(hide)
 //   onFocusEntry(entryId, typeId)        onFocusMarker(markerId, typeId)
@@ -17,7 +18,7 @@ import { hasItemList, typeItems } from "./items.js";
 // `milestones`: the map's exploration reward milestones (data/maps.json), drawn on the exploration bar.
 // Call refresh() after visibility changes and refreshCounts() after progress changes.
 export function createSidebar({
-  container, chipHost, model, markers = [], milestones = [], i18n, isVisible, onToggle, getSolo = () => null, onSolo,
+  container, chipHost, model, markers = [], milestones = [], i18n, isVisible, wasShown = () => false, onToggle, getSolo = () => null, onSolo,
   onSoloBack, isHideFound, onHideFound, onFocusEntry, onFocusMarker, itemProgress, onExport, onImport,
 }) {
   const typeInputs = new Map();
@@ -124,7 +125,7 @@ export function createSidebar({
     return [h("p", { class: "unlock-hint" }, i18n.tf(`hint.${type.id}`, { n })), nudge];
   }
   function refreshNudges() {
-    const on = new Set(unlockHints(model.types, (id) => !isVisible(id)).filter((x) => x.nudge).map((x) => x.id));
+    const on = new Set(unlockHints(model.types, wasShown).filter((x) => x.nudge).map((x) => x.id));
     for (const { el, id } of nudges) el.hidden = !on.has(id);
   }
 

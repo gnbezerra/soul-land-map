@@ -61,18 +61,27 @@ export function showAllTypeIds(allTypeIds, types) {
 
 // Types that only matter once every marker of another type is found (categories.json `unlockedBy`, e.g.
 // the respawned chests after the normal chests). For each: { id, after, total } (`total`: how many of
-// `after` there are, for the sidebar's hint) and `nudge`: they are all found and the type is still hidden,
-// so the sidebar suggests showing it. The site only knows what the player marked, so it never turns the
-// type on by itself.
-export function unlockHints(types, isHidden) {
+// `after` there are, for the sidebar's hint) and `nudge`: they are all found and the player has never shown
+// the type (`wasShown`, see recordShown), so the sidebar suggests showing it. Hidden is not enough: "only
+// this" on another category hides it too, and a player who hid it again is done with it. The site only
+// knows what the player marked, so it never turns the type on by itself.
+export function unlockHints(types, wasShown) {
   const out = [];
   for (const type of types.values()) {
     const after = type.unlockedBy && types.get(type.unlockedBy);
     if (!after) continue;
     const complete = after.total > 0 && after.found >= after.total;
-    out.push({ id: type.id, after: after.id, total: after.total, nudge: complete && isHidden(type.id) });
+    out.push({ id: type.id, after: after.id, total: after.total, nudge: complete && !wasShown(type.id) });
   }
   return out;
+}
+
+// The types of `typeIds` that have been on the map at least once, by any way (checkbox, "only this", a
+// link): `shown` plus those visible now. Returns { shown, changed } (a new set; `changed`: something to save).
+export function recordShown(shown, typeIds, isVisible) {
+  const next = new Set(shown);
+  for (const id of typeIds) if (isVisible(id)) next.add(id);
+  return { shown: next, changed: next.size !== new Set(shown).size };
 }
 
 // A saved solo, kept only if it is well formed and names types this map has, and, for an entry, an entry

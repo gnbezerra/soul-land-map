@@ -282,9 +282,10 @@ task or a mount (Ownerless Objects is one).
   one on keeps it on. "Show all" leaves them as they are; their checkbox, "only this", a deep link or the
   hint below turns them on.
 - A type with `unlockedBy` (the respawned chests, by `chest_normal`) shows a hint line under it in the
-  sidebar (`hint.<type>`, with the other type's total), and, once every marker of that type is marked found
-  while it is still hidden, a note (`nudge.<type>`) with a "Show on the map" button. The site never turns it
-  on by itself: it only knows what the player marked.
+  sidebar (`hint.<type>`, with the other type's total), and, once every marker of that type is marked found,
+  a note (`nudge.<type>`) with a "Show on the map" button, until the type has been on the map once by any way
+  (`settings.unlockedShown` per map): "only this" on another category, or hiding it again, does not bring the
+  note back. The site never turns it on by itself: it only knows what the player marked.
 - Counters read `found / total in the game`: the total is the sum of the `size` of the entries of that type
   (or the number of mapped markers when a type has no entries yet).
 - The bar at the top of the sidebar is the game's exploration value, in points: `explorationRules` in

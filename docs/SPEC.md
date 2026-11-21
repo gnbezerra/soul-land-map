@@ -313,7 +313,8 @@ The sidebar should filter by species; the popup lists the other locations of the
 - Keys are prefixed and versioned: `slmap:v1:progress:<map>` (set of found marker ids),
   `slmap:v1:trials:<map>` (Divine Trial id → layers done, positive integers only) and `slmap:v1:settings`
   (lang, current map, hidden types per map, hide-found per map, "only this" per map, and per map the
-  default-hidden types already applied once, `defaultsSeen`, so turning one on sticks).
+  default-hidden types already applied once, `defaultsSeen`, so turning one on sticks, and the unlocked
+  types already shown once, `unlockedShown`, which ends their nudge).
 - Divine Trials are never in the found set. A trial id found there (marked found before layer progress
   existed) is moved to `trials` as complete when the map loads or a backup is imported.
 - All reads/writes in try/catch; the site works with empty or unavailable storage.
