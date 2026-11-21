@@ -48,7 +48,7 @@ change (see "Adding complexity").
 | Third-party code is vendored (`vendor/leaflet`), no CDN | no third-party requests, reproducible, survives CDN outages | a dependency is impractical to vendor |
 | `package.json` holds dev tools only (today the Markdown linter), pinned by `package-lock.json`; the site has no npm dependency, and Node stays a dev tool | the linter pays for itself; nothing else needs npm | a runtime dependency or a bundler is proposed, or the dev tools get many or slow |
 | Static site, no backend or database; progress lives in the browser | nothing needs accounts or shared state | cross-device sync, user accounts, in-site community contributions |
-| Generated data and tiles are committed; CI deploys the repo as is to Pages | the owner previews the build locally anyway; the diffs are reviewable | repo size or build time hurts, or building the data in CI becomes simpler than committing it |
+| Generated data and tiles are committed; CI deploys the repo as is to Pages, except `version.json`, which it writes (the published commit and the date of the last data change) | the owner previews the build locally anyway; the diffs are reviewable | repo size or build time hurts, or building the data in CI becomes simpler than committing it |
 | Checks run locally and in CI on every push and pull request; deploy only after they pass; GitHub's own actions only | every push deploys, and the CSVs can be edited without an agent; the npm registry, for `npm ci`, is the one download | the checks get slow (over ~5 min) or need secrets or external services |
 
 ## Adding complexity
