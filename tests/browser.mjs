@@ -1036,6 +1036,31 @@ try {
       // One icon per point: an encounter with several points shows one on each.
       equal(await ev(`document.querySelectorAll(".leaflet-marker-icon").length`),
         (json(`data/markers/${other}.json`) ?? []).reduce((n, m) => n + (m.points?.length ?? 1), 0), "marker icons");
+      // It opens on its maps.json "view" when it has one (framed on it, all of it in sight), else on the whole
+      // image. What is in sight is measured in image pixels against a loaded tile, as iconPlacementError does.
+      const cfg = allMaps[other];
+      const seen = await ev(`(() => {
+        const m = document.getElementById("map").getBoundingClientRect();
+        const tiles = [...document.querySelectorAll("img.leaflet-tile-loaded")].filter((t) => t.src.includes("tiles/${other}/"));
+        const img = tiles.sort((a, b) => b.src.localeCompare(a.src))[0];
+        const [z, x, y] = img.src.match(/(\\d+)\\/(\\d+)\\/(\\d+)\\.webp$/).slice(1).map(Number);
+        const b = img.getBoundingClientRect();
+        return { z, x, y, left: b.left, top: b.top, width: b.width * ${cfg.tiles.tileSize} / img.offsetWidth,
+          map: { left: m.left, top: m.top, right: m.right, bottom: m.bottom } };
+      })()`);
+      const span = cfg.tiles.tileSize * 2 ** (cfg.tiles.maxNativeZoom - seen.z); // image pixels per tile
+      const s = seen.width / span;
+      const toImage = (sx, sy) => [seen.x * span + (sx - seen.left) / s, seen.y * span + (sy - seen.top) / s];
+      const [ix0, iy0] = toImage(seen.map.left, seen.map.top);
+      const [ix1, iy1] = toImage(seen.map.right, seen.map.bottom);
+      const v = cfg.view;
+      const want = v ? [v.x, v.y, v.x + v.width, v.y + v.height] : [0, 0, cfg.image.width, cfg.image.height];
+      const inSight = `in sight: ${[ix0, iy0, ix1, iy1].map((n) => n.toFixed(0)).join(", ")}; expected ${want.join(", ")}`;
+      if (ix0 > want[0] + 2 || iy0 > want[1] + 2 || ix1 < want[2] - 2 || iy1 < want[3] - 2) {
+        throw new Error(`the opening view does not show all of it (${inSight})`);
+      }
+      const room = Math.min((ix1 - ix0) / (want[2] - want[0]), (iy1 - iy0) / (want[3] - want[1]));
+      if (room > 1.02) throw new Error(`the opening view is not framed on it (${inSight})`);
       await wait(500); // tiles fade in after loading
       await shot(`map-${other}`);
     });

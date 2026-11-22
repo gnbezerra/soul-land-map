@@ -289,7 +289,8 @@ The steps, in order (each one is described above or under "Assets"):
 3. **Make the tiles** from the map image ("Assets"). The image stays in `maps/` (ignored by git) and may keep
    underscores in its file name; the tiles folder, `tiles/<id>`, follows the id.
 4. **Add the `maps.json` entry** with `"draft": true`: the image size and the tiles (`tileSize` 256,
-   `maxNativeZoom` 4 for a 4096² image and 3 for a 2048² one, `maxZoom` one step above it).
+   `maxNativeZoom` 4 for a 4096² image and 3 for a 2048² one, `maxZoom` one step above it). When the points
+   fill only part of the image, add a `view` around them, so the map opens there (SPEC §4.1).
 5. **Export the CSVs** (`game_data.py export <id>`, "Game data"), and copy the milestones and the calibration
    it prints into `maps.json`. Read every line it prints: a `WARNING` means a value no player could see.
 6. **Check the export against the game** before building on it: the region's counters (one per category),

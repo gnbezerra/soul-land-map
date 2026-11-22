@@ -102,6 +102,7 @@ Each map has an entry in `data/maps.json`:
 | `tiles` | `tileSize` 256; `maxNativeZoom`, 4 for a 4096 image and 3 for a 2048 one; `maxZoom`, beyond the native zoom, where the tiles are upscaled and blurry |
 | `calibration` | `scaleX`, `offsetX`, `scaleY`, `offsetY` (below) |
 | `exploration` | `milestones`: the reward milestones of the exploration value (§7.3) |
+| `view` | optional; the rectangle the map opens on, in image pixels (`x`, `y`, `width`, `height`), for a region whose points fill only part of its image (Xing Dou Great Forest, the rest under fog); without it the map opens on the whole image |
 | `draft` | optional; `true` while the region's data is still being collected: its link opens it, but the region selector leaves it out |
 
 The calibration is two independent linear equations, without rotation:
@@ -436,7 +437,8 @@ Desktop:
   export and import, "Report a problem", the disclaimer (§10), and the published version.
 - The map fills the rest, with the coordinate readout bottom-left (a click pins the reading) and the zoom
   control top-right. The fit zoom (fractional) is the `minZoom`, the wheel is slow, and the +/- buttons snap
-  to multiples of 0.5.
+  to multiples of 0.5. The map opens on the whole image, or on its `view` (§4.1) when it has one; zooming out
+  still reaches the whole image.
 
 Mobile (under 700 px wide):
 

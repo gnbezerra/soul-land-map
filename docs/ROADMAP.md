@@ -51,11 +51,14 @@ checks pass (README "CI and deploy").
 - "Report a problem" above the sidebar's disclaimer, a new GitHub issue filled in with the open marker and the
   version (SPEC §7.1), since 2026-11-21.
 - i18n: en/pt/zh UI with a language selector (SPEC §5).
+- A map can open on part of its image (`view` in `data/maps.json`, SPEC §4.1), since 2026-11-22: Xing Dou
+  Great Forest opens on its points, in the corner not under fog.
 
 **Tests.** The checks in README "Checks" run on the owner's machine and in CI. The browser test drives
 headless Chrome with the real vendored Leaflet and covers:
 
 - every icon on its image pixel, measured against the tiles, at two zooms;
+- each other map by its link: its tiles, markers and region selector, and the view it opens on;
 - every marker's popup in en and pt, the found button and Divine Trial progress;
 - reloads, the storage migration and the backup import;
 - popup placement on desktop, mobile and landscape, and the bottom sheet;

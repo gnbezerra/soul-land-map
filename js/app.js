@@ -6,7 +6,7 @@ import {
 import { detectLang, loadI18n, loadLanguages } from "./i18n.js";
 import { buildModel, applyProgress, countProgress } from "./model.js";
 import { parseHash, mapHash, markerHash, markerLink } from "./links.js";
-import { selectableMaps } from "./maps.js";
+import { openingView, selectableMaps } from "./maps.js";
 import { stageCounts, stagesDone, setTrialProgress, migrateFoundTrials } from "./trials.js";
 import { createLayers } from "./layers.js";
 import { createSidebar } from "./sidebar.js";
@@ -122,6 +122,14 @@ function fitWholeMap() {
   map.fitBounds(bounds, { animate: false });
 }
 fitWholeMap();
+// A map with a "view" in maps.json opens on it instead (js/maps.js), pushed inside the image so no empty band
+// shows past its edge; zooming out still reaches the whole map. A deep link to a marker moves the view later.
+const view = openingView(cfg);
+if (view) {
+  map.fitBounds(L.latLngBounds(pixelToLatLng(map, nz, view.x0, view.y1), pixelToLatLng(map, nz, view.x1, view.y0)),
+    { animate: false });
+  map.panInsideBounds(bounds, { animate: false });
+}
 const maxBounds = bounds.pad(0.1);
 map.setMaxBounds(maxBounds);
 // A popup near the edge of the map needs room to pan into view, which the max bounds would undo
