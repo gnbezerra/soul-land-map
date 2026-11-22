@@ -33,13 +33,14 @@ checks pass (README "CI and deploy").
   (`docs/DATA.md` "Game data"), then corrected by the owner: the tags of Tang Sect Chests Two and Three
   (the export read the invisible chests as `hidden`, a rule fixed in `tools/game_data.py` the same day) and
   the two portals. `compare` finds no difference. Every point is in the north-west corner, the only part of
-  the map image not under fog. Its calibration comes from `map_position` and has not been checked against
-  points measured in-game yet.
+  the map image not under fog. Its calibration comes from `map_position`, checked on 2026-11-22 against 9
+  points the owner measured (`docs/DATA.md` "Calibration").
 - Until 2026-11-22, `compare` reported 27 invisible Tang Sect chests of Nuoding and Suotuo as missing the
   `hidden` tag; that was the same wrong rule, and the CSVs were right.
 - The counts of each region, by category: `docs/GAME-NOTES.md` "Exploration counts".
-- Both maps are calibrated from the game's `map_position` table since 2026-11-16 (`docs/DATA.md`
-  "Calibration"); before that, from least-squares fits of points measured in-game.
+- Every map is calibrated from the game's `map_position` table (Nuoding and Suotuo since 2026-11-16, before
+  that from least-squares fits of points measured in-game), and checked against points measured in-game
+  (`docs/DATA.md` "Calibration").
 
 **Features.**
 
@@ -99,7 +100,7 @@ helps players more, and rewards need a lot of data collected in-game.
 | Nuoding | final names of the respawned-chest entries, and a native speaker for their ZH | they are provisional |
 | Nuoding | notes of the two new books (`nuoding-0338`, `0339`) | they have none |
 | Suotuo | the location-specific tags and the height notes (in-game) | the tables do not have them |
-| Xing Dou Great Forest | a few points measured in-game to check the calibration; the location-specific tags and height notes; when to publish | the tables do not have them |
+| Xing Dou Great Forest | the location-specific tags and height notes; when to publish | the tables do not have them |
 | Mixed Area | two PT descriptions that were cut off in screenshots | for when the region is added |
 | next regions | their map images | tiles (`docs/DATA.md` "Adding a region") |
 | all | a native review of the ZH UI strings | they are the site's own translations |
