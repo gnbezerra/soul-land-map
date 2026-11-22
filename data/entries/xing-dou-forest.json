@@ -29,16 +29,12 @@
     "type": "chest_normal",
     "size": 3,
     "tags": [
-      "hidden",
       "purple_demon_eye"
     ]
   },
   "tang-sect-3": {
     "type": "chest_normal",
-    "size": 2,
-    "tags": [
-      "grappling_hook"
-    ]
+    "size": 2
   },
   "dragonwood-coffer-1": {
     "type": "chest_contract",

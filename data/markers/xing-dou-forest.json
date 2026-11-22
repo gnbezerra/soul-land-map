@@ -46,8 +46,8 @@
   {"id": "xing-dou-forest-0045", "type": "chest_normal", "entry": "tang-sect-2", "entryIndex": 1, "x": 90, "y": 967},
   {"id": "xing-dou-forest-0046", "type": "chest_normal", "entry": "tang-sect-2", "entryIndex": 2, "x": 179, "y": 804},
   {"id": "xing-dou-forest-0047", "type": "chest_normal", "entry": "tang-sect-2", "entryIndex": 3, "x": 312, "y": 835},
-  {"id": "xing-dou-forest-0048", "type": "chest_normal", "entry": "tang-sect-3", "entryIndex": 1, "x": 52, "y": 914},
-  {"id": "xing-dou-forest-0049", "type": "chest_normal", "entry": "tang-sect-3", "entryIndex": 2, "x": 216, "y": 915},
+  {"id": "xing-dou-forest-0048", "type": "chest_normal", "entry": "tang-sect-3", "entryIndex": 1, "x": 52, "y": 914, "tags": ["grappling_hook"]},
+  {"id": "xing-dou-forest-0049", "type": "chest_normal", "entry": "tang-sect-3", "entryIndex": 2, "x": 216, "y": 915, "tags": ["fire_seal"]},
   {"id": "xing-dou-forest-0050", "type": "chest_contract", "entry": "dragonwood-coffer-1", "x": 131, "y": 944, "contract": "wood"},
   {"id": "xing-dou-forest-0051", "type": "chest_contract", "entry": "dragonwood-coffer-2", "x": 76, "y": 902, "contract": "wood"},
   {"id": "xing-dou-forest-0052", "type": "chest_contract", "entry": "dragonwood-coffer-3", "x": 137, "y": 901, "contract": "wood"},
@@ -62,5 +62,7 @@
   {"id": "xing-dou-forest-0061", "type": "crystal", "entry": "xing-dou-perimeter-crystal", "entryIndex": 3, "x": 204, "y": 888},
   {"id": "xing-dou-forest-0062", "type": "crystal", "entry": "xing-dou-perimeter-crystal", "entryIndex": 4, "x": 282, "y": 912},
   {"id": "xing-dou-forest-0063", "type": "crystal", "entry": "xing-dou-perimeter-crystal", "entryIndex": 5, "x": 44, "y": 943},
-  {"id": "xing-dou-forest-0064", "type": "teleport", "entry": "teleport-point-of-xing-dou-forest-outskirts", "entryIndex": 1, "x": 171, "y": 815}
+  {"id": "xing-dou-forest-0064", "type": "teleport", "entry": "teleport-point-of-xing-dou-forest-outskirts", "entryIndex": 1, "x": 171, "y": 815},
+  {"id": "xing-dou-forest-0065", "type": "portal", "x": 40, "y": 965, "to": "suotuo"},
+  {"id": "xing-dou-forest-0066", "type": "portal", "x": 65, "y": 827, "to": "xing-dou-mixed-area"}
 ]

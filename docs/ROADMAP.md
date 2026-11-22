@@ -20,7 +20,7 @@ checks pass (README "CI and deploy").
 | --- | --- | --- | --- |
 | Nuoding City Area | 4096² | 0–4, `maxZoom` 5 | Fully mapped: 339 markers, 49 entries, all named in en/pt/zh, plus 150 respawned chests |
 | Suotuo City Area | 2048² | 0–3, `maxZoom` 4 | Published on 2026-11-16: 331 markers, 55 entries, matching every count of the game; tags and height notes still to come |
-| Xing Dou Great Forest | 2048² | 0–3, `maxZoom` 4 | Draft since 2026-11-22: 64 markers, 16 entries, all from the game tables, matching every counter of the game; the seals of two chests still to come |
+| Xing Dou Great Forest | 2048² | 0–3, `maxZoom` 4 | Draft since 2026-11-22: 64 markers, 16 entries, all from the game tables, matching every counter of the game, plus the owner's tags and portals; calibration, location-specific tags and height notes still to come |
 
 - Nuoding was checked against the game tables on 2026-11-16 (`tools/game_data.py compare nuoding`: no
   differences). The recommended CP of the combat stages, the stars of their layers 4 and 7, two books and the
@@ -30,9 +30,13 @@ checks pass (README "CI and deploy").
   combat levels, seals, the encounters with no NPC, the pillar, the portals. Its positions were sampled
   in-game. The owner made it public on 2026-11-16.
 - Xing Dou Great Forest's CSVs were exported from the game tables on 2026-11-22, combat levels included
-  (`docs/DATA.md` "Game data"); `compare` finds no difference besides the two seals. Every point is in the
-  north-west corner, the only part of the map image not under fog. Its calibration comes from `map_position`
-  and has not been checked against points measured in-game yet.
+  (`docs/DATA.md` "Game data"), then corrected by the owner: the tags of Tang Sect Chests Two and Three
+  (the export read the invisible chests as `hidden`, a rule fixed in `tools/game_data.py` the same day) and
+  the two portals. `compare` finds no difference. Every point is in the north-west corner, the only part of
+  the map image not under fog. Its calibration comes from `map_position` and has not been checked against
+  points measured in-game yet.
+- Until 2026-11-22, `compare` reported 27 invisible Tang Sect chests of Nuoding and Suotuo as missing the
+  `hidden` tag; that was the same wrong rule, and the CSVs were right.
 - The counts of each region, by category: `docs/GAME-NOTES.md` "Exploration counts".
 - Both maps are calibrated from the game's `map_position` table since 2026-11-16 (`docs/DATA.md`
   "Calibration"); before that, from least-squares fits of points measured in-game.
@@ -95,15 +99,15 @@ helps players more, and rewards need a lot of data collected in-game.
 | Nuoding | final names of the respawned-chest entries, and a native speaker for their ZH | they are provisional |
 | Nuoding | notes of the two new books (`nuoding-0338`, `0339`) | they have none |
 | Suotuo | the location-specific tags and the height notes (in-game) | the tables do not have them |
-| Xing Dou Great Forest | the seal (`poison_seal` or `fire_seal`) of the Xuanyu Hand chests `xing-dou-forest-0048` and `0049`; its portals; a few points measured in-game to check the calibration; the location-specific tags and height notes; when to publish | the tables do not have them |
+| Xing Dou Great Forest | a few points measured in-game to check the calibration; the location-specific tags and height notes; when to publish | the tables do not have them |
 | Mixed Area | two PT descriptions that were cut off in screenshots | for when the region is added |
 | next regions | their map images | tiles (`docs/DATA.md` "Adding a region") |
 | all | a native review of the ZH UI strings | they are the site's own translations |
 
 ## Known gaps
 
-- **Expected `build_data.py --check` warnings today:** none for Nuoding and Xing Dou Great Forest. For
-  Suotuo, its portal to `tian-dou`, a map that does not exist yet.
+- **Expected `build_data.py --check` warnings today:** none for Nuoding. For Suotuo, its portal to
+  `tian-dou`; for Xing Dou Great Forest, its portal to `xing-dou-mixed-area`: maps that do not exist yet.
 - **Suotuo looks crowded at the whole-map view.** Marker size follows the tile zoom (full size from
   `maxNativeZoom` up), not the game's scale. Suotuo has 1.65 image px per game unit at its native zoom against
   Nuoding's 3.57, so at full size its markers sit about 2.2 times closer together on screen. On a phone
