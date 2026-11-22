@@ -134,6 +134,9 @@ turns out to be there after all):
   global release, and apparently reviewed), many in Portuguese (seen: "Rec.", "Adicionar", the trial window's
   "Mecânica de"). Do not take a cut-off string as the full official text (owner, 2026-11-21).
 - The trial window's terms, and the site's wording for them: SPEC §4.6.
+- The game's English says "hidden" for two kinds of chest that the Chinese and the site keep apart: 遮蔽
+  (inside a box, a bush or under a rock; the site's `hidden`) and 隐形 (invisible until the Purple Demon Eye
+  shows it; the site's `purple_demon_eye`). SPEC §4.4 has the tags.
 - An exploration entry with no name in the tables shows its object's own name in the list: every encounter,
   and Xing Dou Great Forest's teleport entry, "Teleport Point of Xing Dou Forest Outskirts" (owner,
   2026-11-22). Entries that have a name, size 1 included (the decryption chests), show it.

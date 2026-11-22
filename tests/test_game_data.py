@@ -173,13 +173,13 @@ TEXTS = {
 ZH = {**TEXTS, "D103": "使用钩爪，找到唐门宝箱。"}
 
 
-def make_game(root, tables=TABLES):
+def make_game(root, tables=TABLES, zh=ZH):
     config = root / "BuildRes" / "config"
     config.mkdir(parents=True)
     for name, (columns, rows) in tables.items():
         (config / f"{name}.xc").write_bytes(encode_table(columns, rows))
     for name, texts in (("language_english", TEXTS), ("language_portuguese", {k: f"pt {v}" for k, v in TEXTS.items()}),
-                        ("language", ZH)):
+                        ("language", zh)):
         rows = [{"Id": k, "Zhs": v} for k, v in texts.items()]
         (config / f"{name}.xc").write_bytes(encode_table(cols("Id:string Zhs:string"), rows))
     return GameFiles(root)
@@ -440,6 +440,38 @@ class CommandLine(unittest.TestCase):
             code, out = self.run_tool(command)
             self.assertEqual(code, 0, out)
             self.assertIn(warning, out)
+
+    def test_tags_from_the_chinese_descriptions(self):
+        # 遮蔽 is hidden; 隐形 (invisible, "hidden" in the game's English) is purple_demon_eye only; an entry that
+        # names both the Grappling Hook and the Xuanyu Hand leaves each chest's tag to the owner.
+        zh = {**ZH, "D101": "找到所有散落的遮蔽宝箱。", "D103": "使用紫极魔瞳，找到地图内所有散落的隐形唐门宝箱。",
+              "D102": "使用钩爪和玄玉手，找到地图内剩余的其他唐门宝箱。"}
+        game = Path(self.tmp.name) / "game4"
+        make_game(game, zh=zh)
+        self.game = game
+        region = game_data.Region(GameFiles(game), SCENE)
+        tags = {i["source"]: (i["tags"], bool(i.get("seal")), bool(i.get("hook_or_seal"))) for i in region.items}
+        self.assertEqual(tags["box_a"], ({"hidden"}, False, False))
+        self.assertEqual(tags["box_tang"], ({"purple_demon_eye"}, False, False))
+        self.assertEqual(tags["box_g"], ({"guarded"}, False, True))
+        code, out = self.run_tool("export")
+        self.assertEqual(code, 0, out)
+        entries = {e["id"]: e["tags"] for e in read_rows(self.src / "entries.csv")}
+        self.assertEqual((entries["lake-1"], entries["tang-sect-1"], entries["guardian"]),
+                         ("hidden", "purple_demon_eye", "guarded"))
+        self.assertIn("to fill in: testmap-0001: tag grappling_hook, poison_seal or fire_seal (its entry mixes", out)
+        mixed = "testmap-0001: its entry mixes Grappling Hook and Xuanyu Hand chests"
+        self.assertIn(mixed, self.run_tool("compare")[1])
+        markers = read_rows(self.src / "markers.csv")
+        by_id = {m["id"]: m for m in markers}
+        by_id["testmap-0001"]["tags"] = "grappling_hook"
+        tang = next(m for m in markers if m["entry"] == "tang-sect-1")
+        tang["tags"] = "hidden"
+        game_data.write_csv(self.src / "markers.csv", game_data.MARKER_HEADER, markers)
+        code, out = self.run_tool("compare")
+        self.assertNotIn(mixed, out)
+        self.assertIn(f"{tang['id']}: 'hidden' in the CSV, the game does not say so", out)
+        self.assertNotIn("the game says 'hidden'", out)
 
     def test_export_never_overwrites_a_map_with_markers(self):
         self.src.mkdir(parents=True)

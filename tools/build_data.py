@@ -181,6 +181,18 @@ def parse_int(value, where, name, rep, lo=None, hi=None):
     return n
 
 
+# Tags that never go together (SPEC 4.4): a hidden chest (遮蔽, inside a box or under a rock) is only highlighted
+# by the Purple Demon Eye; the chests that need the eye are the invisible and transformed Tang Sect ones, which
+# the game's English also calls "hidden".
+EXCLUSIVE_TAGS = [("hidden", "purple_demon_eye")]
+
+
+def check_exclusive_tags(tags, where, rep):
+    for a, b in EXCLUSIVE_TAGS:
+        if a in tags and b in tags:
+            rep.error(where, f"tags '{a}' and '{b}' never go together (SPEC 4.4)")
+
+
 def parse_tags(value, where, rep):
     tags = [t.strip() for t in value.split(";") if t.strip()]
     for t in tags:
@@ -212,6 +224,7 @@ def load_entries(rows, rep):
         if size is None:
             continue
         tags = parse_tags(r["tags"], where, rep)
+        check_exclusive_tags(tags, where, rep)
         entry = {"type": r["type"], "size": size}
         if tags:
             entry["tags"] = tags
@@ -354,6 +367,7 @@ def load_markers(rows, map_id, entries, by_name, inside, rep):
                 if t in inherited:
                     rep.warn(where, f"tag '{t}' is already on entry '{m['entry']}'")
             own = [t for t in tags if t not in inherited]
+            check_exclusive_tags(set(own) | inherited, where, rep)
             if own:
                 m["tags"] = own
         markers[mid] = m

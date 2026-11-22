@@ -54,13 +54,20 @@ CONTRACTS = {"Dragonwood": "wood", "Desolate Flame": "flame", "Mysterious Frost"
 NPC_TRIGGERS = {"1", "6", "12"}
 TRIGGER_NAMES = {"4": "item", "8": "task", "20": "mount", "22": "other"}
 # Entry tags told by the entry's Chinese description (the tool each entry asks for). box_npc.BoxRare does not
-# tell them apart: in Suotuo every Tang Sect chest has BoxRare 2, the grappling-hook ones too.
-DESC_TAGS = {"钩爪": "grappling_hook", "紫极魔瞳": "purple_demon_eye", "隐形": "hidden"}
+# tell them apart: in Suotuo every Tang Sect chest has BoxRare 2, the grappling-hook ones too. `hidden` is the
+# game's 遮蔽 (inside a box or under a rock, SPEC 4.4). The invisible (隐形) Tang Sect chests are not hidden,
+# although the game's English calls them "hidden" too: they need the Purple Demon Eye (紫极魔瞳), so they are
+# purple_demon_eye only.
+DESC_TAGS = {"钩爪": "grappling_hook", "紫极魔瞳": "purple_demon_eye", "遮蔽": "hidden"}
 # Xuanyu Hand chests carry a poison (Lv. 1) or fire (Lv. 2) seal; the tables do not say which.
 SEAL_HINT = "玄玉手"
+HOOK_HINT = "钩爪"
+SEALS = {"poison_seal", "fire_seal"}
 # Tags the game data can tell (guarded: box_npc.BoxType 8; hidden: also a ShowNpc chest). Others, like a
 # grappling hook needed by one chest of an entry, are about where the chest is.
 DERIVED_TAGS = {"guarded", "hidden", *DESC_TAGS.values()}
+# Tags the game data tells in full, so a CSV that has one the game does not is wrong too.
+FULL_TAGS = {"hidden"}
 TEXT_TYPES = {"divine_trial", "teleport", "viewpoint", "book"}
 # Respawned chests (chest_respawn): activity_explore_value ids end in _<rarity>_<letter>_<number>. The game
 # gives the groups no name, so each group is an entry of the site's own (RESPAWN_TEXTS in export).
@@ -206,9 +213,14 @@ class Region:
                 if npc["Script"] == "ShowNpc":
                     item["tags"].add("hidden")
                 desc = entry["desc"]["zh"]
-                item["tags"].update(tag for word, tag in DESC_TAGS.items() if word in desc)
-                if SEAL_HINT in desc:
+                if HOOK_HINT in desc and SEAL_HINT in desc:
+                    # An entry of Grappling Hook and Xuanyu Hand chests (Xing Dou Great Forest's Tang Sect
+                    # Chest Three): which chest needs which is not in the tables.
+                    item["hook_or_seal"] = True
+                    desc = desc.replace(HOOK_HINT, "")
+                elif SEAL_HINT in desc:
                     item["seal"] = True
+                item["tags"].update(tag for word, tag in DESC_TAGS.items() if word in desc)
             if kind in ("teleport", "viewpoint"):
                 item["name"] = site_name(self.t(f"Name_{npc_id}"))
         controllers = {r["ID"]: r for r in self.game.rows("discover_controller")}
@@ -478,6 +490,9 @@ def export(region, map_id, out_dir):
             todo.append(f"{mid}: players (chest_coop; required)")
         if item.get("seal"):
             todo.append(f"{mid}: tag poison_seal or fire_seal (Xuanyu Hand chest)")
+        if item.get("hook_or_seal"):
+            todo.append(f"{mid}: tag grappling_hook, poison_seal or fire_seal (its entry mixes Grappling Hook and "
+                        "Xuanyu Hand chests)")
         if item["extra"].get("subtype") == "combat":
             unknown = [s for s in item.get("stages", []) if s["level"] is None]
             if unknown:
@@ -606,8 +621,13 @@ def compare(region, map_id, src_dir, maps):
             # Only this way round: a CSV tag the game does not tell may be about where that one chest is.
             for tag in sorted((item["tags"] - have) & DERIVED_TAGS):
                 problems.append(f"{m['id']}: the game says '{tag}', the CSV does not")
-            if item.get("seal") and not have & {"poison_seal", "fire_seal"}:
+            for tag in sorted((have - item["tags"]) & FULL_TAGS):
+                problems.append(f"{m['id']}: '{tag}' in the CSV, the game does not say so")
+            if item.get("seal") and not have & SEALS:
                 problems.append(f"{m['id']}: a Xuanyu Hand chest without poison_seal or fire_seal")
+            if item.get("hook_or_seal") and len(have & (SEALS | {"grappling_hook"})) != 1:
+                problems.append(f"{m['id']}: its entry mixes Grappling Hook and Xuanyu Hand chests; the CSV must "
+                                "give it one of grappling_hook, poison_seal or fire_seal")
     section("Marker differences", problems)
 
     problems = []

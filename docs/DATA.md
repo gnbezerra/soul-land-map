@@ -151,7 +151,7 @@ Errors (nothing is written):
   `level` missing on a combat trial, or `level` or `cp` filled in on a puzzle one;
 - marker texts with an unknown marker or field, a `name` on a type other than `divine_trial`, `book`,
   `teleport` or `viewpoint`, a repeated field, or no `en`;
-- malformed or repeated tags.
+- malformed or repeated tags, or `hidden` with `purple_demon_eye` on the same chest (SPEC §4.4).
 
 Warnings (the build still writes; `--strict` makes them errors):
 
@@ -199,7 +199,7 @@ What comes from the tables:
 | entries, in the in-game order, with their official names and descriptions | `scene_explore_note`; an entry with no name there takes its one object's name, as the game's list does |
 | `entry_index` | the order of the `[Location N]` links |
 | the decryption chest kinds and the contract elements | `box_npc` (`BoxType` 8, a chest guarded by a boss, is a `chest_boss`) |
-| the tags `guarded`, `hidden`, `grappling_hook` and `purple_demon_eye` | `box_npc` and the entry descriptions |
+| the tags `guarded`, `hidden`, `grappling_hook` and `purple_demon_eye` | `box_npc` (`BoxType` 8 is `guarded`), the NPC's `Script` (`ShowNpc` is `hidden`) and the entry's Chinese description: 遮蔽 is `hidden`, 钩爪 `grappling_hook`, 紫极魔瞳 `purple_demon_eye`. The invisible (隐形) Tang Sect chests are `purple_demon_eye` only, although the game's English calls them "hidden" too |
 | Divine Trial names, subtypes, stars and recommended CP | `discover_controller*` |
 | the `level` of combat stages | each layer's `Condition` in `discover_controller_level`, a `player_condition` row (`Type` 1, `Param` `1,<level>`); it matched all 80 levels collected in-game in Nuoding and Suotuo (2026-11-22) |
 | teleport, viewpoint and book names | `box_npc`, `nofight_npc` |
@@ -219,6 +219,12 @@ Not in the tables, so still collected in-game:
 
 - the `players` of co-op chests;
 - the poison or fire seal on Xuanyu Hand chests, and the location-specific tags;
+- which chests of an entry that names both the Grappling Hook and the Xuanyu Hand need which (Xing Dou Great
+  Forest's Tang Sect Chest Three): `export` asks for each chest's tag and `compare` checks that it has one.
+  Ask the owner to check in-game. The grappling-hook points (`scene_static_hoolclaw`) do not tell it: the
+  hook takes the player up to an area, such as a roof that may be a hundred units wide, so the chest can be
+  far from the point (in Nuoding and Suotuo some are over 30 units away), and other chests sit right next to
+  one;
 - the pillars of challenge chests;
 - notes, howtos and `links`;
 - portals and seeds;
@@ -281,9 +287,9 @@ its image:
 The steps, in order (each one is described above or under "Assets"):
 
 1. **Pick the map id.** Map ids use hyphens, as they go in the address (`#tian-dou`), and are permanent.
-   Suotuo's portals already use `tian-dou` and `xing-dou-forest` (Xing Dou Great Forest). Proposed for the
-   others, to confirm with the owner when each one is added: `xing-dou-mixed` (Mixed Area of Xing Dou
-   Forest), `sunset-forest`, `city-of-slaughter`, `dragon-island`.
+   Portals already use `tian-dou` (Tian Dou City Area) and `xing-dou-mixed-area` (Mixed Area of Xing Dou
+   Forest). Proposed for the others, to confirm with the owner when each one is added: `sunset-forest`,
+   `city-of-slaughter`, `dragon-island`.
 2. **Name it** in `i18n/en.json`, `pt.json` and `zh.json` (`map.<id>`, the official name). `game_data.py`
    finds the region by the English one.
 3. **Make the tiles** from the map image ("Assets"). The image stays in `maps/` (ignored by git) and may keep
