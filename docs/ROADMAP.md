@@ -20,7 +20,7 @@ checks pass (README "CI and deploy").
 | --- | --- | --- | --- |
 | Nuoding City Area | 4096² | 0–4, `maxZoom` 5 | Fully mapped: 339 markers, 49 entries, all named in en/pt/zh, plus 150 respawned chests |
 | Suotuo City Area | 2048² | 0–3, `maxZoom` 4 | Published on 2026-11-16: 331 markers, 55 entries, matching every count of the game; tags and height notes still to come |
-| Xing Dou Great Forest | 2048² | 0–3, `maxZoom` 4 | Draft since 2026-11-22: 64 markers, 16 entries, all from the game tables, matching every counter of the game, plus the owner's tags and portals; calibration, location-specific tags and height notes still to come |
+| Xing Dou Great Forest | 2048² | 0–3, `maxZoom` 4 | Published on 2026-11-22: 64 markers, 16 entries, all from the game tables, matching every counter of the game, plus the owner's tags and portals; location-specific tags and height notes still to come |
 
 - Nuoding was checked against the game tables on 2026-11-16 (`tools/game_data.py compare nuoding`: no
   differences). The recommended CP of the combat stages, the stars of their layers 4 and 7, two books and the
@@ -34,7 +34,8 @@ checks pass (README "CI and deploy").
   (the export read the invisible chests as `hidden`, a rule fixed in `tools/game_data.py` the same day) and
   the two portals. `compare` finds no difference. Every point is in the north-west corner, the only part of
   the map image not under fog. Its calibration comes from `map_position`, checked on 2026-11-22 against 9
-  points the owner measured (`docs/DATA.md` "Calibration").
+  points the owner measured (`docs/DATA.md` "Calibration"). The owner checked it in production and made it
+  public on 2026-11-22.
 - Until 2026-11-22, `compare` reported 27 invisible Tang Sect chests of Nuoding and Suotuo as missing the
   `hidden` tag; that was the same wrong rule, and the CSVs were right.
 - The counts of each region, by category: `docs/GAME-NOTES.md` "Exploration counts".
@@ -100,7 +101,7 @@ helps players more, and rewards need a lot of data collected in-game.
 | Nuoding | final names of the respawned-chest entries, and a native speaker for their ZH | they are provisional |
 | Nuoding | notes of the two new books (`nuoding-0338`, `0339`) | they have none |
 | Suotuo | the location-specific tags and the height notes (in-game) | the tables do not have them |
-| Xing Dou Great Forest | the location-specific tags and height notes; when to publish | the tables do not have them |
+| Xing Dou Great Forest | the location-specific tags and height notes | the tables do not have them |
 | Mixed Area | two PT descriptions that were cut off in screenshots | for when the region is added |
 | next regions | their map images | tiles (`docs/DATA.md` "Adding a region") |
 | all | a native review of the ZH UI strings | they are the site's own translations |
