@@ -33,6 +33,7 @@ The counters of the game's exploration UI, per region and category (SPEC §4.2):
 | --- | --- | --- | --- | --- | --- | --- |
 | Nuoding City Area | 264 | 16 | 65 layers (10 pillars) | 28 | 5 | 10 (6 teleports, 4 viewpoints) |
 | Suotuo City Area | 247 | 12 (2 of them Wolf Thief chests) | 51 layers (10 pillars) | 30 | 9 | 12 (8 teleports, 4 viewpoints) |
+| Xing Dou Great Forest | 49 | 7 (all Coffers) | 20 layers (2 pillars) | 5 | 0 | 1 (1 teleport, no viewpoints) |
 | Mixed Area of Xing Dou Forest | 172 | 9 | 12 | 20 | 2 | 14 (8 seeds, 6 teleports, no viewpoints) |
 
 - **Nuoding's entries:** 20 normal-chest sets (sum 264); 16 decryption chests (4 cooperative, 6 Pillar of Empty
@@ -42,6 +43,10 @@ The counters of the game's exploration UI, per region and category (SPEC §4.2):
   other 30 chests (14 in the south-west, 16 in the south-east) belong to NoteIds 1109 and 1110, which have no
   entry and no name in the game tables. Checked on a 247/247 character: every entry complete, 217/217. The
   site puts them in entries of its own (SPEC §4.3).
+- **Xing Dou Great Forest** (from the game tables; the counters checked in-game by the owner on 2026-11-22):
+  exploration value cap 565, every point in the north-west corner, the only part of the map image not under
+  fog (the region is the forest's outskirts). 7 normal-chest sets (sum 49), 7 Coffers, 1 crystal set, 1
+  teleport entry, no encounters.
 
 ## Exploration value
 
@@ -60,9 +65,11 @@ viewpoints.
 | Encounter | +80 each | Completing encounters | Concluir encontros | 完成奇遇 |
 
 - Seeds are not in the list. The Mixed Area's 240 points reconcile only if a seed is +5 (unconfirmed).
-- Nuoding totals 3080 exactly.
-- Reward milestones: 250, 500, 1000, 1500, 2000 and 2500 (Nuoding and Suotuo); 75, 150, 300, 600, 900 and
-  1200 (Mixed Area).
+- Nuoding totals 3080 exactly; Xing Dou Great Forest 565 (56 chests, 20 layers, 5 crystals, 1 teleport).
+- Reward milestones: 250, 500, 1000, 1500, 2000 and 2500 (Nuoding and Suotuo); 150, 300, 400, 500 and 550
+  (Xing Dou Great Forest, seen in-game on 2026-11-22); 75, 150, 300, 600, 900 and 1200 (Mixed Area). In the
+  tables they are `scene_explore_reward`; the `Push` column of `scene_explore_control` lists other values in
+  those last two regions (150 to 1500 in both).
 
 ## Loot observed in-game
 
@@ -127,3 +134,6 @@ turns out to be there after all):
   global release, and apparently reviewed), many in Portuguese (seen: "Rec.", "Adicionar", the trial window's
   "Mecânica de"). Do not take a cut-off string as the full official text (owner, 2026-11-21).
 - The trial window's terms, and the site's wording for them: SPEC §4.6.
+- An exploration entry with no name in the tables shows its object's own name in the list: every encounter,
+  and Xing Dou Great Forest's teleport entry, "Teleport Point of Xing Dou Forest Outskirts" (owner,
+  2026-11-22). Entries that have a name, size 1 included (the decryption chests), show it.

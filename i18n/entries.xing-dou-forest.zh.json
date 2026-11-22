@@ -1,0 +1,66 @@
+{
+  "fengling-mountain": {
+    "name": "风铃山宝箱",
+    "description": "沿着前往索托的道路，找到星斗森林最外围风铃山附近的宝箱。"
+  },
+  "forest-perimeter-1": {
+    "name": "森林外围宝箱一",
+    "description": "沿着神意试炼和传送点，找到森林外围中心区域附近的宝箱。"
+  },
+  "forest-perimeter-2": {
+    "name": "森林外围宝箱二",
+    "description": "找到星斗大森林外围深处，蜘蛛巢穴附近的宝箱。"
+  },
+  "guardian": {
+    "name": "守护宝箱",
+    "description": "找到在星斗森林外围有怪物守护的宝箱。"
+  },
+  "tang-sect-1": {
+    "name": "唐门宝箱一",
+    "description": "使用紫极魔瞳，找到地图内所有散落的变形唐门宝箱。"
+  },
+  "tang-sect-2": {
+    "name": "唐门宝箱二",
+    "description": "使用紫极魔瞳，找到地图内所有散落的隐形唐门宝箱。"
+  },
+  "tang-sect-3": {
+    "name": "唐门宝箱三",
+    "description": "使用钩爪和玄玉手，找到地图内剩余的其他唐门宝箱。"
+  },
+  "dragonwood-coffer-1": {
+    "name": "龙木契匣一",
+    "description": "有神明取东方龙木之精，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "dragonwood-coffer-2": {
+    "name": "龙木契匣二",
+    "description": "有神明取东方龙木之精，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "dragonwood-coffer-3": {
+    "name": "龙木契匣三",
+    "description": "有神明取东方龙木之精，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "desolate-flame-coffer-1": {
+    "name": "荒炎契匣一",
+    "description": "有神明取西方荒炎之火，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "desolate-flame-coffer-2": {
+    "name": "荒炎契匣二",
+    "description": "有神明取西方荒炎之火，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "desolate-flame-coffer-3": {
+    "name": "荒炎契匣三",
+    "description": "有神明取西方荒炎之火，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "mysterious-frost-coffer-1": {
+    "name": "玄霜契匣一",
+    "description": "有神明取极北玄霜之气，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "xing-dou-perimeter-crystal": {
+    "name": "星斗外围结晶",
+    "description": "找到散落在星斗森林外围的所有修罗神念结晶。"
+  },
+  "teleport-point-of-xing-dou-forest-outskirts": {
+    "name": "星斗大森林外围传送点",
+    "description": "找到星斗大森林外围传送点。"
+  }
+}

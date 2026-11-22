@@ -1,0 +1,66 @@
+{
+  "fengling-mountain": {
+    "name": "Fengling Mountain Chest",
+    "description": "Find the chest near the Fengling Mountain, at the outskirts of the Xing Dou Forest along the road to Suotuo."
+  },
+  "forest-perimeter-1": {
+    "name": "Forest Perimeter Chest One",
+    "description": "Find the chest near the central area of the forest outskirts, along the paths of the divine trial and teleport points."
+  },
+  "forest-perimeter-2": {
+    "name": "Forest Perimeter Chest Two",
+    "description": "Discover the chest deep within the outskirts of the Xing Dou Forest, near the spider nest."
+  },
+  "guardian": {
+    "name": "Guardian Chest",
+    "description": "Locate the guarded chest in the outskirts of the Xing Dou Forest."
+  },
+  "tang-sect-1": {
+    "name": "Tang Sect Chest One",
+    "description": "Use the Purple Demon Eye to locate all the scattered transformed Tang Sect chests on the map."
+  },
+  "tang-sect-2": {
+    "name": "Tang Sect Chest Two",
+    "description": "Use the Purple Demon Eye to locate all the scattered hidden Tang Sect chests on the map."
+  },
+  "tang-sect-3": {
+    "name": "Tang Sect Chest Three",
+    "description": "Use the Grappling Hook and Xuan Yu Hand to find the remaining Tang Sect chests on the map."
+  },
+  "dragonwood-coffer-1": {
+    "name": "Dragonwood Coffer I",
+    "description": "Gods took the essence of the eastern Dragonwood and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "dragonwood-coffer-2": {
+    "name": "Dragonwood Coffer II",
+    "description": "Gods took the essence of the eastern Dragonwood and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "dragonwood-coffer-3": {
+    "name": "Dragonwood Coffer III",
+    "description": "Gods took the essence of the eastern Dragonwood and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "desolate-flame-coffer-1": {
+    "name": "Desolate Flame Coffer I",
+    "description": "Gods took the fire of the western Desolate Flame and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "desolate-flame-coffer-2": {
+    "name": "Desolate Flame Coffer II",
+    "description": "Gods took the fire of the western Desolate Flame and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "desolate-flame-coffer-3": {
+    "name": "Desolate Flame Coffer III",
+    "description": "Gods took the fire of the western Desolate Flame and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "mysterious-frost-coffer-1": {
+    "name": "Mysterious Frost Coffer I",
+    "description": "Gods took the extreme northern Mysterious Frost and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "xing-dou-perimeter-crystal": {
+    "name": "Xing Dou Perimeter Crystal",
+    "description": "Find all the scattered Asura God Mind Crystals in the outskirts of the Xing Dou Forest."
+  },
+  "teleport-point-of-xing-dou-forest-outskirts": {
+    "name": "Teleport Point of Xing Dou Forest Outskirts",
+    "description": "Find the teleport point on the outskirts of the Xing Dou Great Forest."
+  }
+}

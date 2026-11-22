@@ -1,0 +1,66 @@
+{
+  "fengling-mountain": {
+    "name": "Baú da Montanha Fengling",
+    "description": "Encontre o Baú de Tesouro perto da Montanha Fengling, na periferia da Floresta Xing Dou, ao longo da estrada para a Cidade de Suotuo."
+  },
+  "forest-perimeter-1": {
+    "name": "Baú de Tesouro Um da Periferia da Floresta",
+    "description": "Encontre o Baú de Tesouro perto da área central da periferia da floresta, ao longo dos caminhos da Provação Divina e dos Pontos de Teletransporte."
+  },
+  "forest-perimeter-2": {
+    "name": "Baú de Tesouro Dois da Periferia da Floresta",
+    "description": "Encontre o Baú de Tesouro nas profundezas da periferia da Floresta Xing Dou, perto do ninho de aranhas."
+  },
+  "guardian": {
+    "name": "Baú de Tesouro do Guardião",
+    "description": "Encontre o Baú de Tesouro guardado por Monstros na periferia da Floresta Xing Dou."
+  },
+  "tang-sect-1": {
+    "name": "Baú de Tesouro Um da Seita Tang",
+    "description": "Use o Olho Demoníaco Púrpura para Encontrar todos os Baús de Tesouro da Seita Tang Transformados espalhados pelo mapa."
+  },
+  "tang-sect-2": {
+    "name": "Baú Dois da Seita Tang",
+    "description": "Use o Olho Demoníaco Púrpura para encontrar todos os Baús de Tesouro da Seita Tang espalhados pelo mapa."
+  },
+  "tang-sect-3": {
+    "name": "Baú Três da Seita Tang",
+    "description": "Use o Gancho de Agarrar e a Mão de Jade Negra para encontrar os Baús de Tesouro restantes da Seita Tang no mapa."
+  },
+  "dragonwood-coffer-1": {
+    "name": "Baú de Contrato de Madeira de Dragão I",
+    "description": "Deuses retiraram a essência da Madeira-Dragão Oriental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "dragonwood-coffer-2": {
+    "name": "Baú de Contrato de Madeira de Dragão II",
+    "description": "Deuses retiraram a essência da Madeira-Dragão Oriental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "dragonwood-coffer-3": {
+    "name": "Baú de Contrato de Madeira de Dragão III",
+    "description": "Deuses retiraram a essência da Madeira-Dragão Oriental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "desolate-flame-coffer-1": {
+    "name": "Baú de Contrato da Chama Desolada I",
+    "description": "Deuses tomaram o fogo da Chama Desolada ocidental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "desolate-flame-coffer-2": {
+    "name": "Baú de Contrato da Chama Desolada II",
+    "description": "Deuses tomaram o fogo da Chama Desolada ocidental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "desolate-flame-coffer-3": {
+    "name": "Baú de Contrato da Chama Desolada III",
+    "description": "Deuses tomaram o fogo da Chama Desolada ocidental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "mysterious-frost-coffer-1": {
+    "name": "Baú de Contrato da Geada Misteriosa I",
+    "description": "Deuses extraíram a energia da Geada Misteriosa do extremo norte e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "xing-dou-perimeter-crystal": {
+    "name": "Cristal da Periferia da Floresta Xing Dou",
+    "description": "Encontre todos os Cristais da Mente Divina do Deus Asura espalhados pela periferia da Floresta Xing Dou."
+  },
+  "teleport-point-of-xing-dou-forest-outskirts": {
+    "name": "Ponto de Teletransporte da Periferia da Floresta Xing Dou",
+    "description": "Encontre o Ponto de Teletransporte na periferia da Floresta Xing Dou."
+  }
+}
