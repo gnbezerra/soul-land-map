@@ -8,6 +8,7 @@ on a temporary project.
 """
 import csv
 import json
+import shutil
 import struct
 import subprocess
 import sys
@@ -68,8 +69,14 @@ def npc(npc_id, x, y, script="TreasureBox", height=10.0, scene=SCENE):
 
 
 TABLES = {
-    "scene_explore_control": (cols("Id Name:string ExploreValueMax Push:string"),
-                              [{"Id": SCENE, "Name": "MapName9", "ExploreValueMax": 300, "Push": "10;20;30"}]),
+    # Push differs from the panel's milestones (scene_explore_reward), as in Xing Dou Great Forest.
+    "scene_explore_control": (cols("Id Name:string ExploreValueMax RewardId Push:string"),
+                              [{"Id": SCENE, "Name": "MapName9", "ExploreValueMax": 300, "RewardId": 7,
+                                "Push": "10;20;99"}]),
+    "scene_explore_reward": (cols("Id RewardId Level ExploreValue"), [
+        {"Id": 1, "RewardId": 7, "Level": 2, "ExploreValue": 20}, {"Id": 2, "RewardId": 7, "Level": 1, "ExploreValue": 10},
+        {"Id": 3, "RewardId": 7, "Level": 3, "ExploreValue": 30}, {"Id": 4, "RewardId": 8, "Level": 1, "ExploreValue": 5},
+    ]),
     "map_position": (cols("Id MapMaxPos:vector2 MapDetailPictureSize:vector2 MapDetailPictureMultiple:float "
                           "MapDetailPicturePosition:vector2"),
                      [{"Id": SCENE, "MapMaxPos": [1024.0, 1024.0], "MapDetailPictureSize": [4096.0, 4096.0],
@@ -146,9 +153,14 @@ TABLES = {
     "discover_controller": (cols("ID TriggerNpc:string Type GuideTitle:string"),
                             [{"ID": 2009001, "TriggerNpc": "ts_trial", "Type": 1, "GuideTitle": "TrialName"}]),
     "discover_controller_level": (cols("SID ControllerId Level Condition:string CPValue:string Star"), [
-        {"SID": 3, "ControllerId": 2009001, "Level": 3, "CPValue": "3000", "Star": 3},
-        {"SID": 1, "ControllerId": 2009001, "Level": 1, "CPValue": "1000", "Star": 1},
-        {"SID": 2, "ControllerId": 2009001, "Level": 2, "CPValue": "2000", "Star": 2},
+        {"SID": 3, "ControllerId": 2009001, "Level": 3, "Condition": "52", "CPValue": "3000", "Star": 3},
+        {"SID": 1, "ControllerId": 2009001, "Level": 1, "Condition": "50", "CPValue": "1000", "Star": 1},
+        {"SID": 2, "ControllerId": 2009001, "Level": 2, "Condition": "51", "CPValue": "2000", "Star": 2},
+    ]),
+    # The layers' Conditions: a player level (Type 1, "1,<level>"), except 52, a condition of another kind.
+    "player_condition": (cols("Id Type Param:string"), [
+        {"Id": 50, "Type": 1, "Param": "1,25"}, {"Id": 51, "Type": 1, "Param": "1,27"},
+        {"Id": 52, "Type": 7, "Param": "220502"},
     ]),
 }
 TEXTS = {
@@ -289,8 +301,9 @@ class Extraction(unittest.TestCase):
         [trial] = self.items("divine_trial")
         self.assertEqual((trial["points"], trial["extra"]["subtype"], trial["name"]["en"]),
                          ([(600, 600)], "combat", "Trial of Strength: Test"))
-        self.assertEqual(trial["stages"], [{"stage": 1, "stars": 1, "cp": 1000}, {"stage": 2, "stars": 2, "cp": 2000},
-                                           {"stage": 3, "stars": 3, "cp": 3000}])
+        self.assertEqual(trial["stages"], [{"stage": 1, "stars": 1, "cp": 1000, "level": 25},
+                                           {"stage": 2, "stars": 2, "cp": 2000, "level": 27},
+                                           {"stage": 3, "stars": 3, "cp": 3000, "level": None}])
         [tp] = self.items("teleport")
         self.assertEqual(tp["name"], {"en": "North Teleport Point", "pt": "pt North Teleport Point",
                                       "zh": "North Teleport Point"})
@@ -378,15 +391,55 @@ class CommandLine(unittest.TestCase):
                           ("testmap-0015", "respawn-good-b", "1", "250", "")])
         meet = [m for m in markers if m["type"] == "encounter"]
         self.assertEqual([(m["id"], m["x"]) for m in meet], [("testmap-0010", "800"), ("testmap-0010", "810")])
-        self.assertEqual(read_rows(self.src / "stages.csv")[0], {"trial": "testmap-0009", "stage": "1", "stars": "1",
-                                                                 "level": "", "cp": "1000"})
+        self.assertEqual([(s["stage"], s["level"], s["cp"]) for s in read_rows(self.src / "stages.csv")],
+                         [("1", "25", "1000"), ("2", "27", "2000"), ("3", "", "3000")])
         texts = read_rows(self.src / "marker_texts.csv")
         self.assertEqual({t["marker"]: t["en"] for t in texts},
                          {"testmap-0009": "Trial of Strength: Test", "testmap-0011": "North Teleport Point",
                           "testmap-0012": "A Book"})
         self.assertIn("to fill in: unlisted-1: an entry the game does not list (NoteId 199, 1 chest_normal)", out)
         self.assertIn("to fill in: testmap-0006: players", out)
-        self.assertIn("to fill in: testmap-0009: level of each of its 3 stages", out)
+        self.assertIn("to fill in: testmap-0009: level of 1 of its 3 stages", out)
+
+    def test_entries_the_game_lists_without_a_name(self):
+        # The teleport entry takes its one teleport's name, as the game's list shows it. The guardian chest has
+        # no named object to take one from: an id to rename and a name to fill in.
+        notes_cols, notes = TABLES["scene_explore_note"]
+        notes = [{**n, "NoteName": ""} if n["Id"] in (102, 301) else n for n in notes]
+        game = Path(self.tmp.name) / "game2"
+        make_game(game, {**TABLES, "scene_explore_note": (notes_cols, notes)})
+        self.game = game
+        code, out = self.run_tool("export")
+        self.assertEqual(code, 0, out)
+        entries = {e["type"] if e["type"] == "teleport" else e["id"]: e for e in read_rows(self.src / "entries.csv")}
+        self.assertEqual((entries["teleport"]["id"], entries["teleport"]["name_en"], entries["teleport"]["name_pt"]),
+                         ("north-teleport-point", "North Teleport Point", "pt North Teleport Point"))
+        self.assertEqual(entries["note-102"]["name_en"], "")
+        self.assertIn("to fill in: note-102: the game gives this chest_normal entry (NoteId 102) no name", out)
+        self.assertNotIn("note-301", out)
+        # Once the owner names it, compare does not report the name the game lacks.
+        rows = [{**e, "name_en": "Guardian Chest"} if e["id"] == "note-102" else e for e in entries.values()]
+        game_data.write_csv(self.src / "entries.csv", game_data.ENTRY_HEADER, rows)
+        code, out = self.run_tool("compare")
+        self.assertEqual(code, 0, out)
+        self.assertNotIn("in entry 'Guardian Chest' in the CSV", out)
+        self.assertNotIn("North Teleport Point", out)
+
+    def test_milestones_above_the_value_cap_are_flagged(self):
+        code, out = self.run_tool("export")
+        self.assertNotIn("above the exploration value cap", out)  # 10, 20, 30 under a cap of 300
+        reward_cols, rewards = TABLES["scene_explore_reward"]
+        rewards = [{**r, "ExploreValue": 400} if r["Id"] == 3 else r for r in rewards]
+        game = Path(self.tmp.name) / "game3"
+        make_game(game, {**TABLES, "scene_explore_reward": (reward_cols, rewards)})
+        self.game = game
+        warning = "milestone 400 is above the exploration value cap 300"
+        for command in ("compare", "export"):
+            if command == "export":
+                shutil.rmtree(self.src)
+            code, out = self.run_tool(command)
+            self.assertEqual(code, 0, out)
+            self.assertIn(warning, out)
 
     def test_export_never_overwrites_a_map_with_markers(self):
         self.src.mkdir(parents=True)
@@ -419,6 +472,9 @@ class CommandLine(unittest.TestCase):
         game_data.write_csv(self.src / "entries.csv", game_data.ENTRY_HEADER, entries)
         stages = read_rows(self.src / "stages.csv")
         stages[1]["stars"] = "5"
+        stages[0]["level"] = "26"
+        stages[1]["level"] = ""
+        stages[2]["level"] = "40"  # the game has no level for this layer: not compared
         game_data.write_csv(self.src / "stages.csv", ["trial", "stage", "stars", "level", "cp"], stages)
         code, out = self.run_tool("compare")
         self.assertEqual(code, 0, out)
@@ -431,12 +487,15 @@ class CommandLine(unittest.TestCase):
                      "lake-1: size 3 in the CSV, 2 in the game",
                      "lake-1: desc_en 'Old text.' in the CSV, 'Find the lake chests.' in the game",
                      "testmap-0009 stage 2: 5 stars in the CSV, 2 in the game",
+                     "testmap-0009 stage 1: level 26 in the CSV, 25 in the game",
+                     "testmap-0009 stage 2: level empty in the CSV, 27 in the game",
                      "lost-items: desc_en 'Coins.' in the CSV, 'Someone lost coins.' in the game",
                      "lost-items: desc_pt empty in the CSV, the game has 'pt Someone lost coins.'",
                      "calibration in maps.json"]:
             self.assertIn(line, out)
         self.assertNotIn("milestones in maps.json", out)
         self.assertNotIn("Trial of Strength: Test.", out)
+        self.assertNotIn("stage 3: level", out)
         self.assertNotIn("unlisted-1", out)  # the site's own entry: matched by position, names not compared
         self.assertNotIn("respawn-", out)  # the respawned chest at box_a's place is not taken for box_a
         self.assertNotIn("different order", out)  # the site's wording is not a difference

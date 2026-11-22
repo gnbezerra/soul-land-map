@@ -182,7 +182,7 @@ python tools/game_data.py compare nuoding --game "C:/Soul Land：New World/app/d
   is still to fill in by hand, and prints the map's exploration milestones and calibration for `maps.json`.
   After that the CSVs are the owner's, edited as usual.
 - `compare` checks a map's CSVs against the game: positions, entries and their order, `entry_index`, names
-  and descriptions in the three languages, the tags it can tell, trial stars and CP, milestones and
+  and descriptions in the three languages, the tags it can tell, trial stars, levels and CP, milestones and
   calibration. An entry with no position in the tables (most encounters) is matched by its English name. Run
   it after a game update.
 
@@ -196,15 +196,17 @@ What comes from the tables:
 | --- | --- |
 | the counted objects, as markers of every type in this table | `scene_explore` |
 | their game coordinates | `scene_static_npc`, the NPC's spawn point: `round(X + 512)`, `round(Z + 512)`; the in-game readout matches them exactly or within 1 |
-| entries, in the in-game order, with their official names and descriptions | `scene_explore_note` |
+| entries, in the in-game order, with their official names and descriptions | `scene_explore_note`; an entry with no name there takes its one object's name, as the game's list does |
 | `entry_index` | the order of the `[Location N]` links |
 | the decryption chest kinds and the contract elements | `box_npc` (`BoxType` 8, a chest guarded by a boss, is a `chest_boss`) |
 | the tags `guarded`, `hidden`, `grappling_hook` and `purple_demon_eye` | `box_npc` and the entry descriptions |
 | Divine Trial names, subtypes, stars and recommended CP | `discover_controller*` |
+| the `level` of combat stages | each layer's `Condition` in `discover_controller_level`, a `player_condition` row (`Type` 1, `Param` `1,<level>`); it matched all 80 levels collected in-game in Nuoding and Suotuo (2026-11-22) |
 | teleport, viewpoint and book names | `box_npc`, `nofight_npc` |
 | Nuoding's respawned chests, one site entry per game group (SPEC §4.5) | `activity_explore_value`, `magic_pupil_npc` |
 | encounter names and descriptions, and the points of those triggered by an NPC | `fortuitousmeet`, `HandBookTips` |
-| the exploration value cap and the reward milestones | `scene_explore_control` |
+| the exploration value cap | `scene_explore_control` |
+| the reward milestones | `scene_explore_reward`, by the region's `RewardId` (not `Push`, which differs in some regions) |
 | the calibration | `map_position` |
 
 Each table's role is in the docstring at the top of `tools/game_data.py`. Checked on 2026-11-16:
@@ -216,7 +218,6 @@ Objects the game counts but lists in no entry get an entry of the site's own, `u
 Not in the tables, so still collected in-game:
 
 - the `players` of co-op chests;
-- the `level` of combat stages (the game gates layers on story quests, not on a level);
 - the poison or fire seal on Xuanyu Hand chests, and the location-specific tags;
 - the pillars of challenge chests;
 - notes, howtos and `links`;
@@ -290,14 +291,18 @@ The steps, in order (each one is described above or under "Assets"):
 4. **Add the `maps.json` entry** with `"draft": true`: the image size and the tiles (`tileSize` 256,
    `maxNativeZoom` 4 for a 4096² image and 3 for a 2048² one, `maxZoom` one step above it).
 5. **Export the CSVs** (`game_data.py export <id>`, "Game data"), and copy the milestones and the calibration
-   it prints into `maps.json`.
-6. **Complete the data in-game** ("Game data" lists what the tables lack), and check the calibration with a
+   it prints into `maps.json`. Read every line it prints: a `WARNING` means a value no player could see.
+6. **Check the export against the game** before building on it: the region's counters (one per category),
+   its exploration value cap and its reward milestones, from `docs/GAME-NOTES.md` when it has them, else from
+   a screenshot of the game's exploration panel. The tables do not always say what the game shows: the
+   milestones were once read from a column that gave 150 to 1500 for a cap of 565 (Xing Dou Great Forest).
+7. **Complete the data in-game** ("Game data" lists what the tables lack), and check the calibration with a
    few measured points ("Calibration").
-7. **Build** (`build_data.py <id>`) and read the warnings. CI checks every map in `maps.json` on its own.
-8. **Publish:** remove `"draft"` when the owner decides the map has its data. Until then its link (`#<id>`)
+8. **Build** (`build_data.py <id>`) and read the warnings. CI checks every map in `maps.json` on its own.
+9. **Publish:** remove `"draft"` when the owner decides the map has its data. Until then its link (`#<id>`)
    opens it, but the region selector lists it only while it is the current map (`js/maps.js`), so players do
    not land on an empty map.
-9. **Record it:** the game's counts in `docs/GAME-NOTES.md`, the state in `docs/ROADMAP.md`.
+10. **Record it:** the game's counts in `docs/GAME-NOTES.md`, the state in `docs/ROADMAP.md`.
 
 ## Assets
 

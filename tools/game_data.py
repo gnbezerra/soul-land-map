@@ -22,8 +22,10 @@ Where things come from (tables in the game's config folder, read by game_tables.
                            groups such as nd_Newactivitybox_good_B_07; no counter in the game lists them
     magic_pupil_npc        objects that need the Purple Demon Eye (Type 2)
     discover_controller*   Divine Trials: puzzle or combat, trigger NPC, name, stars and CP per layer
+    player_condition       the player level each combat layer requires (its Condition)
     fortuitousmeet         encounters: name and what triggers them (NPCs, an item, a task...)
-    scene_explore_control  exploration value cap and reward milestones
+    scene_explore_control  exploration value cap, and the RewardId of the region's milestones
+    scene_explore_reward   the reward milestones the exploration panel shows
     map_position           the map image's placement, from which the calibration follows
 """
 import argparse
@@ -135,9 +137,13 @@ class Region:
         self._read_explore()
         self._read_respawn()
         self._read_books()
+        self._name_unnamed_entries()
         control = next((r for r in game.rows("scene_explore_control") if r["Id"] == scene), {})
         self.value_cap = control.get("ExploreValueMax")
-        self.milestones = [int(v) for v in str(control.get("Push", "")).split(";") if v.strip()]
+        # The milestones the exploration panel shows. Not `Push` in scene_explore_control: it matches them in
+        # most regions, but not in Xing Dou Great Forest (150...1500 for a cap of 565; the panel shows 150...550).
+        rewards = [r for r in game.rows("scene_explore_reward") if r["RewardId"] == control.get("RewardId")]
+        self.milestones = [r["ExploreValue"] for r in sorted(rewards, key=lambda r: r["Level"])]
         self.calibration = self._calibration()
 
     def t(self, key):
@@ -206,6 +212,12 @@ class Region:
             if kind in ("teleport", "viewpoint"):
                 item["name"] = site_name(self.t(f"Name_{npc_id}"))
         controllers = {r["ID"]: r for r in self.game.rows("discover_controller")}
+        # A layer's Condition is a player_condition row; Type 1 with Param "1,<n>" requires player level n.
+        required = {}
+        for r in self._optional_rows("player_condition"):
+            m = re.fullmatch(r"1,(\d+)", str(r["Param"]))
+            if r["Type"] == 1 and m:
+                required[str(r["Id"])] = int(m.group(1))
         levels = defaultdict(list)
         for r in self.game.rows("discover_controller_level"):
             levels[r["ControllerId"]].append(r)
@@ -218,12 +230,23 @@ class Region:
                               name=site_name(self.t(c.get("GuideTitle", "")), trial=True))
             item["extra"]["subtype"] = TRIAL_SUBTYPES.get(c.get("Type"))
             item["stages"] = [{"stage": s["Level"], "stars": s["Star"],
-                               "cp": int(s["CPValue"]) if str(s["CPValue"]).isdigit() else None} for s in stages]
+                               "cp": int(s["CPValue"]) if str(s["CPValue"]).isdigit() else None,
+                               "level": required.get(str(s.get("Condition", "")))} for s in stages]
             if len(stages) != layers:
                 self.skipped.append(("trial layer count differs between tables",
                                      f"{cid}: {layers} in scene_explore, {len(stages)} in discover_controller_level"))
             if not npc:
                 self.skipped.append(("no position for the trial's trigger NPC", f"{cid} ({c.get('TriggerNpc')})"))
+
+    def _name_unnamed_entries(self):
+        """A listed entry with no NoteName shows its one object's own name in the game's list (Xing Dou Great
+        Forest's teleport, checked in-game on 2026-11-22; encounters get theirs from fortuitousmeet)."""
+        for note_id, e in self.entries.items():
+            if not e.get("listed") or e["name"]["en"]:
+                continue
+            named = [i for i in self.items if i.get("note") == note_id and i.get("name", {}).get("en")]
+            if e["count"] == 1 and len(named) == 1:
+                e["name"] = named[0]["name"]
 
     def _optional_rows(self, name):
         try:
@@ -343,6 +366,15 @@ def calibration_for(region, width):
     return c and {k: v * width for k, v in c.items()}
 
 
+def milestones_problem(region):
+    """A milestone no player can reach means the milestones were read from the wrong place (the `Push` column
+    once gave 150...1500 for a cap of 565). None when they fit under the cap."""
+    if region.milestones and region.value_cap and max(region.milestones) > region.value_cap:
+        return (f"milestone {max(region.milestones)} is above the exploration value cap {region.value_cap}: "
+                "check them against the game's exploration panel before copying them")
+    return None
+
+
 # ---------------------------------------------------------------------------------------------- export
 
 # A site entry for objects the game counts but lists in no entry (SPEC §4.3, tag `unlisted`). The game gives
@@ -414,6 +446,11 @@ def export(region, map_id, out_dir):
             eid = f"unlisted-{unlisted_n}"
             todo.append(f"{eid}: an entry the game does not list (NoteId {note_id}, {len(members)} {e['kind']}); "
                         "add its area to the names")
+        elif not e["name"]["en"]:
+            # Listed, no name, and no one named object to take it from (_name_unnamed_entries): no slug to make.
+            eid = f"note-{note_id}"
+            todo.append(f"{eid}: the game gives this {e['kind']} entry (NoteId {note_id}) no name; fill name_en, "
+                        "name_pt and name_zh as the in-game list shows them, and an id to match")
         else:
             eid = slug(e["name"]["en"], e["kind"])
         if eid in entry_ids.values():
@@ -442,7 +479,10 @@ def export(region, map_id, out_dir):
         if item.get("seal"):
             todo.append(f"{mid}: tag poison_seal or fire_seal (Xuanyu Hand chest)")
         if item["extra"].get("subtype") == "combat":
-            todo.append(f"{mid}: level of each of its {len(item['stages'])} stages in stages.csv (combat; required)")
+            unknown = [s for s in item.get("stages", []) if s["level"] is None]
+            if unknown:
+                todo.append(f"{mid}: level of {len(unknown)} of its {len(item['stages'])} stages in stages.csv "
+                            "(combat; required)")
         lists = kind not in ("encounter", "chest_coop", "chest_challenge", "chest_contract", "chest_boss")
         for x, y in item["points"]:
             row = dict.fromkeys(MARKER_HEADER, "")
@@ -455,7 +495,8 @@ def export(region, map_id, out_dir):
             text_rows.append({"marker": mid, "field": "name", **item["name"]})
         for s in item.get("stages", []):
             combat = item["extra"].get("subtype") == "combat"
-            stage_rows.append({"trial": mid, "stage": s["stage"], "stars": s["stars"], "level": "",
+            stage_rows.append({"trial": mid, "stage": s["stage"], "stars": s["stars"],
+                               "level": s["level"] if combat and s["level"] is not None else "",
                                "cp": s["cp"] if combat and s["cp"] is not None else ""})
 
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -556,7 +597,7 @@ def compare(region, map_id, src_dir, maps):
             note_entry.setdefault(note, Counter())[m["entry"]] += 1
             e = region.entries[note]
             csv_name = entries.get(m["entry"], {}).get("name_en", "")
-            if e["listed"] and csv_name != e["name"]["en"]:
+            if e["listed"] and e["name"]["en"] and csv_name != e["name"]["en"]:
                 problems.append(f"{m['id']}: in entry '{csv_name}' in the CSV, '{e['name']['en']}' in the game")
             if m["entry_index"] and item.get("index") and int(m["entry_index"]) != item["index"]:
                 problems.append(f"{m['id']}: entry_index {m['entry_index']} in the CSV, {item['index']} in the game")
@@ -624,6 +665,9 @@ def compare(region, map_id, src_dir, maps):
                     continue
                 if int(row["stars"]) != s["stars"]:
                     problems.append(f"{m['id']} stage {s['stage']}: {row['stars']} stars in the CSV, {s['stars']} in the game")
+                if s["level"] is not None and m["subtype"] == "combat" and row.get("level", "") != str(s["level"]):
+                    problems.append(f"{m['id']} stage {s['stage']}: level {row.get('level') or 'empty'} in the CSV, "
+                                    f"{s['level']} in the game")
                 if s["cp"] is not None and m["subtype"] == "combat":
                     if not row["cp"]:
                         problems.append(f"{m['id']} stage {s['stage']}: no CP in the CSV, the game recommends {s['cp']}")
@@ -635,6 +679,8 @@ def compare(region, map_id, src_dir, maps):
     problems = []
     if region.milestones and cfg.get("exploration", {}).get("milestones") != region.milestones:
         problems.append(f"milestones in maps.json {cfg.get('exploration', {}).get('milestones')}, game {region.milestones}")
+    if milestones_problem(region):
+        problems.append(milestones_problem(region))
     width = cfg.get("image", {}).get("width")
     official = calibration_for(region, width) if width else None
     mine = cfg.get("calibration", {})
@@ -644,7 +690,7 @@ def compare(region, map_id, src_dir, maps):
     section(f"Region (exploration value cap in the game: {region.value_cap})", problems)
     section("Not exported or not checkable from the game data", [f"{why}: {what}" for why, what in region.skipped])
     say("\nNot in the game tables, so not compared: tags other than guarded, purple_demon_eye and hidden; players;"
-        " pillar_x/pillar_y; combat stage levels; marker notes and howtos; links; portals and their destination.")
+        " pillar_x/pillar_y; marker notes and howtos; links; portals and their destination.")
     return "\n".join(out)
 
 
@@ -673,6 +719,8 @@ def main():
             print(f"  to fill in: {line}")
         if region.milestones:
             print(f"exploration milestones (maps.json): {region.milestones}; value cap {region.value_cap}")
+        if milestones_problem(region):
+            print(f"WARNING {milestones_problem(region)}")
         width = maps.get(args.map, {}).get("image", {}).get("width")
         if width:
             print("calibration from the game: " + json.dumps({k: round(v, 6) for k, v in calibration_for(region, width).items()}))
