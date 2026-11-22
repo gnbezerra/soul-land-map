@@ -24,6 +24,10 @@ The site plans eight regions:
 - Their map images in the game's assets: three are 4096², Nuoding's among them; five are 2048², Suotuo's
   among them.
 - The game tables have every region's data and calibration.
+- The map images are approximate drawings of the 3D world, not faithful to it (owner, 2026-11-22). Standing
+  on the middle of a chimney at (340, 257) in Nuoding, the game's own map draws the player 3 to 4 units from
+  the chimney it shows; Nuoding's chests at (566, 777) are south of a fence in 3D, while the map draws them
+  inside it. The site places markers as the game's map does (`docs/DATA.md` "Calibration").
 
 ## Exploration counts
 

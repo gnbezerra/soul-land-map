@@ -1,4 +1,7 @@
 {
+  "nuoding-0008": {
+    "note": "South, outside the fence (the map marker appears inside due to a slight map offset)."
+  },
   "nuoding-0039": {
     "note": "At the top of the cliff."
   },
@@ -226,6 +229,9 @@
   },
   "nuoding-0361": {
     "note": "At the top of the cliff."
+  },
+  "nuoding-0367": {
+    "note": "South, outside the fence (the map marker appears inside due to a slight map offset)."
   },
   "nuoding-0380": {
     "note": "At the bottom of the cliff."

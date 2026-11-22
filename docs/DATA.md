@@ -272,11 +272,19 @@ The game's readout is rounded to whole units, and Suotuo's own map draws the cha
 these errors are within what the points can tell. Markers store game coordinates, so changing the calibration
 never touches a marker.
 
+The calibration reproduces the game's own map, not the 3D world. The map image is only an approximate drawing
+of the world: a feature can be drawn a few units away from where it is in 3D (`docs/GAME-NOTES.md` "Regions"),
+and no single calibration can match every feature. So measure points against the game's map (where it draws
+the player's icon, or where the character goes after a click on the map), never by standing on a 3D feature
+and finding it in the image. Where the drawing misleads the player about a marker (a chest drawn on the wrong
+side of a fence), give the marker a `note`; do not move it or the calibration.
+
 To check a calibration, or to fit one by hand when a region's `map_position` row is missing or does not match
 its image:
 
 1. Read points on the map: the readout in the bottom-left corner shows game coordinates, and a click pins the
-   reading (also logged to the console). With the offsets set to `null` it shows image pixels only.
+   reading (also logged to the console). With the offsets set to `null` it shows image pixels only. Take each
+   point where the game's map puts the player (see above).
 2. Fill `data/calibration/<map>.json` with `{"x": ..., "y": ..., "px": ..., "py": ...}` per point: the game
    coordinates and the observed pixel. A few points spread over the map are enough.
 3. Run `python tools/check_calibration.py data/maps.json <map> data/calibration/<map>.json`. It prints the
