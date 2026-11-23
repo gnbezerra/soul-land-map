@@ -118,7 +118,8 @@ def slug(name, kind):
 
 
 def decryption_kind(name_en):
-    if name_en.startswith("Cooperative Chest"):
+    # Anywhere in the name: Tian Dou's co-op chests lead with their place ("Moon Pavilion Cooperative Chest One").
+    if "Cooperative Chest" in name_en:
         return "chest_coop", {}
     if name_en.startswith("Pillar of Empty Path"):
         return "chest_challenge", {}

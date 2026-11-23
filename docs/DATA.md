@@ -198,7 +198,7 @@ What comes from the tables:
 | their game coordinates | `scene_static_npc`, the NPC's spawn point: `round(X + 512)`, `round(Z + 512)`; the in-game readout matches them exactly or within 1 |
 | entries, in the in-game order, with their official names and descriptions | `scene_explore_note`; an entry with no name there takes its one object's name, as the game's list does |
 | `entry_index` | the order of the `[Location N]` links |
-| the decryption chest kinds and the contract elements | `box_npc` (`BoxType` 8, a chest guarded by a boss, is a `chest_boss`) |
+| the decryption chest kinds and the contract elements | the entry's English name ("Cooperative Chest" anywhere in it, "Pillar of Empty Path", the Coffers' elements), else `box_npc` (`BoxType` 8, a chest guarded by a boss, is a `chest_boss`). `BoxType` alone does not tell co-op from challenge chests: Nuoding's mix 5, 9 and 12 |
 | the tags `guarded`, `hidden`, `grappling_hook` and `purple_demon_eye` | `box_npc` (`BoxType` 8 is `guarded`), the NPC's `Script` (`ShowNpc` is `hidden`) and the entry's Chinese description: 遮蔽 is `hidden`, 钩爪 `grappling_hook`, 紫极魔瞳 `purple_demon_eye`. The invisible (隐形) Tang Sect chests are `purple_demon_eye` only, although the game's English calls them "hidden" too |
 | Divine Trial names, subtypes, stars and recommended CP | `discover_controller*` |
 | the `level` of combat stages | each layer's `Condition` in `discover_controller_level`, a `player_condition` row (`Type` 1, `Param` `1,<level>`); it matched all 80 levels collected in-game in Nuoding and Suotuo (2026-11-22) |

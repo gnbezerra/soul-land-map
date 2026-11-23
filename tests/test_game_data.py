@@ -249,6 +249,7 @@ class Helpers(unittest.TestCase):
                  ("Wind Rest Plains Chest", "chest_normal", "wind-rest-plains"),
                  ("Pillar of Empty Path I", "chest_challenge", "pillar-empty-path-1"),
                  ("Cooperative Chest Two", "chest_coop", "coop-2"),
+                 ("Moon Pavilion Cooperative Chest One", "chest_coop", "moon-pavilion-coop-1"),
                  ("Hidden Chest III", "chest_normal", "hidden-3"),
                  ("Andy's Dilemma", "encounter", "andys-dilemma"),
                  ("King of Onlookers", "encounter", "king-of-onlookers"),
@@ -296,6 +297,10 @@ class Extraction(unittest.TestCase):
         self.assertEqual([i["source"] for i in self.items("chest_boss")], ["box_boss"])  # guarded: BoxType 8
         self.assertIn(("decryption chest of a kind the site has no type for", "box_odd in 'Odd Chest'"),
                       self.region.skipped)
+
+    def test_decryption_kind_finds_the_type_anywhere_in_the_name(self):
+        self.assertEqual(game_data.decryption_kind("Moon Pavilion Cooperative Chest Two"), ("chest_coop", {}))
+        self.assertEqual(game_data.decryption_kind("Odd Chest"), (None, {}))
 
     def test_trials_teleports_books_and_encounters(self):
         [trial] = self.items("divine_trial")
