@@ -178,6 +178,21 @@ The sheet is Leaflet's popup element moved into `#map-wrap` (`js/sheet.js`).
 - If a Leaflet update breaks it, look there first. Checked by the owner on a Samsung A55 (2026-11-15):
   framing, ring, scrolling with the button in view, pillar, closing, rotation.
 
+### The Pages deploy
+
+The deploy job failed on GitHub's side on 2026-11-21 and again on 2026-11-22, with the checks green and no
+change in the repo to blame.
+
+- **Symptom.** `actions/deploy-pages` stops with "Found 0 artifact(s)": the build job uploaded the
+  `github-pages` artifact, but GitHub's API did not list it yet.
+- **Do not** rerun the failed job ("Re-run failed jobs"): the rerun uploads a second artifact with the same
+  name next to the late one, and the deploy then fails with "Multiple artifacts named github-pages … count
+  is 2".
+- **Fix.** Start a fresh run on `main` (Actions → CI → Run workflow, or `gh workflow run ci.yml --ref main`),
+  then check that the live `version.json` shows the pushed commit. Both times this deployed with no change.
+- The failed runs stay in the history; nothing needs cleaning up. If it starts happening on most pushes, look
+  at a retry in the workflow instead.
+
 ### The browser test
 
 - It was flaky (about one run in ten) until 2026-11-16: Chrome stalls now and then for several seconds, and
