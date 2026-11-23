@@ -296,9 +296,9 @@ its image:
 The steps, in order (each one is described above or under "Assets"):
 
 1. **Pick the map id.** Map ids use hyphens, as they go in the address (`#tian-dou`), and are permanent.
-   Portals already use `tian-dou` (Tian Dou City Area) and `xing-dou-mixed-area` (Mixed Area of Xing Dou
-   Forest). Proposed for the others, to confirm with the owner when each one is added: `sunset-forest`,
-   `city-of-slaughter`, `dragon-island`.
+   Portals already use `tian-dou` (Tian Dou City Area), `xing-dou-mixed-area` (Mixed Area of Xing Dou
+   Forest), `sunset-forest` and `dragon-island`. Proposed for the last one, to confirm with the owner when it
+   is added: `city-of-slaughter`.
 2. **Name it** in `i18n/en.json`, `pt.json` and `zh.json` (`map.<id>`, the official name). `game_data.py`
    finds the region by the English one.
 3. **Make the tiles** from the map image ("Assets"). The image stays in `maps/` (ignored by git) and may keep

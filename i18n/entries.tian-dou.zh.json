@@ -1,0 +1,246 @@
+{
+  "downtown-district": {
+    "name": "下城区宝箱",
+    "description": "找到天斗城下城区附近散落的初级宝箱。"
+  },
+  "wanghu-station": {
+    "name": "望湖驿站宝箱",
+    "description": "找到望湖驿站附近散落的初级宝箱。"
+  },
+  "blue-tyrant-academy": {
+    "name": "蓝霸学院宝箱",
+    "description": "找到蓝霸学院附近散落的初级宝箱。"
+  },
+  "snow-feather-island": {
+    "name": "雪羽洲宝箱",
+    "description": "找到雪羽洲附近散落的初级宝箱。"
+  },
+  "sunset-village": {
+    "name": "夕霞村宝箱",
+    "description": "找到夕霞村附近散落的初级宝箱。"
+  },
+  "grand-auction-house": {
+    "name": "大拍卖场宝箱",
+    "description": "找到大拍卖场区域内散落的初级宝箱。"
+  },
+  "royal-palace": {
+    "name": "皇宫宝箱",
+    "description": "找到皇宫附近散落的初级宝箱。"
+  },
+  "western-district-tian-dou-city": {
+    "name": "天斗城西宝箱",
+    "description": "找到天斗城西花园区及月轩附近散落的宝箱。"
+  },
+  "upper-district": {
+    "name": "上城区宝箱",
+    "description": "找到天斗城上城区附近散落的初级宝箱。"
+  },
+  "royal-barracks-1": {
+    "name": "皇家兵营宝箱一",
+    "description": "找到天斗皇家狩猎场内散落的初级宝箱。"
+  },
+  "royal-barracks-2": {
+    "name": "皇家兵营宝箱二",
+    "description": "找到天斗皇家狩猎场外散落的初级宝箱。"
+  },
+  "fengling-mountain": {
+    "name": "风铃山宝箱",
+    "description": "找到风铃山附近散落的初级宝箱。"
+  },
+  "northeast-tian-dou-city": {
+    "name": "天斗城东北宝箱",
+    "description": "找到天斗城东北镜轩、武魂殿及大斗魂场附近散落的初级宝箱。"
+  },
+  "triumphant-gate": {
+    "name": "凯歌门宝箱",
+    "description": "找到凯歌门附近散落的初级宝箱。"
+  },
+  "tian-dou-royal-academy-1": {
+    "name": "天斗皇家学院宝箱一",
+    "description": "找到天斗皇家学院附近散落的初级宝箱。"
+  },
+  "tian-dou-royal-academy-2": {
+    "name": "天斗皇家学院宝箱二",
+    "description": "找到天斗皇家学院附近散落的初级宝箱。"
+  },
+  "eagle-horn-cliff": {
+    "name": "鹰角崖宝箱",
+    "description": "找到鹰角崖附近散落的初级宝箱。"
+  },
+  "guardian": {
+    "name": "守护宝箱",
+    "description": "拿到天斗城区域所有被魂兽守护的宝箱！"
+  },
+  "tang-sect-1": {
+    "name": "唐门宝箱一",
+    "description": "使用紫极魔瞳，找到地图内所有散落的变形唐门宝箱。"
+  },
+  "tang-sect-2": {
+    "name": "唐门宝箱二",
+    "description": "使用钩爪，找到地图内所有散落的唐门宝箱。"
+  },
+  "tang-sect-3": {
+    "name": "唐门宝箱三",
+    "description": "使用玄玉手，找到地图内所有散落的元素唐门宝箱。"
+  },
+  "tang-sect-4": {
+    "name": "唐门宝箱四",
+    "description": "使用紫极魔瞳，找到地图内所有散落的隐形唐门宝箱。"
+  },
+  "hidden-1": {
+    "name": "遮蔽宝箱一",
+    "description": "找到散落在天斗皇家兵营附近的遮蔽宝箱。"
+  },
+  "hidden-2": {
+    "name": "遮蔽宝箱二",
+    "description": "找到散落在风铃山附近的遮蔽宝箱。"
+  },
+  "hidden-3": {
+    "name": "遮蔽宝箱三",
+    "description": "找到散落在天斗其他区域的遮蔽宝箱。"
+  },
+  "moon-pavilion-coop-1": {
+    "name": "月轩合作宝箱一",
+    "description": "找到月轩附近的高级宝箱，与其他魂师合作开启宝箱。"
+  },
+  "sunset-village-coop": {
+    "name": "夕霞村合作宝箱",
+    "description": "找到夕霞村附近的高级宝箱，与其他魂师合作开启宝箱。"
+  },
+  "moon-pavilion-challenge": {
+    "name": "月轩合作宝箱二",
+    "description": "找到月轩附近的高级宝箱，与其他魂师合作开启宝箱。"
+  },
+  "blue-tyrant-academy-challenge": {
+    "name": "蓝霸学院合作宝箱",
+    "description": "找到蓝霸学院内的高级宝箱，与其他魂师合作开启宝箱。"
+  },
+  "dragonwood-coffer-1": {
+    "name": "龙木契匣一",
+    "description": "有神明取东方龙木之精，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "dragonwood-coffer-2": {
+    "name": "龙木契匣二",
+    "description": "有神明取东方龙木之精，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "dragonwood-coffer-3": {
+    "name": "龙木契匣三",
+    "description": "有神明取东方龙木之精，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "desolate-flame-coffer-1": {
+    "name": "荒炎契匣一",
+    "description": "有神明取西方荒炎之火，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "mysterious-frost-coffer-1": {
+    "name": "玄霜契匣一",
+    "description": "有神明取极北玄霜之气，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "mysterious-frost-coffer-2": {
+    "name": "玄霜契匣二",
+    "description": "有神明取极北玄霜之气，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "mysterious-frost-coffer-3": {
+    "name": "玄霜契匣三",
+    "description": "有神明取极北玄霜之气，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "mysterious-frost-coffer-4": {
+    "name": "玄霜契匣四",
+    "description": "有神明取极北玄霜之气，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "mysterious-frost-coffer-5": {
+    "name": "玄霜契匣五",
+    "description": "有神明取极北玄霜之气，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "mysterious-frost-coffer-6": {
+    "name": "玄霜契匣六",
+    "description": "有神明取极北玄霜之气，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "tian-dou-city-suburbs-crystal": {
+    "name": "天斗城郊结晶",
+    "description": "找到天斗城郊外散落的修罗神念结晶。"
+  },
+  "tian-dou-city-crystal": {
+    "name": "天斗城结晶",
+    "description": "找到天斗城内散落的修罗神念结晶。"
+  },
+  "indistinguishable-day-and-night": {
+    "name": "昼夜难分",
+    "description": "总有人围观天斗城门口的告示"
+  },
+  "love-in-flight": {
+    "name": "飞翔的爱意",
+    "description": "天斗城有个叫帕克的年轻人，整天愁眉苦脸的"
+  },
+  "great-art-of-traveling": {
+    "name": "伟大旅行艺术",
+    "description": "千万不要随便打开天斗兵营周围的宝箱"
+  },
+  "mystical-encounter-of-the-hermit": {
+    "name": "仙翁奇缘",
+    "description": "传说天斗东面野外的树洞里，住着红面白发的“仙人”"
+  },
+  "furry-gift": {
+    "name": "毛茸茸的礼物",
+    "description": "天斗人很喜欢小动物，常常用小肉干投喂东面原野上的小动物们"
+  },
+  "melody-of-the-mountain-stream": {
+    "name": "山涧旋律",
+    "description": "风铃山瀑布附近传来叮咚的乐声"
+  },
+  "detective-of-tian-dou-part-1": {
+    "name": "天斗名侦探·一",
+    "description": "凯歌门东侧的地面上，横着的是？"
+  },
+  "tian-dou-detective-2": {
+    "name": "天斗名侦探·二",
+    "description": "在大拍卖场，宝箱并不稀奇，稀奇的是空荡荡的宝箱"
+  },
+  "tian-dou-detective-3": {
+    "name": "天斗名侦探·三",
+    "description": "在庆贺明星侦探的兵营中，传来了死亡的气息"
+  },
+  "soldiers-martial-arts-day-1": {
+    "name": "士兵演武日·一",
+    "description": "凯歌门旁，卫队长着急地在寻找着什么人"
+  },
+  "soldiers-martial-arts-day-2": {
+    "name": "士兵演武日·二",
+    "description": "驻守凯歌门的卫队长，传来了第二期军团演武开始的消息"
+  },
+  "soldiers-martial-arts-day-3": {
+    "name": "士兵演武日·三",
+    "description": "驻守凯歌门的卫队长再次递来了新一期军团演武的消息"
+  },
+  "ever-changing-transformations-creatures": {
+    "name": "千变万化·化物",
+    "description": "新学院建成，就连周围的木桩都焕然一新"
+  },
+  "ever-changing-transformations-pets": {
+    "name": "千变万化·化宠",
+    "description": "听说花园区一带的猫咪格外亲人"
+  },
+  "ever-changing-transformations-beasts": {
+    "name": "千变万化·化兽",
+    "description": "凯歌门瀑布的巨大石像后，好像有不该出现在这里的东西？"
+  },
+  "master-craftsmans-challenge-dualism": {
+    "name": "巧匠难为·两仪",
+    "description": "下城区的侍应生一脸忧愁，不知是有什么为难的事"
+  },
+  "master-craftsmans-challenge-splendor": {
+    "name": "巧匠难为·斑斓",
+    "description": "工艺品畅销，下城区的李肖伍又在找人帮忙"
+  },
+  "master-craftsmans-challenge-wolf-mane": {
+    "name": "巧匠难为·狼鬃",
+    "description": "玩偶热卖，李氏兄妹有了新的订单"
+  },
+  "light-up-teleport": {
+    "name": "点亮！传送",
+    "description": "点亮地图上所有的传送点。"
+  },
+  "enjoy-the-scenery": {
+    "name": "看遍地图风景",
+    "description": "点亮地图上所有的观景点。"
+  }
+}

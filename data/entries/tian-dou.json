@@ -1,0 +1,270 @@
+{
+  "downtown-district": {
+    "type": "chest_normal",
+    "size": 15
+  },
+  "wanghu-station": {
+    "type": "chest_normal",
+    "size": 11
+  },
+  "blue-tyrant-academy": {
+    "type": "chest_normal",
+    "size": 11
+  },
+  "snow-feather-island": {
+    "type": "chest_normal",
+    "size": 6
+  },
+  "sunset-village": {
+    "type": "chest_normal",
+    "size": 15
+  },
+  "grand-auction-house": {
+    "type": "chest_normal",
+    "size": 8
+  },
+  "royal-palace": {
+    "type": "chest_normal",
+    "size": 9
+  },
+  "western-district-tian-dou-city": {
+    "type": "chest_normal",
+    "size": 14
+  },
+  "upper-district": {
+    "type": "chest_normal",
+    "size": 6
+  },
+  "royal-barracks-1": {
+    "type": "chest_normal",
+    "size": 18
+  },
+  "royal-barracks-2": {
+    "type": "chest_normal",
+    "size": 12
+  },
+  "fengling-mountain": {
+    "type": "chest_normal",
+    "size": 9
+  },
+  "northeast-tian-dou-city": {
+    "type": "chest_normal",
+    "size": 13
+  },
+  "triumphant-gate": {
+    "type": "chest_normal",
+    "size": 5
+  },
+  "tian-dou-royal-academy-1": {
+    "type": "chest_normal",
+    "size": 13
+  },
+  "tian-dou-royal-academy-2": {
+    "type": "chest_normal",
+    "size": 9
+  },
+  "eagle-horn-cliff": {
+    "type": "chest_normal",
+    "size": 7
+  },
+  "guardian": {
+    "type": "chest_normal",
+    "size": 5,
+    "tags": [
+      "guarded"
+    ]
+  },
+  "tang-sect-1": {
+    "type": "chest_normal",
+    "size": 17,
+    "tags": [
+      "purple_demon_eye"
+    ]
+  },
+  "tang-sect-2": {
+    "type": "chest_normal",
+    "size": 13,
+    "tags": [
+      "grappling_hook"
+    ]
+  },
+  "tang-sect-3": {
+    "type": "chest_normal",
+    "size": 9
+  },
+  "tang-sect-4": {
+    "type": "chest_normal",
+    "size": 5,
+    "tags": [
+      "purple_demon_eye"
+    ]
+  },
+  "hidden-1": {
+    "type": "chest_normal",
+    "size": 6,
+    "tags": [
+      "hidden"
+    ]
+  },
+  "hidden-2": {
+    "type": "chest_normal",
+    "size": 5,
+    "tags": [
+      "hidden"
+    ]
+  },
+  "hidden-3": {
+    "type": "chest_normal",
+    "size": 10,
+    "tags": [
+      "hidden"
+    ]
+  },
+  "moon-pavilion-coop-1": {
+    "type": "chest_coop",
+    "size": 1
+  },
+  "sunset-village-coop": {
+    "type": "chest_coop",
+    "size": 1
+  },
+  "moon-pavilion-challenge": {
+    "type": "chest_challenge",
+    "size": 1
+  },
+  "blue-tyrant-academy-challenge": {
+    "type": "chest_challenge",
+    "size": 1,
+    "tags": [
+      "grappling_hook"
+    ]
+  },
+  "dragonwood-coffer-1": {
+    "type": "chest_contract",
+    "size": 1
+  },
+  "dragonwood-coffer-2": {
+    "type": "chest_contract",
+    "size": 1
+  },
+  "dragonwood-coffer-3": {
+    "type": "chest_contract",
+    "size": 1
+  },
+  "desolate-flame-coffer-1": {
+    "type": "chest_contract",
+    "size": 1
+  },
+  "mysterious-frost-coffer-1": {
+    "type": "chest_contract",
+    "size": 1
+  },
+  "mysterious-frost-coffer-2": {
+    "type": "chest_contract",
+    "size": 1
+  },
+  "mysterious-frost-coffer-3": {
+    "type": "chest_contract",
+    "size": 1
+  },
+  "mysterious-frost-coffer-4": {
+    "type": "chest_contract",
+    "size": 1
+  },
+  "mysterious-frost-coffer-5": {
+    "type": "chest_contract",
+    "size": 1
+  },
+  "mysterious-frost-coffer-6": {
+    "type": "chest_contract",
+    "size": 1
+  },
+  "tian-dou-city-suburbs-crystal": {
+    "type": "crystal",
+    "size": 9
+  },
+  "tian-dou-city-crystal": {
+    "type": "crystal",
+    "size": 11
+  },
+  "indistinguishable-day-and-night": {
+    "type": "encounter",
+    "size": 1
+  },
+  "love-in-flight": {
+    "type": "encounter",
+    "size": 1
+  },
+  "great-art-of-traveling": {
+    "type": "encounter",
+    "size": 1
+  },
+  "mystical-encounter-of-the-hermit": {
+    "type": "encounter",
+    "size": 1
+  },
+  "furry-gift": {
+    "type": "encounter",
+    "size": 1
+  },
+  "melody-of-the-mountain-stream": {
+    "type": "encounter",
+    "size": 1
+  },
+  "detective-of-tian-dou-part-1": {
+    "type": "encounter",
+    "size": 1
+  },
+  "tian-dou-detective-2": {
+    "type": "encounter",
+    "size": 1
+  },
+  "tian-dou-detective-3": {
+    "type": "encounter",
+    "size": 1
+  },
+  "soldiers-martial-arts-day-1": {
+    "type": "encounter",
+    "size": 1
+  },
+  "soldiers-martial-arts-day-2": {
+    "type": "encounter",
+    "size": 1
+  },
+  "soldiers-martial-arts-day-3": {
+    "type": "encounter",
+    "size": 1
+  },
+  "ever-changing-transformations-creatures": {
+    "type": "encounter",
+    "size": 1
+  },
+  "ever-changing-transformations-pets": {
+    "type": "encounter",
+    "size": 1
+  },
+  "ever-changing-transformations-beasts": {
+    "type": "encounter",
+    "size": 1
+  },
+  "master-craftsmans-challenge-dualism": {
+    "type": "encounter",
+    "size": 1
+  },
+  "master-craftsmans-challenge-splendor": {
+    "type": "encounter",
+    "size": 1
+  },
+  "master-craftsmans-challenge-wolf-mane": {
+    "type": "encounter",
+    "size": 1
+  },
+  "light-up-teleport": {
+    "type": "teleport",
+    "size": 11
+  },
+  "enjoy-the-scenery": {
+    "type": "viewpoint",
+    "size": 5
+  }
+}

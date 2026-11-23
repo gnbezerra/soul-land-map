@@ -38,6 +38,7 @@ The counters of the game's exploration UI, per region and category (SPEC §4.2):
 | Nuoding City Area | 264 | 16 | 65 layers (10 pillars) | 28 | 5 | 10 (6 teleports, 4 viewpoints) |
 | Suotuo City Area | 247 | 12 (2 of them Wolf Thief chests) | 51 layers (10 pillars) | 30 | 9 | 12 (8 teleports, 4 viewpoints) |
 | Xing Dou Great Forest | 49 | 7 (all Coffers) | 20 layers (2 pillars) | 5 | 0 | 1 (1 teleport, no viewpoints) |
+| Tian Dou City Area | 251 | 14 (2 cooperative, 2 challenge, 10 Coffers) | 45 layers (8 pillars) | 20 | 18 | 16 (11 teleports, 5 viewpoints) |
 | Mixed Area of Xing Dou Forest | 172 | 9 | 12 | 20 | 2 | 14 (8 seeds, 6 teleports, no viewpoints) |
 
 - **Nuoding's entries:** 20 normal-chest sets (sum 264); 16 decryption chests (4 cooperative, 6 Pillar of Empty
@@ -51,6 +52,14 @@ The counters of the game's exploration UI, per region and category (SPEC §4.2):
   exploration value cap 565, every point in the north-west corner, the only part of the map image not under
   fog (the region is the forest's outskirts). 7 normal-chest sets (sum 49), 7 Coffers, 1 crystal set, 1
   teleport entry, no encounters.
+- **Tian Dou City Area** (from the game tables; the counters and milestones match the owner's screenshot of the
+  exploration panel, 2026-11-22): exploration value cap 3975. 10 of its 18 encounters are started by a task or
+  an item, so the tables give them no position. It also has 16 lore books.
+- **Tian Dou's naming errors** (owner, in-game, 2026-11-22). Its decryption chests put the place before the
+  kind ("Moon Pavilion Cooperative Chest One"). Two of the four "Cooperative" ones are challenge chests (a
+  jumping puzzle with a pillar): Moon Pavilion Cooperative Chest Two and Blue Tyrant Academy Cooperative
+  Chest, which also needs the Grappling Hook to jump between the platforms. Tang Sect Chest Three's entry says
+  Xuanyu Hand, but its second chest needs none.
 
 ## Exploration value
 
@@ -70,7 +79,7 @@ viewpoints.
 
 - Seeds are not in the list. The Mixed Area's 240 points reconcile only if a seed is +5 (unconfirmed).
 - Nuoding totals 3080 exactly; Xing Dou Great Forest 565 (56 chests, 20 layers, 5 crystals, 1 teleport).
-- Reward milestones: 250, 500, 1000, 1500, 2000 and 2500 (Nuoding and Suotuo); 150, 300, 400, 500 and 550
+- Reward milestones: 250, 500, 1000, 1500, 2000 and 2500 (Nuoding, Suotuo and Tian Dou); 150, 300, 400, 500 and 550
   (Xing Dou Great Forest, seen in-game on 2026-11-22); 75, 150, 300, 600, 900 and 1200 (Mixed Area). In the
   tables they are `scene_explore_reward`; the `Push` column of `scene_explore_control` lists other values in
   those last two regions (150 to 1500 in both).

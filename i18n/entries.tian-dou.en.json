@@ -1,0 +1,246 @@
+{
+  "downtown-district": {
+    "name": "Downtown District Chest",
+    "description": "Find the primary chests scattered near the Lower Downtown District of Tian Dou City."
+  },
+  "wanghu-station": {
+    "name": "Wanghu Station Chest",
+    "description": "Find the primary chests scattered near the Wanghu Station."
+  },
+  "blue-tyrant-academy": {
+    "name": "Blue Tyrant Academy Chest",
+    "description": "Find the primary chests scattered near the Blue Tyrant Academy."
+  },
+  "snow-feather-island": {
+    "name": "Snow Feather Island Chest",
+    "description": "Find the primary chests scattered near Snow Feather Island."
+  },
+  "sunset-village": {
+    "name": "Sunset Village Chest",
+    "description": "Find the primary chests scattered near Sunset Village."
+  },
+  "grand-auction-house": {
+    "name": "Grand Auction House Chest",
+    "description": "Find the primary chests scattered within the area of the Grand Auction House."
+  },
+  "royal-palace": {
+    "name": "Royal Palace Chest",
+    "description": "Find the primary chests scattered near the Royal Palace."
+  },
+  "western-district-tian-dou-city": {
+    "name": "Western District of Tian Dou City Chest",
+    "description": "Find the chests scattered near the Western Garden District of Tian Dou City and Moon Pavilion."
+  },
+  "upper-district": {
+    "name": "Upper District Chest",
+    "description": "Find the primary chests scattered near the Upper District of Tian Dou City."
+  },
+  "royal-barracks-1": {
+    "name": "Royal Barracks Chest One",
+    "description": "Find the primary chests scattered in and around the Tian Dou Royal Hunting Grounds."
+  },
+  "royal-barracks-2": {
+    "name": "Royal Barracks Chest Two",
+    "description": "Find the primary chests scattered outside the Tian Dou Royal Hunting Grounds."
+  },
+  "fengling-mountain": {
+    "name": "Fengling Mountain Chest",
+    "description": "Find the primary chests scattered near Wind Bell Mountain."
+  },
+  "northeast-tian-dou-city": {
+    "name": "Northeast of Tian Dou City Chest",
+    "description": "Find the primary chests scattered near the Northeast of Tian Dou City, Mirror Pavilion, Martial Soul Temple, and Great Soul Arena."
+  },
+  "triumphant-gate": {
+    "name": "Triumphant Gate Chest",
+    "description": "Find the primary chests scattered near the Triumphant Gate."
+  },
+  "tian-dou-royal-academy-1": {
+    "name": "Tian Dou Royal Academy Chest One",
+    "description": "Find the primary chests scattered near the Tian Dou Royal Academy."
+  },
+  "tian-dou-royal-academy-2": {
+    "name": "Tian Dou Royal Academy Chest Two",
+    "description": "Find the primary chests scattered near the Tian Dou Royal Academy."
+  },
+  "eagle-horn-cliff": {
+    "name": "Eagle Horn Cliff Chest",
+    "description": "Find the primary chests scattered near Eagle Horn Cliff."
+  },
+  "guardian": {
+    "name": "Guardian Chest",
+    "description": "Obtain all the chests guarded by soul beasts in the Tian Dou City area!"
+  },
+  "tang-sect-1": {
+    "name": "Tang Sect Chest One",
+    "description": "Use the Purple Demon Eye to locate all the scattered transformed Tang Sect chests on the map."
+  },
+  "tang-sect-2": {
+    "name": "Tang Sect Chest Two",
+    "description": "Use the Flying Claw to find all the scattered Tang Sect chests on the map."
+  },
+  "tang-sect-3": {
+    "name": "Tang Sect Chest Three",
+    "description": "Use the Xuan Yu Hand to find all the scattered elemental Tang Sect chests on the map."
+  },
+  "tang-sect-4": {
+    "name": "Tang Sect Chest Four",
+    "description": "Use the Purple Demon Eye to locate all the scattered hidden Tang Sect chests on the map."
+  },
+  "hidden-1": {
+    "name": "Hidden Chest I",
+    "description": "Find the hidden chests scattered around the vicinity of the Tian Dou Royal Camp."
+  },
+  "hidden-2": {
+    "name": "Hidden Chest II",
+    "description": "Find the hidden chests scattered around the vicinity of Wind Bell Mountain."
+  },
+  "hidden-3": {
+    "name": "Hidden Chest III",
+    "description": "Find the hidden chests scattered around other areas of Tian Dou."
+  },
+  "moon-pavilion-coop-1": {
+    "name": "Moon Pavilion Cooperative Chest One",
+    "description": "Find the advanced chests near Moon Pavilion and cooperate with other Soul Masters to open them."
+  },
+  "sunset-village-coop": {
+    "name": "Sunset Village Cooperative Chest",
+    "description": "Find the advanced chests near Sunset Village and cooperate with other Soul Masters to open them."
+  },
+  "moon-pavilion-challenge": {
+    "name": "Moon Pavilion Cooperative Chest Two",
+    "description": "Find the advanced chests near Moon Pavilion and cooperate with other Soul Masters to open them."
+  },
+  "blue-tyrant-academy-challenge": {
+    "name": "Blue Tyrant Academy Cooperative Chest",
+    "description": "Find the advanced chests inside the Blue Tyrant Academy and cooperate with other Soul Masters to open them."
+  },
+  "dragonwood-coffer-1": {
+    "name": "Dragonwood Coffer I",
+    "description": "Gods took the essence of the eastern Dragonwood and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "dragonwood-coffer-2": {
+    "name": "Dragonwood Coffer II",
+    "description": "Gods took the essence of the eastern Dragonwood and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "dragonwood-coffer-3": {
+    "name": "Dragonwood Coffer III",
+    "description": "Gods took the essence of the eastern Dragonwood and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "desolate-flame-coffer-1": {
+    "name": "Desolate Flame Coffer I",
+    "description": "Gods took the fire of the western Desolate Flame and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "mysterious-frost-coffer-1": {
+    "name": "Mysterious Frost Coffer I",
+    "description": "Gods took the extreme northern Mysterious Frost and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "mysterious-frost-coffer-2": {
+    "name": "Mysterious Frost Coffer II",
+    "description": "Gods took the extreme northern Mysterious Frost and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "mysterious-frost-coffer-3": {
+    "name": "Mysterious Frost Coffer III",
+    "description": "Gods took the extreme northern Mysterious Frost and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "mysterious-frost-coffer-4": {
+    "name": "Mysterious Frost Coffer IV",
+    "description": "Gods took the extreme northern Mysterious Frost and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "mysterious-frost-coffer-5": {
+    "name": "Mysterious Frost Coffer V",
+    "description": "Gods took the extreme northern Mysterious Frost and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "mysterious-frost-coffer-6": {
+    "name": "Mysterious Frost Coffer VI",
+    "description": "Gods took the extreme northern Mysterious Frost and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "tian-dou-city-suburbs-crystal": {
+    "name": "Tian Dou City Suburbs Crystal",
+    "description": "Find the scatteredAsura God Mind Crystals outside Tian Dou City."
+  },
+  "tian-dou-city-crystal": {
+    "name": "Tian Dou City Crystal",
+    "description": "Find the scatteredAsura God Mind Crystals inside Tian Dou City."
+  },
+  "indistinguishable-day-and-night": {
+    "name": "Indistinguishable Day and Night",
+    "description": "There are always people gathered around the notices at the entrance of Tian Dou City."
+  },
+  "love-in-flight": {
+    "name": "Love in Flight",
+    "description": "In Tian Dou City, there's a young man named Park who always looks troubled."
+  },
+  "great-art-of-traveling": {
+    "name": "Great Art of Traveling",
+    "description": "Never casually open the treasure chests around the Tian Dou Barracks."
+  },
+  "mystical-encounter-of-the-hermit": {
+    "name": "Mystical Encounter of the Hermit",
+    "description": "Legend has it that in the tree hollows in the eastern wilderness of Tian Dou, there lives a red-faced, white-haired \"immortal.\""
+  },
+  "furry-gift": {
+    "name": "Furry Gift",
+    "description": "The people of Tian Dou are fond of small animals and often use small jerky treats to feed the animals on the eastern plains."
+  },
+  "melody-of-the-mountain-stream": {
+    "name": "Melody of the Mountain Stream",
+    "description": "Melodious music can be heard near the Wind Chime Mountain Waterfall."
+  },
+  "detective-of-tian-dou-part-1": {
+    "name": "Detective of Tian Dou: Part One",
+    "description": "On the east side of Triumph Gate, what lies horizontally on the ground?"
+  },
+  "tian-dou-detective-2": {
+    "name": "Tian Dou Detective: Two",
+    "description": "At the grand auction, empty treasure chests are not unusual, but what's peculiar is the emptiness within them."
+  },
+  "tian-dou-detective-3": {
+    "name": "Tian Dou Detective: Three",
+    "description": "In the barracks celebrating the star detective, a sense of death can be felt."
+  },
+  "soldiers-martial-arts-day-1": {
+    "name": "Soldiers' Martial Arts Day: One",
+    "description": "Next to the Triumph Gate, the captain of the guards is anxiously searching for someone."
+  },
+  "soldiers-martial-arts-day-2": {
+    "name": "Soldiers' Martial Arts Day: Two",
+    "description": "The captain stationed at the Triumph Gate has brought news of the start of the second phase of legion training."
+  },
+  "soldiers-martial-arts-day-3": {
+    "name": "Soldiers' Martial Arts Day: Three",
+    "description": "The captain stationed at the Triumph Gate once again brings news of the start of a new phase of legion training."
+  },
+  "ever-changing-transformations-creatures": {
+    "name": "Ever-changing Transformations: Creatures",
+    "description": "With the completion of the new academy, even the surrounding Training Dummys have been renewed."
+  },
+  "ever-changing-transformations-pets": {
+    "name": "Ever-changing Transformations: Pets",
+    "description": "It is said that the cats in the garden area are particularly friendly."
+  },
+  "ever-changing-transformations-beasts": {
+    "name": "Ever-changing Transformations: Beasts",
+    "description": "Behind the enormous stone statue of the Triumph Gate Waterfall, there seems to be something that shouldn't be here."
+  },
+  "master-craftsmans-challenge-dualism": {
+    "name": "Master Craftsman's Challenge: Dualism",
+    "description": "The waiters in the lower city area wear worried expressions, as if burdened by something."
+  },
+  "master-craftsmans-challenge-splendor": {
+    "name": "Master Craftsman's Challenge: Splendor",
+    "description": "Crafts are selling well, and Li Xiaowu in the lower city area is once again looking for help."
+  },
+  "master-craftsmans-challenge-wolf-mane": {
+    "name": "Master Craftsman's Challenge: Wolf Mane",
+    "description": "The dolls are in high demand, and the Li siblings have received a new order."
+  },
+  "light-up-teleport": {
+    "name": "Light Up! Teleport",
+    "description": "Illuminate all the teleport points on the map."
+  },
+  "enjoy-the-scenery": {
+    "name": "Enjoy the Scenery",
+    "description": "Illuminate all the observation points on the map."
+  }
+}

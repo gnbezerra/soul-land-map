@@ -1,0 +1,246 @@
+{
+  "downtown-district": {
+    "name": "Baú de Tesouro do Distrito Inferior",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados perto do Distrito Inferior da Cidade de Tian Dou."
+  },
+  "wanghu-station": {
+    "name": "Baú de Tesouro do Posto de Parada Vista do Lago",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados perto do Posto de Parada Vista do Lago."
+  },
+  "blue-tyrant-academy": {
+    "name": "Baú de Tesouro da Academia do Tirano Azul",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados perto da Academia do Tirano Azul."
+  },
+  "snow-feather-island": {
+    "name": "Baú de Tesouro da Ilha da Pena de Neve",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados perto da Ilha da Pena de Neve."
+  },
+  "sunset-village": {
+    "name": "Baú de Tesouro da Vila do Pôr do Sol",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados perto da Vila do Pôr do Sol."
+  },
+  "grand-auction-house": {
+    "name": "Baú de Tesouro da Grande Casa de Leilões",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados na área da Grande Casa de Leilões."
+  },
+  "royal-palace": {
+    "name": "Baú de Tesouro do Palácio Real",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados perto do Palácio Real."
+  },
+  "western-district-tian-dou-city": {
+    "name": "Baú de Tesouro do Oeste da Cidade de Tian Dou",
+    "description": "Encontre os Baús de Tesouro espalhados perto do Distrito dos Jardins Oeste da Cidade de Tian Dou e do Pavilhão da Lua."
+  },
+  "upper-district": {
+    "name": "Baú de Tesouro do Distrito Superior",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados perto do Distrito Superior da Cidade de Tian Dou."
+  },
+  "royal-barracks-1": {
+    "name": "Primeiro Baú de Tesouro do Quartel Real",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados dentro e ao redor dos Campos de Caça Reais de Tian Dou."
+  },
+  "royal-barracks-2": {
+    "name": "Segundo Baú de Tesouro do Quartel Real",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados fora dos Campos de Caça Reais de Tian Dou."
+  },
+  "fengling-mountain": {
+    "name": "Baú da Montanha Fengling",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados perto da Montanha dos Sinos de Vento."
+  },
+  "northeast-tian-dou-city": {
+    "name": "Baú de Tesouro do Nordeste da Cidade de Tian Dou",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados perto do Nordeste da Cidade de Tian Dou, do Pavilhão do Espelho, do Salão Espiritual e do Grande Campo de Luta Espiritual."
+  },
+  "triumphant-gate": {
+    "name": "Baú de Tesouro do Portão da Canção Triunfal",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados perto do Portão da Canção Triunfal."
+  },
+  "tian-dou-royal-academy-1": {
+    "name": "Primeiro Baú de Tesouro da Academia Real Tian Dou",
+    "description": "Encontre os Baús Básicos espalhados perto da Academia Real Tian Dou."
+  },
+  "tian-dou-royal-academy-2": {
+    "name": "Segundo Baú de Tesouro da Academia Real Tian Dou",
+    "description": "Encontre os Baús Básicos espalhados perto da Academia Real Tian Dou."
+  },
+  "eagle-horn-cliff": {
+    "name": "Baú de Tesouro do Penhasco da Águia",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados perto do Penhasco da Águia."
+  },
+  "guardian": {
+    "name": "Baú de Tesouro do Guardião",
+    "description": "Obtenha todos os Baús de Tesouro protegidos por Bestas Espirituais na área da Cidade de Tian Dou!"
+  },
+  "tang-sect-1": {
+    "name": "Baú de Tesouro Um da Seita Tang",
+    "description": "Use o Olho Demoníaco Púrpura para Encontrar todos os Baús de Tesouro da Seita Tang Transformados espalhados pelo mapa."
+  },
+  "tang-sect-2": {
+    "name": "Baú Dois da Seita Tang",
+    "description": "Use o Gancho para encontrar todos os Baús de Tesouro da Seita Tang espalhados pelo mapa."
+  },
+  "tang-sect-3": {
+    "name": "Baú Três da Seita Tang",
+    "description": "Use a Mão de Jade Negra para encontrar todos os Baús da Seita Tang Elementais espalhados pelo mapa."
+  },
+  "tang-sect-4": {
+    "name": "Baú de Tesouro da Seita Tang IV",
+    "description": "Use o Olho Demoníaco Púrpura para encontrar todos os Baús de Tesouro da Seita Tang espalhados pelo mapa."
+  },
+  "hidden-1": {
+    "name": "Baú de Tesouro Oculto I",
+    "description": "Encontre os Baús de Tesouro Escondidos espalhados nas proximidades do Acampamento Real de Tian Dou."
+  },
+  "hidden-2": {
+    "name": "Baú de Tesouro Oculto II",
+    "description": "Encontre os Baús de Tesouro Escondidos espalhados nas proximidades da Montanha do Sino de Vento."
+  },
+  "hidden-3": {
+    "name": "Baú Oculto III",
+    "description": "Encontre os Baús de Tesouro Escondidos espalhados por outras áreas de Tian Dou."
+  },
+  "moon-pavilion-coop-1": {
+    "name": "Primeiro Baú de Tesouro Cooperativo do Pavilhão da Lua",
+    "description": "Encontre os Baús Avançados perto do Pavilhão da Lua e coopere com outros Mestres Espirituais para abri-los."
+  },
+  "sunset-village-coop": {
+    "name": "Baú de Tesouro Cooperativo da Vila do Pôr do Sol",
+    "description": "Encontre os Baús de Tesouro Avançados perto da Vila do Pôr do Sol e coopere com outros Mestres Espirituais para abri-los."
+  },
+  "moon-pavilion-challenge": {
+    "name": "Segundo Baú de Tesouro Cooperativo do Pavilhão da Lua",
+    "description": "Encontre os Baús Avançados perto do Pavilhão da Lua e coopere com outros Mestres Espirituais para abri-los."
+  },
+  "blue-tyrant-academy-challenge": {
+    "name": "Baú de Tesouro Cooperativo da Academia do Tirano Azul",
+    "description": "Encontre os Baús de Tesouro Avançados dentro da Academia do Tirano Azul e coopere com outros Mestres Espirituais para abri-los."
+  },
+  "dragonwood-coffer-1": {
+    "name": "Baú de Contrato de Madeira de Dragão I",
+    "description": "Deuses retiraram a essência da Madeira-Dragão Oriental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "dragonwood-coffer-2": {
+    "name": "Baú de Contrato de Madeira de Dragão II",
+    "description": "Deuses retiraram a essência da Madeira-Dragão Oriental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "dragonwood-coffer-3": {
+    "name": "Baú de Contrato de Madeira de Dragão III",
+    "description": "Deuses retiraram a essência da Madeira-Dragão Oriental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "desolate-flame-coffer-1": {
+    "name": "Baú de Contrato da Chama Desolada I",
+    "description": "Deuses tomaram o fogo da Chama Desolada ocidental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "mysterious-frost-coffer-1": {
+    "name": "Baú de Contrato da Geada Misteriosa I",
+    "description": "Deuses extraíram a energia da Geada Misteriosa do extremo norte e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "mysterious-frost-coffer-2": {
+    "name": "Baú de Contrato da Geada Misteriosa II",
+    "description": "Deuses extraíram a energia da Geada Misteriosa do extremo norte e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "mysterious-frost-coffer-3": {
+    "name": "Baú de Contrato da Geada Misteriosa III",
+    "description": "Deuses extraíram a energia da Geada Misteriosa do extremo norte e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "mysterious-frost-coffer-4": {
+    "name": "Baú de Contrato da Geada Misteriosa IV",
+    "description": "Deuses extraíram a energia da Geada Misteriosa do extremo norte e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "mysterious-frost-coffer-5": {
+    "name": "Baú de Contrato da Geada Misteriosa V",
+    "description": "Deuses extraíram a energia da Geada Misteriosa do extremo norte e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "mysterious-frost-coffer-6": {
+    "name": "Baú de Contrato da Geada Misteriosa VI",
+    "description": "Deuses extraíram a energia da Geada Misteriosa do extremo norte e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "tian-dou-city-suburbs-crystal": {
+    "name": "Cristal dos Arredores da Cidade de Tian Dou",
+    "description": "Encontre os Cristais da Mente Divina do Deus Asura espalhados fora da Cidade de Tian Dou."
+  },
+  "tian-dou-city-crystal": {
+    "name": "Cristal da Cidade de Tian Dou",
+    "description": "Encontre os Cristais da Mente Divina do Deus Asura espalhados dentro da Cidade de Tian Dou."
+  },
+  "indistinguishable-day-and-night": {
+    "name": "Dia e Noite Indistinguíveis",
+    "description": "Sempre há pessoas reunidas em volta dos avisos na entrada da Cidade de Tian Dou."
+  },
+  "love-in-flight": {
+    "name": "Amor Voador",
+    "description": "Na Cidade de Tian Dou, há um jovem chamado Parker que parece sempre preocupado."
+  },
+  "great-art-of-traveling": {
+    "name": "A Grande Arte de Viajar",
+    "description": "Nunca abra casualmente os Baús de Tesouro ao redor do Quartel Tian Dou."
+  },
+  "mystical-encounter-of-the-hermit": {
+    "name": "Encontro Romântico do Imortal",
+    "description": "Diz a lenda que, nos ocos das árvores do ermo a leste de Tian Dou, vive um “imortal” de rosto vermelho e cabelos brancos."
+  },
+  "furry-gift": {
+    "name": "Presente Peludo",
+    "description": "O povo de Tian Dou gosta muito de pequenos animais e costuma usar pequenos pedaços de carne seca para alimentar os animais das planícies orientais."
+  },
+  "melody-of-the-mountain-stream": {
+    "name": "Melodia do Riacho da Montanha",
+    "description": "Uma música melodiosa pode ser ouvida perto da Cachoeira da Montanha do Sino de Vento."
+  },
+  "detective-of-tian-dou-part-1": {
+    "name": "Grande Detetive de Tian Dou - Parte Um",
+    "description": "No lado leste do Portão da Canção Triunfal, o que está estendido no chão?"
+  },
+  "tian-dou-detective-2": {
+    "name": "Grande Detetive de Tian Dou: Parte Dois",
+    "description": "No grande leilão, Baús de Tesouro vazios não são incomuns, mas o peculiar é o vazio dentro deles."
+  },
+  "tian-dou-detective-3": {
+    "name": "Grande Detetive de Tian Dou: Parte Três",
+    "description": "No quartel que celebra o detetive famoso, é possível sentir uma aura de morte."
+  },
+  "soldiers-martial-arts-day-1": {
+    "name": "Dia de Artes Marciais do Soldado · Um",
+    "description": "Ao lado do Portão da Canção Triunfal, o Capitão da Guarda procura alguém ansiosamente."
+  },
+  "soldiers-martial-arts-day-2": {
+    "name": "Dia de Treinamento do Soldado · Dois",
+    "description": "O Capitão estacionado no Portão da Canção Triunfal trouxe notícias do início da segunda fase do treinamento da legião."
+  },
+  "soldiers-martial-arts-day-3": {
+    "name": "Dia de Treinamento dos Soldados · Dia Três",
+    "description": "O Capitão estacionado no Portão da Canção Triunfal trouxe novamente notícias do início de uma nova fase do treinamento da legião."
+  },
+  "ever-changing-transformations-creatures": {
+    "name": "Mil Transformações: Transfiguração",
+    "description": "Com a conclusão da nova academia, até os bonecos de treinamento ao redor foram renovados."
+  },
+  "ever-changing-transformations-pets": {
+    "name": "Mil Transformações: Transfiguração de Pets",
+    "description": "Dizem que os gatos da área do jardim são especialmente amigáveis."
+  },
+  "ever-changing-transformations-beasts": {
+    "name": "Mil Transformações: Transfiguração de Feras",
+    "description": "Atrás da enorme estátua de pedra da Cachoeira do Portão da Canção Triunfal, parece haver algo que não deveria estar aqui."
+  },
+  "master-craftsmans-challenge-dualism": {
+    "name": "Desafio do Artesão: Dualidade",
+    "description": "Os garçons da área da Cidade Baixa exibem expressões preocupadas, como se algo os afligisse."
+  },
+  "master-craftsmans-challenge-splendor": {
+    "name": "Dificuldade do Artesão Mestre · Multicolorido",
+    "description": "As peças artesanais estão vendendo bem, e Li Xiaowu, na Cidade Baixa, está procurando ajuda novamente."
+  },
+  "master-craftsmans-challenge-wolf-mane": {
+    "name": "Dificuldade do Mestre Artesão · Juba de Lobo",
+    "description": "As bonecas estão em alta, e os irmãos Li receberam um novo pedido."
+  },
+  "light-up-teleport": {
+    "name": "Acenda! Teletransporte",
+    "description": "Ilumine todos os Pontos de Teletransporte do mapa."
+  },
+  "enjoy-the-scenery": {
+    "name": "Contemple Todas as Paisagens do Mapa",
+    "description": "Ilumine todos os Pontos Panorâmicos do mapa."
+  }
+}

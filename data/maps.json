@@ -64,5 +64,26 @@
     "exploration": {
       "milestones": [150, 300, 400, 500, 550]
     }
+  },
+  "tian-dou": {
+    "draft": true,
+    "image": {
+      "width": 2048,
+      "height": 2048
+    },
+    "tiles": {
+      "tileSize": 256,
+      "maxNativeZoom": 3,
+      "maxZoom": 4
+    },
+    "calibration": {
+      "scaleX": 1.28,
+      "offsetX": 472.709565,
+      "scaleY": -1.28,
+      "offsetY": 1863.012174
+    },
+    "exploration": {
+      "milestones": [250, 500, 1000, 1500, 2000, 2500]
+    }
   }
 }
