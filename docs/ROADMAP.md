@@ -21,7 +21,7 @@ checks pass (README "CI and deploy").
 | Nuoding City Area | 4096² | 0–4, `maxZoom` 5 | Fully mapped: 339 markers, 49 entries, all named in en/pt/zh, plus 150 respawned chests |
 | Suotuo City Area | 2048² | 0–3, `maxZoom` 4 | Published on 2026-11-16: 331 markers, 55 entries, matching every count of the game; tags and height notes still to come |
 | Xing Dou Great Forest | 2048² | 0–3, `maxZoom` 4 | Published on 2026-11-22: 64 markers, 16 entries, all from the game tables, matching every counter of the game, plus the owner's tags and portals; location-specific tags and height notes still to come |
-| Tian Dou City Area | 2048² | 0–3, `maxZoom` 4 | Draft since 2026-11-22: 346 markers, 61 entries, from the game tables plus the owner's in-game data, matching every counter of the game; calibration checked against 10 measured points |
+| Tian Dou City Area | 2048² | 0–3, `maxZoom` 4 | Published on 2026-11-23: 346 markers, 61 entries, from the game tables plus the owner's in-game data, matching every counter of the game; location-specific tags and height notes still to come |
 
 - Nuoding was checked against the game tables on 2026-11-16 (`tools/game_data.py compare nuoding`: no
   differences). The recommended CP of the combat stages, the stars of their layers 4 and 7, two books and the
@@ -41,7 +41,8 @@ checks pass (README "CI and deploy").
   in-game data: co-op players, the challenge pillars, the seals, the 10 encounters with no position in the
   tables, the portals. `compare` reports three differences, all errors of the game (`docs/GAME-NOTES.md`
   "Exploration counts"): two challenge chests named "Cooperative", and a Tang Sect Chest Three chest with no
-  seal.
+  seal. Its calibration comes from `map_position`, checked on 2026-11-22 against 10 points the owner measured
+  (`docs/DATA.md` "Calibration"). The owner made it public on 2026-11-23.
 - Until 2026-11-22, `compare` reported 27 invisible Tang Sect chests of Nuoding and Suotuo as missing the
   `hidden` tag; that was the same wrong rule, and the CSVs were right.
 - The counts of each region, by category: `docs/GAME-NOTES.md` "Exploration counts".
