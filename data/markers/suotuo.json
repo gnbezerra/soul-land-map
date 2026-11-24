@@ -13,7 +13,7 @@
   {"id": "suotuo-0012", "type": "chest_normal", "entry": "wolf-shadow-highlands-1", "entryIndex": 12, "x": 254, "y": 790},
   {"id": "suotuo-0013", "type": "chest_normal", "entry": "wolf-shadow-highlands-1", "entryIndex": 13, "x": 257, "y": 748},
   {"id": "suotuo-0014", "type": "chest_normal", "entry": "wolf-shadow-highlands-1", "entryIndex": 14, "x": 272, "y": 633},
-  {"id": "suotuo-0015", "type": "chest_normal", "entry": "wolf-shadow-highlands-1", "entryIndex": 15, "x": 323, "y": 712},
+  {"id": "suotuo-0015", "type": "chest_normal", "entry": "wolf-shadow-highlands-1", "entryIndex": 15, "x": 323, "y": 712, "tags": ["grappling_hook"]},
   {"id": "suotuo-0016", "type": "chest_normal", "entry": "wolf-shadow-highlands-1", "entryIndex": 16, "x": 71, "y": 860},
   {"id": "suotuo-0017", "type": "chest_normal", "entry": "wolf-shadow-highlands-2", "entryIndex": 1, "x": 265, "y": 776},
   {"id": "suotuo-0018", "type": "chest_normal", "entry": "wolf-shadow-highlands-2", "entryIndex": 2, "x": 236, "y": 785},
