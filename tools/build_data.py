@@ -231,10 +231,9 @@ def load_entries(rows, rep):
         entries[eid] = entry
         texts[eid] = {lang: {"name": r.get(f"name_{lang}", ""), "description": r.get(f"desc_{lang}", "")}
                       for lang in LANGS}
-        key = r["name_en"].casefold()
-        if key in by_name:
-            rep.error(where, f"name_en '{r['name_en']}' is already used by '{by_name[key]}'")
-        by_name[key] = eid
+        # Two entries may share a name, as the game's list does (Sunset Forest's two "Cooperative Chest"); a
+        # marker then refers to either one by its id, and only a reference by that name is an error.
+        by_name.setdefault(r["name_en"].casefold(), []).append(eid)
     return entries, texts, by_name
 
 
@@ -303,8 +302,12 @@ def load_markers(rows, map_id, entries, by_name, inside, rep):
             if not ref:
                 rep.error(where, f"type '{mtype}' requires an entry")
             else:
-                slug = ref if ref in entries else by_name.get(ref.casefold())
-                if slug is None:
+                named = by_name.get(ref.casefold(), [])
+                slug = ref if ref in entries else named[0] if len(named) == 1 else None
+                if slug is None and len(named) > 1:
+                    rep.error(where, f"entry name '{ref}' is shared by {', '.join(named)}; use the entry id")
+                    entry_bad = True
+                elif slug is None:
                     rep.error(where, f"unknown entry '{ref}'")
                     entry_bad = True
                 elif entries[slug]["type"] != mtype:

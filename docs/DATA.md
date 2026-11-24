@@ -57,7 +57,7 @@ In every CSV file:
 | `id` | always | `<map>-0001`: unique, permanent, never reused |
 | `type` | always | `chest_normal`, `chest_coop`, `chest_challenge`, `chest_contract`, `chest_boss`, `chest_respawn`, `crystal`, `divine_trial`, `encounter`, `teleport`, `viewpoint`, `seed`, `mechanism`, `portal`, `book`, `boss`, `arena` |
 | `x`, `y` | always | game coordinates, as shown in the game UI |
-| `entry` | for chests, crystals, encounters, teleports, viewpoints and seeds | entry id, or its English name |
+| `entry` | for chests, crystals, encounters, teleports, viewpoints and seeds | entry id, or its English name when no other entry has it |
 | `entry_index` | optional | number of the `[Location N]` link in the in-game answer |
 | `subtype` | `divine_trial` | `puzzle` or `combat` |
 | `players` | `chest_coop`; optional for `chest_challenge` | 1 to 4; on a challenge, empty means a single player |
@@ -79,7 +79,7 @@ point gets its own icon on the map, and the encounter still counts once. No othe
 | --- | --- | --- |
 | `id` | yes | lowercase slug, e.g. `nuoding-academy-1`; unique within a map, not across maps |
 | `type` | yes | the marker type of its members (same vocabulary as `markers.csv`) |
-| `name_en` | yes | name exactly as shown in the game |
+| `name_en` | yes | name exactly as shown in the game; two entries may share one, as in Sunset Forest's list |
 | `size` | yes | expected number of markers (the `11/11` in the game) |
 | `tags` | optional | separated by `;`, e.g. `purple_demon_eye` |
 | `name_pt`, `name_zh`, `desc_en`, `desc_pt`, `desc_zh` | optional | official texts |
@@ -144,8 +144,9 @@ What the build is meant to check, and why, is designed in SPEC §8. This is the 
 
 Errors (nothing is written):
 
-- duplicate or malformed ids, unknown types, missing columns for a type, unknown entries, coordinates outside
-  the image, unknown link targets, ids whose type changed since the last build;
+- duplicate or malformed ids, unknown types, missing columns for a type, unknown entries, a marker that names
+  an entry by a name two entries share, coordinates outside the image, unknown link targets, ids whose type
+  changed since the last build;
 - more markers than an entry's `size`, an `entry_index` above `size` or repeated;
 - Divine Trials with stage gaps, repeated stages, fewer than 3 or more than 10 stages, stars outside 1 to 5,
   `level` missing on a combat trial, or `level` or `cp` filled in on a puzzle one;

@@ -219,8 +219,9 @@ ERROR_CASES = [
      "type 'divine_trial' is not a marker type that belongs to an entry"),
     ("entry without name_en", lambda f: entry(f, "crystals").update(name_en=""), "name_en is required"),
     ("entry size zero", lambda f: entry(f, "crystals").update(size="0"), "size: 0 is out of range"),
-    ("repeated name_en, any case", lambda f: entry(f, "crystals").update(name_en="chest set a"),
-     "name_en 'chest set a' is already used by 'chests-a'"),
+    ("marker refers to a name two entries share, any case",
+     lambda f: entry(f, "chests-a").update(name_en="chest set b"),
+     "entry name 'Chest Set B' is shared by chests-b, chests-a; use the entry id"),
     # stages.csv
     ("unknown trial", lambda f: stage(f, "testmap-0008", 1).update(trial="testmap-0001"),
      "'testmap-0001' is not a divine_trial marker"),
@@ -386,6 +387,15 @@ class Options(unittest.TestCase):
         result = project.build()
         self.assertNotEqual(result.code, 0)
         self.assertIn("Missing", result.output)
+
+    def test_entries_may_share_a_name(self):
+        # As in the game's list; markers then refer to them by id.
+        project = Project(self)
+        entry(project.data, "chests-a").update(name_en="Chest Set B")
+        marker(project.data, "testmap-0001").update(entry="chests-b")
+        result = project.build()
+        self.assertEqual(result.code, 0, result.output)
+        self.assertEqual(result.warnings, [])
 
     def test_optional_columns_may_be_left_out(self):
         project = Project(self)
