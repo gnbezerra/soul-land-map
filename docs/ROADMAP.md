@@ -22,6 +22,7 @@ checks pass (README "CI and deploy").
 | Suotuo City Area | 2048² | 0–3, `maxZoom` 4 | Published on 2026-11-16: 331 markers, 55 entries, matching every count of the game; tags and height notes still to come |
 | Xing Dou Great Forest | 2048² | 0–3, `maxZoom` 4 | Published on 2026-11-22: 64 markers, 16 entries, all from the game tables, matching every counter of the game, plus the owner's tags and portals; location-specific tags and height notes still to come |
 | Tian Dou City Area | 2048² | 0–3, `maxZoom` 4 | Published on 2026-11-23: 346 markers, 61 entries, from the game tables plus the owner's in-game data, matching every counter of the game; location-specific tags and height notes still to come |
+| Sunset Forest | 2048² | 0–3, `maxZoom` 4 | Draft since 2026-11-23: 251 markers, 29 entries, from the game tables plus the owner's in-game data, matching every counter of the game; calibration checked; location-specific tags and height notes still to come |
 
 - Nuoding was checked against the game tables on 2026-11-16 (`tools/game_data.py compare nuoding`: no
   differences). The recommended CP of the combat stages, the stars of their layers 4 and 7, two books and the
@@ -43,6 +44,11 @@ checks pass (README "CI and deploy").
   "Exploration counts"): two challenge chests named "Cooperative", and a Tang Sect Chest Three chest with no
   seal. Its calibration comes from `map_position`, checked on 2026-11-22 against 10 points the owner measured
   (`docs/DATA.md` "Calibration"). The owner made it public on 2026-11-23.
+- Sunset Forest's CSVs were exported from the game tables on 2026-11-23, then completed with the owner's
+  in-game data: co-op players, the challenge pillars, the seals, the portal. `compare` finds every point
+  exact. Its calibration from `map_position` is a plain 2 px per game unit, checked on 2026-11-24 against
+  10 points the owner measured (`docs/DATA.md` "Calibration"). Its two co-op entries share one name in the
+  game, so the build now allows a shared `name_en` (`docs/DATA.md` "The CSV files").
 - Until 2026-11-22, `compare` reported 27 invisible Tang Sect chests of Nuoding and Suotuo as missing the
   `hidden` tag; that was the same wrong rule, and the CSVs were right.
 - The counts of each region, by category: `docs/GAME-NOTES.md` "Exploration counts".
@@ -110,6 +116,7 @@ helps players more, and rewards need a lot of data collected in-game.
 | Suotuo | the location-specific tags and the height notes (in-game) | the tables do not have them |
 | Xing Dou Great Forest | the location-specific tags and height notes | the tables do not have them |
 | Tian Dou | the location-specific tags and height notes | the tables do not have them |
+| Sunset Forest | the location-specific tags and height notes | the tables do not have them |
 | Mixed Area | two PT descriptions that were cut off in screenshots | for when the region is added |
 | next regions | their map images | tiles (`docs/DATA.md` "Adding a region") |
 | all | a native review of the ZH UI strings | they are the site's own translations |
@@ -117,8 +124,8 @@ helps players more, and rewards need a lot of data collected in-game.
 ## Known gaps
 
 - **Expected `build_data.py --check` warnings today:** none for Nuoding and Suotuo. For Xing Dou
-  Great Forest, its portal to `xing-dou-mixed-area`; for Tian Dou, its portals to `sunset-forest` and
-  `dragon-island`: maps that do not exist yet.
+  Great Forest, its portal to `xing-dou-mixed-area`; for Tian Dou, its portal to `dragon-island`: maps that
+  do not exist yet.
 - **Suotuo looks crowded at the whole-map view.** Marker size follows the tile zoom (full size from
   `maxNativeZoom` up), not the game's scale. Suotuo has 1.65 image px per game unit at its native zoom against
   Nuoding's 3.57, so at full size its markers sit about 2.2 times closer together on screen. On a phone

@@ -1,0 +1,130 @@
+{
+  "ice-and-fire-yin-yang-well": {
+    "type": "chest_normal",
+    "size": 16
+  },
+  "geothermal-cavern": {
+    "type": "chest_normal",
+    "size": 16
+  },
+  "ancient-battlefield": {
+    "type": "chest_normal",
+    "size": 14
+  },
+  "soul-master-camp": {
+    "type": "chest_normal",
+    "size": 16
+  },
+  "sunset-beach": {
+    "type": "chest_normal",
+    "size": 20
+  },
+  "falling-leaf-path": {
+    "type": "chest_normal",
+    "size": 20
+  },
+  "blue-mist-forest": {
+    "type": "chest_normal",
+    "size": 10
+  },
+  "maple-valley": {
+    "type": "chest_normal",
+    "size": 16
+  },
+  "claw-mark-lowland": {
+    "type": "chest_normal",
+    "size": 8
+  },
+  "tang-sect-1": {
+    "type": "chest_normal",
+    "size": 11,
+    "tags": [
+      "grappling_hook"
+    ]
+  },
+  "tang-sect-2": {
+    "type": "chest_normal",
+    "size": 14,
+    "tags": [
+      "purple_demon_eye"
+    ]
+  },
+  "tang-sect-3": {
+    "type": "chest_normal",
+    "size": 10
+  },
+  "guardian": {
+    "type": "chest_normal",
+    "size": 12,
+    "tags": [
+      "guarded"
+    ]
+  },
+  "disguised": {
+    "type": "chest_normal",
+    "size": 18,
+    "tags": [
+      "hidden"
+    ]
+  },
+  "ancient-battlefield-coop": {
+    "type": "chest_coop",
+    "size": 1
+  },
+  "geothermal-cavern-coop": {
+    "type": "chest_coop",
+    "size": 1
+  },
+  "pillar-empty-path-1": {
+    "type": "chest_challenge",
+    "size": 1
+  },
+  "pillar-empty-path-2": {
+    "type": "chest_challenge",
+    "size": 1
+  },
+  "dragonwood-coffer-1": {
+    "type": "chest_contract",
+    "size": 1
+  },
+  "dragonwood-coffer-2": {
+    "type": "chest_contract",
+    "size": 1
+  },
+  "dragonwood-coffer-3": {
+    "type": "chest_contract",
+    "size": 1
+  },
+  "desolate-flame-coffer-1": {
+    "type": "chest_contract",
+    "size": 1
+  },
+  "desolate-flame-coffer-2": {
+    "type": "chest_contract",
+    "size": 1
+  },
+  "mysterious-frost-coffer-1": {
+    "type": "chest_contract",
+    "size": 1
+  },
+  "falling-leaf-path-crystal": {
+    "type": "crystal",
+    "size": 5
+  },
+  "sunset-forest-north-crystal": {
+    "type": "crystal",
+    "size": 11
+  },
+  "sunset-forest-east-crystal": {
+    "type": "crystal",
+    "size": 4
+  },
+  "light-up-teleport": {
+    "type": "teleport",
+    "size": 6
+  },
+  "enjoy-the-scenery": {
+    "type": "viewpoint",
+    "size": 4
+  }
+}

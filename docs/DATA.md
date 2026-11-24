@@ -269,6 +269,7 @@ not read from the game code. It was checked against the points the owner measure
 | Suotuo | 2048² | ±1.645002 | 297.624327, 1751.80611 | RMS 3.1 px (1.9 game units) over 10 points |
 | Xing Dou Great Forest | 2048² | ±1.874597 | 64.206321, 1943.041569 | RMS 1.8 px (1.0 game units) over 9 points, a constant 0.85 units in X |
 | Tian Dou City Area | 2048² | ±1.28 | 472.709565, 1863.012174 | RMS 1.0 px (0.8 game units) over 10 points, worst 1.5 px |
+| Sunset Forest | 2048² | ±2 | 0, 2048 | RMS 1.2 px (0.6 game units) over 10 points, worst 2.2 px |
 
 The game's readout is rounded to whole units, and Suotuo's own map draws the character a few pixels off, so
 these errors are within what the points can tell. Markers store game coordinates, so changing the calibration

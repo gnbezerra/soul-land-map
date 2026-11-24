@@ -1,0 +1,118 @@
+{
+  "ice-and-fire-yin-yang-well": {
+    "name": "Baú de Tesouro do Poço Yin-Yang de Gelo e Fogo",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados pelo Poço Yin-Yang de Gelo e Fogo."
+  },
+  "geothermal-cavern": {
+    "name": "Baú da Caverna Geotérmica",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados pela Caverna Geotérmica."
+  },
+  "ancient-battlefield": {
+    "name": "Baú de Tesouro do Antigo Campo de Batalha",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados pelo Antigo Campo de Batalha."
+  },
+  "soul-master-camp": {
+    "name": "Baú de Tesouro do Acampamento dos Mestres Espirituais",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados pelo Acampamento dos Mestres Espirituais e pela Cachoeira das Mil Camadas."
+  },
+  "sunset-beach": {
+    "name": "Baú de Tesouro da Praia do Pôr do Sol",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados pela Praia do Pôr do Sol."
+  },
+  "falling-leaf-path": {
+    "name": "Baú de Tesouro do Caminho das Folhas Caídas",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados pelo Caminho das Folhas Caídas."
+  },
+  "blue-mist-forest": {
+    "name": "Baú da Floresta da Névoa Azul",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados pela Floresta da Névoa Azul."
+  },
+  "maple-valley": {
+    "name": "Baú de Tesouro do Vale do Bordo",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados pelo Vale do Bordo."
+  },
+  "claw-mark-lowland": {
+    "name": "Baú de Tesouro das Terras Baixas das Marcas de Garras",
+    "description": "Encontre os Baús de Tesouro Básicos espalhados pelas Terras Baixas das Marcas de Garras."
+  },
+  "tang-sect-1": {
+    "name": "Baú de Tesouro Um da Seita Tang",
+    "description": "Use o Gancho para encontrar todos os Baús de Tesouro da Seita Tang espalhados pelo mapa."
+  },
+  "tang-sect-2": {
+    "name": "Baú Dois da Seita Tang",
+    "description": "Use o Olho Demoníaco Púrpura para Encontrar todos os Baús de Tesouro da Seita Tang Transformados espalhados pelo mapa."
+  },
+  "tang-sect-3": {
+    "name": "Baú Três da Seita Tang",
+    "description": "Use a Mão de Jade Negra para encontrar todos os Baús da Seita Tang Elementais espalhados pelo mapa."
+  },
+  "guardian": {
+    "name": "Baú de Tesouro do Guardião",
+    "description": "Obtenha todos os Baús de Tesouro guardados por Monstros na Floresta do Pôr do Sol!"
+  },
+  "disguised": {
+    "name": "Baú de Tesouro Disfarçado",
+    "description": "Encontre todos os Baús de Tesouro Disfarçados na Floresta do Pôr do Sol!"
+  },
+  "ancient-battlefield-coop": {
+    "name": "Baú Cooperativo",
+    "description": "Encontre os Baús de Tesouro Avançados no Antigo Campo de Batalha e coopere com outros Mestres Espirituais para abri-los."
+  },
+  "geothermal-cavern-coop": {
+    "name": "Baú Cooperativo",
+    "description": "Encontre os Baús de Tesouro Avançados na Caverna Geotérmica e coopere com outros Mestres Espirituais para abri-los."
+  },
+  "pillar-empty-path-1": {
+    "name": "Pilar do Caminho Vazio I",
+    "description": "Use o Pilar do Caminho Vazio para encontrar os Baús Avançados ocultos no Acampamento dos Mestres Espirituais."
+  },
+  "pillar-empty-path-2": {
+    "name": "Pilar do Caminho Vazio II",
+    "description": "Use o Pilar do Caminho Vazio para encontrar os Baús Avançados ocultos no Acampamento dos Mestres Espirituais."
+  },
+  "dragonwood-coffer-1": {
+    "name": "Baú de Contrato de Madeira de Dragão I",
+    "description": "Deuses retiraram a essência da Madeira-Dragão Oriental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "dragonwood-coffer-2": {
+    "name": "Baú de Contrato de Madeira de Dragão II",
+    "description": "Deuses retiraram a essência da Madeira-Dragão Oriental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "dragonwood-coffer-3": {
+    "name": "Baú de Contrato de Madeira de Dragão III",
+    "description": "Deuses retiraram a essência da Madeira-Dragão Oriental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "desolate-flame-coffer-1": {
+    "name": "Baú de Contrato da Chama Desolada I",
+    "description": "Deuses tomaram o fogo da Chama Desolada ocidental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "desolate-flame-coffer-2": {
+    "name": "Baú de Contrato da Chama Desolada II",
+    "description": "Deuses tomaram o fogo da Chama Desolada ocidental e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "mysterious-frost-coffer-1": {
+    "name": "Baú de Contrato da Geada Misteriosa I",
+    "description": "Deuses extraíram a energia da Geada Misteriosa do extremo norte e formaram um pacto divino para proteger itens preciosos. Encontre a pedra do pacto para desbloqueá-lo."
+  },
+  "falling-leaf-path-crystal": {
+    "name": "Cristal do Caminho das Folhas Caídas",
+    "description": "Encontre os Cristais da Mente Divina do Deus Asura espalhados pelo Caminho das Folhas Caídas."
+  },
+  "sunset-forest-north-crystal": {
+    "name": "Cristal Norte da Floresta do Pôr do Sol",
+    "description": "Encontre os Cristais da Mente Divina do Deus Asura espalhados no norte da floresta (Vale do Bordo/Caverna Geotérmica/Poço Yin-Yang de Gelo e Fogo e áreas ao norte)."
+  },
+  "sunset-forest-east-crystal": {
+    "name": "Cristal Leste da Floresta do Pôr do Sol",
+    "description": "Encontre os Cristais da Mente Divina do Deus Asura espalhados no leste da floresta (Terras Baixas das Marcas de Garras/Acampamento dos Mestres Espirituais/Cachoeira das Mil Camadas/Antigo Campo de Batalha/Floresta da Névoa Azul)."
+  },
+  "light-up-teleport": {
+    "name": "Acenda! Teletransporte",
+    "description": "Ilumine todos os Pontos de Teletransporte do mapa."
+  },
+  "enjoy-the-scenery": {
+    "name": "Aprecie Todas as Paisagens",
+    "description": "Ilumine todos os Pontos Panorâmicos do mapa."
+  }
+}

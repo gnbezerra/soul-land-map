@@ -1,0 +1,118 @@
+{
+  "ice-and-fire-yin-yang-well": {
+    "name": "冰火两仪眼宝箱",
+    "description": "找到冰火两仪眼内散落的初级宝箱。"
+  },
+  "geothermal-cavern": {
+    "name": "地炎窟宝箱",
+    "description": "找到地炎窟内散落的初级宝箱。"
+  },
+  "ancient-battlefield": {
+    "name": "古战场宝箱",
+    "description": "找到古战场内散落的初级宝箱。"
+  },
+  "soul-master-camp": {
+    "name": "魂师营地宝箱",
+    "description": "找到魂师营地及千叠瀑内散落的初级宝箱。"
+  },
+  "sunset-beach": {
+    "name": "夕落滩宝箱",
+    "description": "找到夕落滩内散落的初级宝箱。"
+  },
+  "falling-leaf-path": {
+    "name": "落叶道宝箱",
+    "description": "找到落叶道内散落的初级宝箱。"
+  },
+  "blue-mist-forest": {
+    "name": "青瘴林宝箱",
+    "description": "找到青瘴林内散落的初级宝箱。"
+  },
+  "maple-valley": {
+    "name": "染枫谷地宝箱",
+    "description": "找到染枫谷地内散落的初级宝箱。"
+  },
+  "claw-mark-lowland": {
+    "name": "爪印低地宝箱",
+    "description": "找到爪印低地内散落的初级宝箱。"
+  },
+  "tang-sect-1": {
+    "name": "唐门宝箱一",
+    "description": "使用钩爪，找到地图内所有散落的唐门宝箱。"
+  },
+  "tang-sect-2": {
+    "name": "唐门宝箱二",
+    "description": "使用紫极魔瞳，找到地图内所有散落的变形唐门宝箱。"
+  },
+  "tang-sect-3": {
+    "name": "唐门宝箱三",
+    "description": "使用玄玉手，找到地图内所有散落的元素唐门宝箱。"
+  },
+  "guardian": {
+    "name": "守护宝箱",
+    "description": "拿到落日森林内所有被怪物守护的宝箱！"
+  },
+  "disguised": {
+    "name": "伪装宝箱",
+    "description": "找到落日森林内所有伪装的宝箱！"
+  },
+  "ancient-battlefield-coop": {
+    "name": "合作宝箱",
+    "description": "找到古战场内的高级宝箱，与其他魂师合作开启宝箱。"
+  },
+  "geothermal-cavern-coop": {
+    "name": "合作宝箱",
+    "description": "找到地炎窟内的高级宝箱，与其他魂师合作开启宝箱。"
+  },
+  "pillar-empty-path-1": {
+    "name": "空行之柱一",
+    "description": "通过空行之柱，找到魂师营地隐藏的高级宝箱。"
+  },
+  "pillar-empty-path-2": {
+    "name": "空行之柱二",
+    "description": "通过空行之柱，找到魂师营地隐藏的高级宝箱。"
+  },
+  "dragonwood-coffer-1": {
+    "name": "龙木契匣一",
+    "description": "有神明取东方龙木之精，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "dragonwood-coffer-2": {
+    "name": "龙木契匣二",
+    "description": "有神明取东方龙木之精，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "dragonwood-coffer-3": {
+    "name": "龙木契匣三",
+    "description": "有神明取东方龙木之精，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "desolate-flame-coffer-1": {
+    "name": "荒炎契匣一",
+    "description": "有神明取西方荒炎之火，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "desolate-flame-coffer-2": {
+    "name": "荒炎契匣二",
+    "description": "有神明取西方荒炎之火，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "mysterious-frost-coffer-1": {
+    "name": "玄霜契匣一",
+    "description": "有神明取极北玄霜之气，结为神契，用以守护珍贵之物。神契牢不可破，唯有寻得契石，方能解开。"
+  },
+  "falling-leaf-path-crystal": {
+    "name": "落叶道结晶",
+    "description": "找到落叶道内散落的修罗神念结晶。"
+  },
+  "sunset-forest-north-crystal": {
+    "name": "落日森林北结晶",
+    "description": "找到森林北（染枫谷地/地炎窟/冰火两仪眼及以北区域）散落的修罗神念结晶。"
+  },
+  "sunset-forest-east-crystal": {
+    "name": "落日森林东结晶",
+    "description": "找到森林东（爪印低地/魂师营地/千叠瀑/古战场/青瘴林）散落的修罗神念结晶。"
+  },
+  "light-up-teleport": {
+    "name": "点亮！传送",
+    "description": "点亮地图上所有的传送点。"
+  },
+  "enjoy-the-scenery": {
+    "name": "赏遍风景",
+    "description": "点亮地图上所有的观景点。"
+  }
+}

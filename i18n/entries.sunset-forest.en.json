@@ -1,0 +1,118 @@
+{
+  "ice-and-fire-yin-yang-well": {
+    "name": "Ice and Fire Yin Yang Well Chest",
+    "description": "Find the primary chests scattered within the Ice and Fire Yin-Yang Well."
+  },
+  "geothermal-cavern": {
+    "name": "Geothermal Cavern Chest",
+    "description": "Discover the primary chests scattered within the Geothermal Cavern."
+  },
+  "ancient-battlefield": {
+    "name": "Ancient Battlefield Chest",
+    "description": "Locate the primary chests scattered within the Ancient Battlefield."
+  },
+  "soul-master-camp": {
+    "name": "Soul Master Camp Chest",
+    "description": "Find the primary chests scattered within the Soul Master Camp and Thousand Fold Waterfall."
+  },
+  "sunset-beach": {
+    "name": "Sunset Beach Chest",
+    "description": "Discover the primary chests scattered within the Sunset Beach."
+  },
+  "falling-leaf-path": {
+    "name": "Falling Leaf Path Chest",
+    "description": "Find the primary chests scattered within the Falling Leaf Path."
+  },
+  "blue-mist-forest": {
+    "name": "Blue Mist Forest Chest",
+    "description": "Locate the primary chests scattered within the Blue Mist Forest."
+  },
+  "maple-valley": {
+    "name": "Maple Valley Chest",
+    "description": "Find the primary chests scattered within the Maple Valley."
+  },
+  "claw-mark-lowland": {
+    "name": "Claw Mark Lowland Chest",
+    "description": "Discover the primary chests scattered within the Claw Mark Lowland."
+  },
+  "tang-sect-1": {
+    "name": "Tang Sect Chest One",
+    "description": "Use the Grappling Hook to find all the scattered Tang Sect chests on the map."
+  },
+  "tang-sect-2": {
+    "name": "Tang Sect Chest Two",
+    "description": "Use the Purple Demon Eye to locate all the scattered transformed Tang Sect chests on the map."
+  },
+  "tang-sect-3": {
+    "name": "Tang Sect Chest Three",
+    "description": "Use the Xuan Yu Hand to find all the scattered elemental Tang Sect chests on the map."
+  },
+  "guardian": {
+    "name": "Guardian Chest",
+    "description": "Retrieve all the chests guarded by monsters within the Sunset Forest!"
+  },
+  "disguised": {
+    "name": "Disguised Chest",
+    "description": "Find all the disguised chests within the Sunset Forest!"
+  },
+  "ancient-battlefield-coop": {
+    "name": "Cooperative Chest",
+    "description": "Locate the advanced chests within the Ancient Battlefield and cooperate with other Soul Masters to open them."
+  },
+  "geothermal-cavern-coop": {
+    "name": "Cooperative Chest",
+    "description": "Locate the advanced chests within the Geothermal Cavern and cooperate with other Soul Masters to open them."
+  },
+  "pillar-empty-path-1": {
+    "name": "Pillar of Empty Path I",
+    "description": "Find the hidden advanced chests within the Soul Master Camp using the Pillar of Empty Path."
+  },
+  "pillar-empty-path-2": {
+    "name": "Pillar of Empty Path II",
+    "description": "Find the hidden advanced chests within the Soul Master Camp using the Pillar of Empty Path."
+  },
+  "dragonwood-coffer-1": {
+    "name": "Dragonwood Coffer I",
+    "description": "Gods took the essence of the eastern Dragonwood and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "dragonwood-coffer-2": {
+    "name": "Dragonwood Coffer II",
+    "description": "Gods took the essence of the eastern Dragonwood and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "dragonwood-coffer-3": {
+    "name": "Dragonwood Coffer III",
+    "description": "Gods took the essence of the eastern Dragonwood and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "desolate-flame-coffer-1": {
+    "name": "Desolate Flame Coffer I",
+    "description": "Gods took the fire of the western Desolate Flame and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "desolate-flame-coffer-2": {
+    "name": "Desolate Flame Coffer II",
+    "description": "Gods took the fire of the western Desolate Flame and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "mysterious-frost-coffer-1": {
+    "name": "Mysterious Frost Coffer I",
+    "description": "Gods took the extreme northern Mysterious Frost and formed a divine covenant to protect precious items. Find the covenant stone to unlock it."
+  },
+  "falling-leaf-path-crystal": {
+    "name": "Falling Leaf Path Crystal",
+    "description": "Find the scattered Asura God Mind Crystals within the Falling Leaf Path."
+  },
+  "sunset-forest-north-crystal": {
+    "name": "Sunset Forest North Crystal",
+    "description": "Find the scattered Asura God Mind Crystals in the northern area of the forest (Maple Valley, Geothermal Cavern, Yin-Yang Eye, and beyond)."
+  },
+  "sunset-forest-east-crystal": {
+    "name": "Sunset Forest East Crystal",
+    "description": "Find the scattered Asura God Mind Crystals in the eastern area of the forest (Claw Mark Lowland, Soul Master Camp, Thousand Fold Waterfall, Ancient Battlefield, Blue Mist Forest)."
+  },
+  "light-up-teleport": {
+    "name": "Light Up! Teleport",
+    "description": "Illuminate all the teleport points on the map."
+  },
+  "enjoy-the-scenery": {
+    "name": "Enjoy the Scenery",
+    "description": "Illuminate all the observation points on the map."
+  }
+}

@@ -39,6 +39,7 @@ The counters of the game's exploration UI, per region and category (SPEC §4.2):
 | Suotuo City Area | 247 | 12 (2 of them Wolf Thief chests) | 51 layers (10 pillars) | 30 | 9 | 12 (8 teleports, 4 viewpoints) |
 | Xing Dou Great Forest | 49 | 7 (all Coffers) | 20 layers (2 pillars) | 5 | 0 | 1 (1 teleport, no viewpoints) |
 | Tian Dou City Area | 251 | 14 (2 cooperative, 2 challenge, 10 Coffers) | 45 layers (8 pillars) | 20 | 18 | 16 (11 teleports, 5 viewpoints) |
+| Sunset Forest | 201 | 10 (2 cooperative, 2 Pillar of Empty Path, 6 Coffers) | 48 layers (9 pillars) | 20 | 0 (no Encounter counter) | 10 (6 teleports, 4 viewpoints) |
 | Mixed Area of Xing Dou Forest | 172 | 9 | 12 | 20 | 2 | 14 (8 seeds, 6 teleports, no viewpoints) |
 
 - **Nuoding's entries:** 20 normal-chest sets (sum 264); 16 decryption chests (4 cooperative, 6 Pillar of Empty
@@ -60,6 +61,12 @@ The counters of the game's exploration UI, per region and category (SPEC §4.2):
   jumping puzzle with a pillar): Moon Pavilion Cooperative Chest Two and Blue Tyrant Academy Cooperative
   Chest, which also needs the Grappling Hook to jump between the platforms. Tang Sect Chest Three's entry says
   Xuanyu Hand, but its second chest needs none.
+- **Sunset Forest** (from the game tables, scene 23; the counters and milestones match the owner's screenshot
+  of the exploration panel, 2026-11-23): exploration value cap 2085. 14 normal-chest sets (sum 201), 3 crystal
+  sets, 6 puzzle trials of 3 layers and 3 combat trials of 10. Its exploration panel has no Encounter counter.
+  Its two co-op entries share one name, "Cooperative Chest" (one in the Ancient Battlefield, one in the
+  Geothermal Cavern); only the description tells them apart. Its Disguised Chests are inside things the
+  player breaks to reveal the chest, like the `hidden` ones elsewhere (owner, in-game, 2026-11-23).
 
 ## Exploration value
 
@@ -78,11 +85,13 @@ viewpoints.
 | Encounter | +80 each | Completing encounters | Concluir encontros | 完成奇遇 |
 
 - Seeds are not in the list. The Mixed Area's 240 points reconcile only if a seed is +5 (unconfirmed).
-- Nuoding totals 3080 exactly; Xing Dou Great Forest 565 (56 chests, 20 layers, 5 crystals, 1 teleport).
-- Reward milestones: 250, 500, 1000, 1500, 2000 and 2500 (Nuoding, Suotuo and Tian Dou); 150, 300, 400, 500 and 550
-  (Xing Dou Great Forest, seen in-game on 2026-11-22); 75, 150, 300, 600, 900 and 1200 (Mixed Area). In the
-  tables they are `scene_explore_reward`; the `Push` column of `scene_explore_control` lists other values in
-  those last two regions (150 to 1500 in both).
+- Nuoding totals 3080 exactly; Xing Dou Great Forest 565 (56 chests, 20 layers, 5 crystals, 1 teleport);
+  Sunset Forest 2085 (211 chests, 48 layers, 20 crystals, 10 teleports and viewpoints).
+- Reward milestones: 250, 500, 1000, 1500, 2000 and 2500 (Nuoding, Suotuo and Tian Dou); 150, 300, 400, 500
+  and 550 (Xing Dou Great Forest, seen in-game on 2026-11-22); 150, 300, 600, 900, 1200 and 1500 (Sunset
+  Forest, seen in-game on 2026-11-23); 75, 150, 300, 600, 900 and 1200 (Mixed Area). In the tables they are
+  `scene_explore_reward`; the `Push` column of `scene_explore_control` lists other values in Xing Dou Great
+  Forest and the Mixed Area (150 to 1500 in both).
 
 ## Loot observed in-game
 
@@ -147,6 +156,10 @@ turns out to be there after all):
   global release, and apparently reviewed), many in Portuguese (seen: "Rec.", "Adicionar", the trial window's
   "Mecânica de"). Do not take a cut-off string as the full official text (owner, 2026-11-21).
 - The trial window's terms, and the site's wording for them: SPEC §4.6.
+- A puzzle trial is named after its kind of puzzle, so one map can have two trials with the same name
+  (owner, 2026-11-23). Every "Trial of Wisdom: Path of No Regrets" is crossing every square without
+  stepping on one twice; every "Trial of Wisdom: Reversing the Chessboard" is a Lights Out puzzle. Sunset
+  Forest has two of each "Path of No Regrets" and "Totem of Mind Essence".
 - The game's English says "hidden" for two kinds of chest that the Chinese and the site keep apart: 遮蔽
   (inside a box, a bush or under a rock; the site's `hidden`) and 隐形 (invisible until the Purple Demon Eye
   shows it; the site's `purple_demon_eye`). SPEC §4.4 has the tags.
