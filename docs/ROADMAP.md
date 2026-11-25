@@ -197,18 +197,21 @@ The sheet is Leaflet's popup element moved into `#map-wrap` (`js/sheet.js`).
 
 ### The Pages deploy
 
-The deploy job failed on GitHub's side on 2026-11-21 and again on 2026-11-22, with the checks green and no
-change in the repo to blame.
+The deploy failed on GitHub's side on 2026-11-21, 11-22, 11-23 and 11-24, with the checks green and no change
+in the repo to blame.
 
-- **Symptom.** `actions/deploy-pages` stops with "Found 0 artifact(s)": the build job uploaded the
-  `github-pages` artifact, but GitHub's API did not list it yet.
-- **Do not** rerun the failed job ("Re-run failed jobs"): the rerun uploads a second artifact with the same
-  name next to the late one, and the deploy then fails with "Multiple artifacts named github-pages … count
-  is 2".
-- **Fix.** Start a fresh run on `main` (Actions → CI → Run workflow, or `gh workflow run ci.yml --ref main`),
-  then check that the live `version.json` shows the pushed commit. Both times this deployed with no change.
-- The failed runs stay in the history; nothing needs cleaning up. If it starts happening on most pushes, look
-  at a retry in the workflow instead.
+- **Symptom.** `actions/deploy-pages` stopped with "Found 0 artifact(s)": the artifact had been uploaded
+  about 0.3 s earlier in the same job, and GitHub's API did not list it yet
+  ([deploy-pages#451](https://github.com/actions/deploy-pages/issues/451), open, reported by other repos
+  too).
+- **Change (2026-11-24).** The upload (job `package`) and the deploy (job `deploy`) are now separate jobs, as
+  in GitHub's other Pages starter workflows, so the lookup happens seconds after the upload. If "Found 0
+  artifact(s)" comes back anyway, note it here: the next step would be a retry of the deploy job.
+- **Recovering a failed deploy.** "Re-run failed jobs" now reruns only `deploy`, which should reuse the
+  uploaded artifact (not tried yet). Before the split it also re-uploaded, and failed with "Multiple
+  artifacts named github-pages … count is 2". A fresh run on `main` also works (Actions → CI → Run workflow,
+  or `gh workflow run ci.yml --ref main`). Then check that the live `version.json` shows the pushed commit.
+- The failed runs stay in the history; nothing needs cleaning up.
 
 ### The browser test
 

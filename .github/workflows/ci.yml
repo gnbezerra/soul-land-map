@@ -93,20 +93,15 @@ jobs:
           path: browser-shots/
           if-no-files-found: ignore
 
-  deploy:
+  # Packaging and deploying are separate jobs: when deploy-pages ran right after the upload in the same job,
+  # GitHub's API sometimes did not list the artifact yet ("Found 0 artifact(s)", about 0.3 s after the upload
+  # finished; https://github.com/actions/deploy-pages/issues/451). The start of a new job gives it seconds.
+  # It should also make "Re-run failed jobs" safe: only the deploy job reruns, so no second artifact is uploaded.
+  package:
     needs: check
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    concurrency:
-      group: pages
-      cancel-in-progress: false
     steps:
       # The full history, so the next step can find the last commit that changed the data.
       - uses: actions/checkout@v7
@@ -127,5 +122,19 @@ jobs:
         with:
           path: .
 
+  deploy:
+    needs: package
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
       - id: deployment
         uses: actions/deploy-pages@v5
