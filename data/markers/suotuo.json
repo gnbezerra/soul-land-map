@@ -185,7 +185,7 @@
   {"id": "suotuo-0184", "type": "chest_normal", "entry": "tang-sect-3", "entryIndex": 9, "x": 289, "y": 335},
   {"id": "suotuo-0185", "type": "chest_normal", "entry": "tang-sect-3", "entryIndex": 10, "x": 781, "y": 69},
   {"id": "suotuo-0186", "type": "chest_normal", "entry": "tang-sect-3", "entryIndex": 11, "x": 444, "y": 124},
-  {"id": "suotuo-0187", "type": "chest_normal", "entry": "tang-sect-4", "entryIndex": 1, "x": 474, "y": 408},
+  {"id": "suotuo-0187", "type": "chest_normal", "entry": "tang-sect-4", "entryIndex": 1, "x": 474, "y": 408, "tags": ["grappling_hook"]},
   {"id": "suotuo-0188", "type": "chest_normal", "entry": "tang-sect-4", "entryIndex": 2, "x": 440, "y": 222},
   {"id": "suotuo-0189", "type": "chest_normal", "entry": "tang-sect-4", "entryIndex": 3, "x": 310, "y": 87},
   {"id": "suotuo-0190", "type": "chest_normal", "entry": "tang-sect-4", "entryIndex": 4, "x": 230, "y": 235},

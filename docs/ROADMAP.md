@@ -19,7 +19,7 @@ checks pass (README "CI and deploy").
 | Region | Image | Zooms | State |
 | --- | --- | --- | --- |
 | Nuoding City Area | 4096² | 0–4, `maxZoom` 5 | Fully mapped: 339 markers, 49 entries, all named in en/pt/zh, plus 150 respawned chests |
-| Suotuo City Area | 2048² | 0–3, `maxZoom` 4 | Published on 2026-11-16: 331 markers, 55 entries, matching every count of the game; tags and height notes still to come |
+| Suotuo City Area | 2048² | 0–3, `maxZoom` 4 | Published on 2026-11-16: 331 markers, 55 entries, matching every count of the game |
 | Xing Dou Great Forest | 2048² | 0–3, `maxZoom` 4 | Published on 2026-11-22: 64 markers, 16 entries, all from the game tables, matching every counter of the game, plus the owner's tags and portals; location-specific tags and height notes still to come |
 | Tian Dou City Area | 2048² | 0–3, `maxZoom` 4 | Published on 2026-11-23: 346 markers, 61 entries, from the game tables plus the owner's in-game data, matching every counter of the game; location-specific tags and height notes still to come |
 | Sunset Forest | 2048² | 0–3, `maxZoom` 4 | Published on 2026-11-24: 251 markers, 29 entries, from the game tables plus the owner's in-game data, matching every counter of the game; calibration checked; location-specific tags and height notes still to come |
