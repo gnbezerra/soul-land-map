@@ -49,6 +49,15 @@ The counters of the game's exploration UI, per region and category (SPEC §4.2):
   other 30 chests (14 in the south-west, 16 in the south-east) belong to NoteIds 1109 and 1110, which have no
   entry and no name in the game tables. Checked on a 247/247 character: every entry complete, 217/217. The
   site puts them in entries of its own (SPEC §4.3).
+- **Suotuo's chest outside the counters**, at (555, 132): NPC `st_luolu097`. Every normal chest from
+  `st_luolu090` to `st_luolu125` is in `scene_explore` except this one, and its rows in `box_npc`,
+  `nofight_npc`, `interactive_npc` and `magic_pupil_npc` match its neighbours' (`st_luolu120` is
+  `suotuo-0313`). Opening it changes no counter, no exploration value and no entry; on some characters it is
+  there, on others it is not, and where it is missing the Purple Demon Eye shows a chest for a split second
+  before the mark goes away (owner, in-game, 2026-11-24). What decides whether it spawns is not in the client
+  tables. The site does not show it, since it does not count. Four more `TreasureBox` NPCs are outside
+  `scene_explore` (`Adventurebox_05` to `_07` at about (457, 68), `Adventurebox_08` at (664, 171); the last
+  is in `sub_task`): the owner found none of them at those positions (2026-11-24).
 - **Xing Dou Great Forest** (from the game tables; the counters checked in-game by the owner on 2026-11-22):
   exploration value cap 565, every point in the north-west corner, the only part of the map image not under
   fog (the region is the forest's outskirts). 7 normal-chest sets (sum 49), 7 Coffers, 1 crystal set, 1
