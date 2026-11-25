@@ -1,12 +1,12 @@
 {
   "suotuo-0002": {
-    "note": "Complete the \"Wolf's Den Treasure\" encounter (part of the \"Catastrophe of the Wolf Thieves\" questline) to unlock the secret area behind the Wolf Thieves' camp."
+    "note": "Complete the \"Wolf's Den Treasure\" encounter (unlocked after the 4-part \"Catastrophe of the Wolf Thieves\" questline) to access the secret area behind the Wolf Thieves' camp."
   },
   "suotuo-0003": {
-    "note": "Complete the \"Wolf's Den Treasure\" encounter (part of the \"Catastrophe of the Wolf Thieves\" questline) to unlock the secret area behind the Wolf Thieves' camp."
+    "note": "Complete the \"Wolf's Den Treasure\" encounter (unlocked after the 4-part \"Catastrophe of the Wolf Thieves\" questline) to access the secret area behind the Wolf Thieves' camp."
   },
   "suotuo-0004": {
-    "note": "Complete the \"Wolf's Den Treasure\" encounter (part of the \"Catastrophe of the Wolf Thieves\" questline) to unlock the secret area behind the Wolf Thieves' camp."
+    "note": "Complete the \"Wolf's Den Treasure\" encounter (unlocked after the 4-part \"Catastrophe of the Wolf Thieves\" questline) to access the secret area behind the Wolf Thieves' camp."
   },
   "suotuo-0014": {
     "note": "On top of the wooden watchtower."
@@ -57,10 +57,10 @@
     "note": "At the top of the cliff."
   },
   "suotuo-0240": {
-    "note": "Complete the \"Wolf's Den Treasure\" encounter (part of the \"Catastrophe of the Wolf Thieves\" questline) to unlock the secret area behind the Wolf Thieves' camp."
+    "note": "Complete the \"Wolf's Den Treasure\" encounter (unlocked after the 4-part \"Catastrophe of the Wolf Thieves\" questline) to access the secret area behind the Wolf Thieves' camp."
   },
   "suotuo-0241": {
-    "note": "Complete the \"Wolf's Den Treasure\" encounter (part of the \"Catastrophe of the Wolf Thieves\" questline) to unlock the secret area behind the Wolf Thieves' camp."
+    "note": "Complete the \"Wolf's Den Treasure\" encounter (unlocked after the 4-part \"Catastrophe of the Wolf Thieves\" questline) to access the secret area behind the Wolf Thieves' camp."
   },
   "suotuo-0246": {
     "note": "At the bottom of the cliff."
@@ -140,7 +140,7 @@
     "note": "Volume 1 of the \"Miscellaneous Essays and Secret Talks\" series"
   },
   "suotuo-0291": {
-    "howto": "Complete all quests in the \"Catastrophe of the Wolf Thieves\" questline."
+    "howto": "Starts automatically upon completing the 4-part \"Catastrophe of the Wolf Thieves\" questline."
   },
   "suotuo-0292": {
     "howto": "Check the notice on the bulletin board."

@@ -289,7 +289,7 @@
   {"id": "suotuo-0288", "type": "book", "x": 490, "y": 398},
   {"id": "suotuo-0289", "type": "book", "x": 344, "y": 381},
   {"id": "suotuo-0290", "type": "book", "x": 295, "y": 371},
-  {"id": "suotuo-0291", "type": "encounter", "entry": "wolfs-den-treasure", "x": 417, "y": 406},
+  {"id": "suotuo-0291", "type": "encounter", "entry": "wolfs-den-treasure", "x": 487, "y": 346},
   {"id": "suotuo-0292", "type": "encounter", "entry": "lucky-water-and-cats", "x": 367, "y": 320},
   {"id": "suotuo-0293", "type": "encounter", "entry": "ownerless-objects", "x": 477, "y": 339, "links": ["suotuo-0067", "suotuo-0072", "suotuo-0114"]},
   {"id": "suotuo-0294", "type": "encounter", "entry": "drunk-and-dreamy", "x": 291, "y": 435},
