@@ -20,7 +20,12 @@ The site plans eight regions:
 8. Dragon Island
 
 - The first seven follow the same category pattern; Dragon Island has no exploration (SPEC §4.9).
-- Each region is fully separate, linked to the others by portals with loading screens.
+- Each region is fully separate, linked to the others by portals with loading screens. Going through a
+  portal changes nothing in the game: unlike a teleport point, it is not activated and gives no exploration
+  value (owner, 2026-11-26).
+- The Mixed Area's magic mechanisms build a bridge with the right Blue Silver Grass seed. The bridge goes away
+  after a while (long enough to leave the region and come back to find it gone), and the seed is not used
+  up, so the same mechanism can be used again on every visit (owner, 2026-11-26).
 - Their map images in the game's assets: three are 4096², Nuoding's among them; five are 2048², Suotuo's
   among them.
 - The game tables have every region's data and calibration.
@@ -165,6 +170,11 @@ turns out to be there after all):
   global release, and apparently reviewed), many in Portuguese (seen: "Rec.", "Adicionar", the trial window's
   "Mecânica de"). Do not take a cut-off string as the full official text (owner, 2026-11-21).
 - The trial window's terms, and the site's wording for them: SPEC §4.6.
+- Dragon Island has two map names in the tables, `MapName47` (combat zone) and `MapName50` (safe zone):
+  "Dragon Island" and "Dragon Island (Safe Zone)" in English, "Ilha do Dragão (Zona de Combate)" and "(Zona
+  Segura)" in Portuguese, 龙牙岛（战斗区） and （安全区） in Chinese. The game's own portal text names the island
+  alone ("Go to Dragon Island", "Vá até a Ilha do Dragão.", 前往龙牙岛; `npc_door_longyadao1`), and so does
+  the site's `map.dragon-island`.
 - A puzzle trial is named after its kind of puzzle, so one map can have two trials with the same name
   (owner, 2026-11-23). Every "Trial of Wisdom: Path of No Regrets" is crossing every square without
   stepping on one twice; every "Trial of Wisdom: Reversing the Chessboard" is a Lights Out puzzle. Sunset

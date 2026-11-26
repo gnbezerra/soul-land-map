@@ -33,8 +33,8 @@
     "viewpoint":       { "color": "#7fd1ff", "glyph": "V", "icon": "icons/viewpoint.png", "tier": "minor", "size": 26 },
     "seed":            { "color": "#9be564", "glyph": "S" },
     "book":            { "color": "#8a97a8", "glyph": "B", "icon": "icons/book.png", "tier": "major" },
-    "mechanism":       { "color": "#c9b458", "glyph": "L" },
-    "portal":          { "color": "#ff9ecb", "glyph": "O", "icon": "icons/portal.png", "tier": "minor" },
+    "mechanism":       { "color": "#c9b458", "glyph": "L", "untracked": true },
+    "portal":          { "color": "#ff9ecb", "glyph": "O", "icon": "icons/portal.png", "tier": "minor", "untracked": true },
     "boss":            { "color": "#ff5c5c", "glyph": "X", "icon": "icons/boss.png", "tier": "major" },
     "arena":           { "color": "#f5a524", "glyph": "A" }
   }

@@ -89,7 +89,7 @@ Terms used across the code and the docs:
 | entry | A row of the game's exploration list ("Nuoding Academy Chest One 11/11"): a set of markers of one type. |
 | tag | A requirement to reach or open a marker (`grappling_hook`). |
 | layer | One stage of a Divine Trial (the game's exploration rules call it a layer). |
-| found | A marker the player marked; a Divine Trial is found when every layer is done. |
+| found | A marker the player marked; a Divine Trial is found when every layer is done. Untracked types (portals, mechanisms) are never found. |
 | game tables | The game client's config files, read by `tools/game_tables.py` (`docs/DATA.md` "Game data"). |
 
 ### 4.1 Maps and calibration
@@ -154,6 +154,7 @@ The site's own groups are outside the game's counters and the exploration value:
 | `badgeIcon` | optional | a small sprite in the same corner, on the marker and in the sidebar: the boss chest's |
 | `defaultHidden` | optional | the type starts hidden (§7.3): the respawned chests |
 | `unlockedBy` | optional | the type whose completion makes this one appear in the game; the sidebar explains it and suggests showing it (§7.3): the respawned chests, by `chest_normal` |
+| `untracked` | optional | the player never marks it found: no "Mark as found" in its popup, a counter with the total alone (§7.3), and old marks are dropped (§6). For what stays on the map and is used again, with nothing to collect: portals and mechanisms |
 
 Challenge chests have no badge: the game has no sprite for the pillar (`dt_icon_sj` is the Asura Statue's).
 
@@ -241,11 +242,16 @@ Normal chests carry no reward of their own: it comes from the category's default
 - `encounter`: §4.7.
 - `teleport`, `viewpoint`: each has its official point name as a `name` in `marker_texts.csv`, shown as the
   popup title instead of the entry name.
-- `portal`: a whirlpool to another map, with the field `to` (the map id); auxiliary group.
+- `portal`: a whirlpool to another map, with the field `to` (the map id); auxiliary group, `untracked`.
+  Its title names the destination (`popup.portalTo`: "Portal to Suotuo City Area"; the `map.<id>` names of
+  maps not on the site yet are in the UI strings too). Its popup's one action, "Go to this map", opens the
+  destination on the portal that leads back, where the player comes out (`js/portals.js`), or on the whole
+  map when there is not exactly one; a destination not on the site, or a draft, gets a note instead.
 - `seed`: a Blue Silver Grass seed (Mixed Area), with the field `seed`, the number the game shows on pickup
   (it can differ from `entry_index`; both are stored).
 - `mechanism`: the magic mechanism near each seed, which builds a bridge only with the right seed;
-  `requires_seed` links it to the seed. Auxiliary group, outside the counters.
+  `requires_seed` links it to the seed. Auxiliary group, outside the counters, `untracked`: the bridge goes
+  away after a while and the seed is not used up (`docs/GAME-NOTES.md` "Regions").
 - `book`: a lore book, in the extras group. It has no entry: its official title is a `name` in
   `marker_texts.csv` and is the popup title.
 - `boss`, `arena`: Dragon Island (§4.9).
@@ -380,8 +386,8 @@ The bosses and their spawns: `docs/GAME-NOTES.md` "Dragon Island".
   example `type.book`) fall back to English.
 - **Adding a language.** Create `i18n/<lang>.json` with the keys of `i18n/en.json`, list it in
   `i18n/languages.json` (`{"pt": "Português"}`), and try it with `?lang=pt`.
-- **Marker titles.** The marker's own name (trials, books, teleports, viewpoints), else the entry name, else
-  the type.
+- **Marker titles.** The marker's own name (trials, books, teleports, viewpoints), else the entry name, else,
+  for a portal, "Portal to" its destination, else the type.
 - **Official names.** The game's official English is inconsistent (Norton/Nuoding, Fugold/Floating Gold,
   Sunset Forest/Radiant Light Forest), so ids are independent of names, Chinese is the source of truth when
   available, and the site may correct the official English. The official PT is translated from Chinese and
@@ -409,6 +415,9 @@ All keys are prefixed and versioned:
   storage.
 - Divine Trials are never in the found set. A trial id found there (marked found before layer progress
   existed) is moved to `trials` as complete when the map loads or a backup is imported.
+- Untracked types (§4.2 `untracked`) are never in the found set either. Their ids found there (portals
+  marked before they became untracked) are dropped when the map loads or a backup is imported, before the
+  import confirmation counts them.
 - Ids are permanent, so progress survives data updates; ids that no longer exist are ignored when reading
   and in the counts.
 - The backup ("Export" and "Import" in the sidebar) is
@@ -500,7 +509,8 @@ The markers are the game's sprites (§9), sized by tier (`TIER_SIZE` in `js/laye
 checkbox, a live `found/total` counter and the type's sprite as its legend (a colored dot when it has none).
 
 - Counters read "found / total in the game": the total is the sum of the `size` of the type's entries, or the
-  number of mapped markers when a type has no entries yet.
+  number of mapped markers when a type has no entries yet. Untracked types (§4.2), and a group of them only,
+  show the total alone.
 - Checkboxes toggle visibility, saved per map (`settings.hidden`, §6). Types missing from the saved list
   default to visible.
 - A type with `defaultHidden` (the respawned chests) is hidden the first time a map shows it, and
@@ -548,15 +558,17 @@ alone.
 
 Clicking a marker opens a popup with, in this order (`makePopup` in `js/layers.js`):
 
-1. the title (the marker's own name, else the entry name, else the type) and the type;
+1. the title (the marker's own name, else the entry name, else a portal's destination, else the type) and the
+   type;
 2. the effective tags (§4.3) as labels, with the `tag.<id>` names and the optional `tag.<id>.hint` tooltip;
 3. the entry description;
 4. the marker's note;
 5. the howto, behind "Show solution";
-6. the type-specific fields (`subtype`, `players`, `contract`, `pillar`, `species`, `seed`, `requiresSeed`,
-   `to`), when the marker has them; a contract shows its official name (`contract.<code>` UI keys), followed
+6. the type-specific fields (`subtype`, `players`, `contract`, `pillar`, `species`, `seed`, `requiresSeed`),
+   when the marker has them; a contract shows its official name (`contract.<code>` UI keys), followed
    by the warning that opening the chest uses the contract up;
-7. "Mark as found", or the layer list on a Divine Trial (§4.6);
+7. "Mark as found", or the layer list on a Divine Trial (§4.6), or "Go to this map" on a portal (§4.2);
+   nothing on the other untracked types;
 8. a footer with the coordinates and "Copy link".
 
 Planned: rewards with icons (§4.8) and the `links` (§4.4).

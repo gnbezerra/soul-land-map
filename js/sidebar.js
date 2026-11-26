@@ -30,7 +30,7 @@ export function createSidebar({
   const soloButtons = []; // { el, typeIds, entry }
   const labels = new Map(); // soloKey -> label, for the "only this" bar
   const soloKey = (typeIds, entry) => entry ? `entry:${entry}` : [...typeIds].sort().join(" ");
-  const counters = []; // { el, read: () => [found, total] }
+  const counters = []; // { el, read: () => [found, total] }; found is null for untracked types (js/model.js)
   const t = i18n.t;
   const markersById = new Map(markers.map((m) => [m.id, m]));
 
@@ -66,7 +66,7 @@ export function createSidebar({
     input.addEventListener("change", () => onToggle([type.id], input.checked));
     typeInputs.set(type.id, input);
     const row = h("label", { class: `row${nested ? " nested" : ""}` },
-      input, dot(type), h("span", { class: "name" }, label), count(() => [type.found, type.total]));
+      input, dot(type), h("span", { class: "name" }, label), count(() => [type.untracked ? null : type.found, type.total]));
     return row;
   }
 
@@ -147,7 +147,7 @@ export function createSidebar({
     const input = h("input", { type: "checkbox" });
     input.addEventListener("change", () => onToggle(group.types.map((x) => x.id), input.checked));
     groupInputs.push({ input, group });
-    const head = h("label", { class: "row group-head" }, input, h("span", { class: "name" }, label), count(() => [group.found, group.total]));
+    const head = h("label", { class: "row group-head" }, input, h("span", { class: "name" }, label), count(() => [group.untracked ? null : group.found, group.total]));
     const line = h("div", { class: "line" }, head, soloButton(group.types.map((x) => x.id), label), expanderSlot());
     return h("div", { class: "block" }, line, ...group.types.map((type) => typeBlock(type, t(`type.${type.id}`), true)));
   }
@@ -278,7 +278,12 @@ export function createSidebar({
   }
 
   function refreshCounts() {
-    for (const { el, read } of counters) el.textContent = formatCount(...read());
+    for (const { el, read } of counters) {
+      const [found, total] = read();
+      el.textContent = formatCount(found, total);
+      // "Found / total in the game" does not fit a bare total.
+      if (found == null) el.removeAttribute("title");
+    }
     refreshExploration();
     refreshNudges();
   }

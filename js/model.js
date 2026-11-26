@@ -3,9 +3,28 @@
 import { stageCount, stagesDone } from "./trials.js";
 import { explorationValue } from "./exploration.js";
 
-// Counter text for a type, entry or group: found / total.
+// Counter text for a type, entry or group: found / total, or just the total for what is never marked found
+// (found = null: portals, mechanisms).
 export function formatCount(found, total) {
-  return `${found}/${total}`;
+  return found == null ? `${total}` : `${found}/${total}`;
+}
+
+// Types the player never marks found (categories.json `untracked`): things that stay on the map and that
+// passing by changes nothing about, such as portals and mechanisms. Their popup has no "Mark as found" and
+// their counters show only the total.
+export function isUntracked(categories, typeId) {
+  return categories.types[typeId]?.untracked === true;
+}
+
+// Progress clean-up: removes from `foundIds` the markers of untracked types, marked found before those types
+// became untracked. Runs when a map loads and when a backup is imported, like js/trials.js
+// migrateFoundTrials. Returns whether anything changed.
+export function dropUntracked(foundIds, markers, categories) {
+  let changed = false;
+  for (const m of markers) {
+    if (isUntracked(categories, m.type) && foundIds.delete(m.id)) changed = true;
+  }
+  return changed;
 }
 
 // Progress of one map as the backup messages report it: found markers (Divine Trials not included) and
@@ -84,7 +103,8 @@ export function buildModel(categories, entries, markers) {
       .map((id) => types.get(id))
       .filter((t) => t && (t.expected != null || t.loaded > 0));
     if (groupTypes.length === 0) continue;
-    groups.push({ id: g.id, types: groupTypes, found: 0, total: 0 });
+    // A group of untracked types only (the auxiliary one) counts no found markers either.
+    groups.push({ id: g.id, types: groupTypes, found: 0, total: 0, untracked: groupTypes.every((t) => t.untracked) });
   }
   const explorationRules = categories.explorationRules ?? [];
   const model = { groups, types, entryById, explorationRules, unknownTypes: [...unknownTypes] };
@@ -98,6 +118,7 @@ export function buildModel(categories, entries, markers) {
 export function applyProgress(model, foundIds, trials) {
   for (const type of model.types.values()) {
     const done = (id) => {
+      if (type.untracked) return 0;
       const stages = type.stagesById.get(id);
       if (stages) return stagesDone(trials[id], stages);
       return foundIds.has(id) ? 1 : 0;

@@ -887,6 +887,42 @@ try {
     equal(message, i18nEn.tf("ui.importedLayers", { n: 1, layers }), "message");
   });
 
+  // Portals are never found (categories.json `untracked`): no "Mark as found", a counter with the total only,
+  // old marks dropped, and "Go to this map" opens the destination on the portal back.
+  const portal = markers.find((m) => m.type === "portal" && json("data/maps.json")[m.to] && !json("data/maps.json")[m.to].draft);
+  if (portal) {
+    await check("portal: titled by its destination, no found button, goes to the portal back", async () => {
+      await load();
+      await ev(`localStorage.clear(); localStorage.setItem("slmap:v1:progress:${MAP}", ${JSON.stringify(JSON.stringify([chest.id, portal.id]))})`);
+      await load();
+      equal(await stored("progress"), [chest.id], "old portal mark dropped");
+      const portals = markers.filter((m) => m.type === "portal").length;
+      equal(await ev(`document.querySelector('.solo[data-types="portal"]:not([data-entry])').closest(".line").querySelector(".count").textContent`),
+        String(portals), "portal counter: the total alone");
+      equal(await openByHash(portal), i18nEn.tf("popup.portalTo", { map: i18nEn.t(`map.${portal.to}`) }), "title");
+      equal(await ev(`[!!${POPUP}.querySelector(".found-btn"), ${POPUP}.querySelector(".go-btn")?.textContent]`),
+        [false, `${i18nEn.t("popup.goToMap")} →`], "buttons");
+      const back = json(`data/markers/${portal.to}.json`).find((m) => m.type === "portal" && m.to === MAP);
+      await ev(`window.__stale = true; ${POPUP}.querySelector(".go-btn").click()`);
+      await until(`!window.__stale && document.querySelector(".leaflet-popup .mk-popup strong")?.textContent`, "the destination's popup", LOAD_WAIT);
+      equal(await ev(`location.hash`), `#${portal.to}/${back.id}`, "address");
+      equal(await popupTitle(), i18nEn.tf("popup.portalTo", { map: i18nEn.t(`map.${MAP}`) }), "the portal back");
+    });
+  }
+  // A portal to a map the site does not have yet says so, with no button.
+  const allMapsCfg = json("data/maps.json");
+  const nowhere = Object.keys(allMapsCfg).flatMap((id) => (json(`data/markers/${id}.json`) ?? [])
+    .filter((m) => m.type === "portal" && !allMapsCfg[m.to]).map((m) => ({ id, m })))[0];
+  if (nowhere) {
+    await check(`portal to a map not on the site (${nowhere.m.id}): a note, no button`, async () => {
+      await ev(`window.__stale = true`);
+      await send("Page.navigate", { url: `${BASE}?lang=en#${nowhere.id}/${nowhere.m.id}` });
+      await until(`!window.__stale && document.querySelector(".leaflet-popup .mk-popup strong")?.textContent`, "the popup", LOAD_WAIT);
+      equal(await ev(`[[...${POPUP}.querySelectorAll(".note")].at(-1)?.textContent, !!${POPUP}.querySelector(".go-btn, .found-btn")]`),
+        [i18nEn.t("popup.mapNotOnSite"), false], "note and buttons");
+    });
+  }
+
   await check("pinch zoom hides the markers until the fingers lift", async () => {
     await viewport(390, 844, true);
     await freshLoad("?lang=en");

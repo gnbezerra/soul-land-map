@@ -4,9 +4,10 @@ import {
   loadSettings, saveSettings, loadProgress, saveProgress, loadTrials, saveTrials, buildBackup, parseBackup,
 } from "./storage.js";
 import { detectLang, loadI18n, loadLanguages } from "./i18n.js";
-import { buildModel, applyProgress, countProgress } from "./model.js";
+import { buildModel, applyProgress, countProgress, dropUntracked } from "./model.js";
 import { parseHash, mapHash, markerHash, markerLink } from "./links.js";
 import { openingView, selectableMaps } from "./maps.js";
+import { canGoTo, returnPortal } from "./portals.js";
 import { stageCounts, stagesDone, setTrialProgress, migrateFoundTrials } from "./trials.js";
 import { createLayers } from "./layers.js";
 import { createSidebar } from "./sidebar.js";
@@ -46,11 +47,13 @@ select.setAttribute("aria-label", t("ui.region"));
 for (const id of selectableMaps(maps, mapId)) {
   select.append(new Option(t(`map.${id}`, id), id, false, id === mapId));
 }
-select.addEventListener("change", () => {
-  saveSettings({ ...settings, mapId: select.value });
-  location.hash = mapHash(select.value);
+// `hash` may open a marker there (#<map>/<marker id>).
+function switchMap(id, hash = mapHash(id)) {
+  saveSettings({ ...settings, mapId: id });
+  location.hash = hash;
   location.reload();
-});
+}
+select.addEventListener("change", () => switchMap(select.value));
 
 // Language selector: shows the codes to keep the top bar narrow; full names are tooltips.
 // The choice is saved; an explicit ?lang= in the URL would override it, so it is dropped.
@@ -213,6 +216,9 @@ if (!calibrated) {
   // Trial ids marked found before stage progress existed become complete trials (js/trials.js).
   const trialStages = stageCounts(markers);
   const migrateTrials = (foundIds, trialProgress) => migrateFoundTrials(foundIds, trialProgress, trialStages);
+  // Portals and mechanisms marked found before they became untracked are dropped (js/model.js).
+  const cleanProgress = (foundIds, trialProgress) =>
+    [migrateTrials(foundIds, trialProgress), dropUntracked(foundIds, markers, categories)].some(Boolean);
 
   function persist() {
     const savedFound = saveProgress(mapId, found);
@@ -253,9 +259,15 @@ if (!calibrated) {
     onPopupClose: (id) => {
       if (parseHash(location.hash).markerId === id) history.replaceState(null, "", mapHash(mapId));
     },
+    // A portal's "Go to this map" opens the destination on the portal back, where the player comes out.
+    canGoTo: (id) => canGoTo(maps, id),
+    async onGoTo(id) {
+      const back = returnPortal(await fetchJson(`data/markers/${id}.json`, []), mapId);
+      switchMap(id, back ? markerHash(id, back) : mapHash(id));
+    },
     sheetHost: document.getElementById("map-wrap"),
   });
-  const migrated = migrateTrials(found, trials);
+  const migrated = cleanProgress(found, trials);
   applyProgress(model, found, trials);
   layers.setHideFound(hideFound);
   // Hidden types are stored (not visible ones), so new types default to visible, except the
@@ -342,10 +354,11 @@ if (!calibrated) {
       sidebar.showMessage(t(`ui.importError.${result.error}`), true);
       return;
     }
-    // The backup's own trial ids are migrated first, so the confirmation counts them as layers.
+    // The backup's own trial ids are migrated first, so the confirmation counts them as layers; its portals
+    // are dropped, so it does not count them.
     const incoming = new Set(result.progress[mapId] ?? []);
     const incomingTrials = { ...(result.trials[mapId] ?? {}) };
-    migrateTrials(incoming, incomingTrials);
+    cleanProgress(incoming, incomingTrials);
     const now = progressOf(found, trials);
     const next = progressOf(incoming, incomingTrials);
     const question = now.layers || next.layers
@@ -354,7 +367,7 @@ if (!calibrated) {
       })
       : i18n.tf("ui.importConfirm", { current: now.markers, incoming: next.markers });
     if (!window.confirm(question)) return;
-    // Other maps' trial ids in their found set are migrated when that map is opened.
+    // Other maps' trial ids and portals in their found set are cleaned up when that map is opened.
     for (const [id, ids] of Object.entries(result.progress)) {
       if (id === mapId || !maps[id]) continue;
       saveProgress(id, ids);

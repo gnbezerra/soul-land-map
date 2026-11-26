@@ -22,11 +22,12 @@ const TIER_Z = { major: 250 };
 //   isFound(markerId) -> boolean          onSetFound(markerId, found)
 //   trialDone(markerId) -> stages done    onSetTrial(markerId, stagesDone)   (Divine Trials)
 //   linkFor(markerId) -> link to share    onPopupOpen(markerId)   onPopupClose(markerId)
-// A Divine Trial counts as found once all its stages are done. On narrow screens popups open as a bottom
+//   canGoTo(mapId) -> boolean             onGoTo(mapId)   (portals: "Go to this map")
+// Untracked types (categories.json `untracked`: portals, mechanisms) have no "Mark as found". A Divine Trial counts as found once all its stages are done. On narrow screens popups open as a bottom
 // sheet inside `sheetHost` (js/sheet.js), and the marker they belong to gets a ring.
 export function createLayers({
   L, map, markers, entries, categories, calibration, nativeZoom, i18n, isFound, onSetFound, trialDone, onSetTrial,
-  linkFor, onPopupOpen, onPopupClose, sheetHost,
+  linkFor, onPopupOpen, onPopupClose, canGoTo, onGoTo, sheetHost,
 }) {
   const layerByType = new Map();
   const recordsByEntry = new Map();
@@ -245,6 +246,23 @@ export function createLayers({
       const section = makeTrialSection(m);
       actions.append(section.pop(), makeFooter(m, point));
       root.append(...section, actions);
+      return root;
+    }
+
+    // A portal takes the player to its map, when the site has it; untracked types have no main button.
+    if (m.type === "portal" && m.to) {
+      if (canGoTo(m.to)) {
+        const go = el("button", "go-btn", `${i18n.t("popup.goToMap")} →`);
+        go.type = "button";
+        go.addEventListener("click", () => onGoTo(m.to));
+        actions.append(go);
+      } else {
+        root.append(el("p", "note", i18n.t("popup.mapNotOnSite")));
+      }
+    }
+    if (categories.types[m.type]?.untracked) {
+      actions.append(makeFooter(m, point));
+      root.append(actions);
       return root;
     }
 

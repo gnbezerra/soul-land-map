@@ -1109,7 +1109,8 @@ body:not(.sidebar-hidden) .solo-chip-lane {
   margin: 0;
 }
 
-.found-btn {
+.found-btn,
+.go-btn {
   padding: 8px 12px;
   border: 1px solid #2c394a;
   border-radius: 16px;
@@ -1117,7 +1118,9 @@ body:not(.sidebar-hidden) .solo-chip-lane {
   color: var(--text);
 }
 
-.found-btn.is-found {
+/* A found marker's button, and a portal's "Go to this map", the one action of its popup. */
+.found-btn.is-found,
+.go-btn {
   background: var(--accent);
   border-color: var(--accent);
   color: #10151b;
@@ -1353,7 +1356,8 @@ body:not(.sidebar-hidden) .solo-chip-lane {
 }
 
 @media (pointer: coarse) {
-  .found-btn {
+  .found-btn,
+  .go-btn {
     min-height: 44px;
   }
 

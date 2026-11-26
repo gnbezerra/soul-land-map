@@ -138,8 +138,8 @@ helps players more, and rewards need a lot of data collected in-game.
   view is 2×. Suotuo at 5 was a 4× blur on a phone (owner, 2026-11-16).
 - **A map with no data** shows an empty sidebar and a `0/0` exploration value (a new draft map, before its
   data).
-- **Some UI keys exist only in English** on purpose: `type.book`, `type.mechanism`, `type.portal`,
-  `type.boss`, `type.arena` fall back to `en.json`.
+- **Some UI keys exist only in English** on purpose: `type.book`, `type.mechanism`, `type.boss`,
+  `type.arena` fall back to `en.json`.
 - **Settings are not in the backup**, only the progress (SPEC §6).
 - **Switching the language reloads the page**, so the map goes back to the whole-map view (an open marker
   opens again through its deep link). The owner judged it minor (2026-11-15); keeping the view would mean

@@ -1,18 +1,21 @@
 // What a marker popup says: title, tags and the extra fields. Pure: no DOM and no Leaflet, so it is easy to
 // test. `i18n` is the object from js/i18n.js loadI18n (t, entry, marker); `entries` is data/entries/<map>.json.
 import { UNLISTED_TAG } from "./model.js";
+import { portalTitle } from "./portals.js";
 
 // Extra marker fields shown in the popup when present. A Divine Trial shows its subtype in the type line
-// instead, and the pillar of a challenge chest is also drawn on the map while its popup is open.
-export const POPUP_FIELDS = ["subtype", "players", "contract", "pillar", "species", "seed", "requiresSeed", "to"];
+// instead, the pillar of a challenge chest is also drawn on the map while its popup is open, and a portal's
+// destination (`to`) is in its title.
+export const POPUP_FIELDS = ["subtype", "players", "contract", "pillar", "species", "seed", "requiresSeed"];
 // Fields whose value is a code with a translated name: field -> i18n key prefix (e.g. "contract.wood").
 const NAMED_VALUES = { contract: "contract" };
 
 // Own name (trials, books, teleports, viewpoints) first, then the entry name (with the marker's number in
-// the game's answer), then the type.
+// the game's answer), then, for a portal, its destination ("Portal to ..."), then the type.
 export function markerTitle(m, i18n) {
   const own = i18n.marker(m.id).name;
   if (own) return own;
+  if (m.type === "portal" && m.to) return portalTitle(m, i18n);
   if (m.entry) return i18n.entry(m.entry).name + (m.entryIndex ? ` #${m.entryIndex}` : "");
   return i18n.t(`type.${m.type}`);
 }

@@ -6,14 +6,19 @@ import { markerTitle, effectiveTags, popupFields, consumesContract, POPUP_FIELDS
 
 // The part of js/i18n.js's object that popup.js reads.
 function fakeI18n({ ui = {}, entries = {}, markers = {} } = {}) {
+  const t = (key, fallback) => ui[key] ?? fallback ?? key;
   return {
-    t: (key, fallback) => ui[key] ?? fallback ?? key,
+    t,
+    tf: (key, vars) => t(key).replace(/\{(\w+)\}/g, (m, name) => vars[name] ?? m),
     entry: (id) => ({ name: entries[id] ?? id, description: "" }),
     marker: (id) => ({ name: markers[id] ?? "", note: "", howto: "" }),
   };
 }
 const i18n = fakeI18n({
-  ui: { "type.book": "Book", "type.chest_normal": "Normal Chest", "contract.wood": "Dragonwood" },
+  ui: {
+    "type.book": "Book", "type.chest_normal": "Normal Chest", "type.portal": "Portal", "contract.wood": "Dragonwood",
+    "popup.portalTo": "Portal to {map}", "map.east": "East Area",
+  },
   entries: { "set-a": "Set A" },
   markers: { "m-0003": "The Book of Tang" },
 });
@@ -23,6 +28,11 @@ test("markerTitle: own name, then the entry name with the marker's number, then 
   assert.equal(markerTitle({ id: "m-0001", type: "chest_normal", entry: "set-a", entryIndex: 4 }, i18n), "Set A #4");
   assert.equal(markerTitle({ id: "m-0001", type: "chest_normal", entry: "set-a" }, i18n), "Set A");
   assert.equal(markerTitle({ id: "m-0009", type: "book" }, i18n), "Book");
+});
+
+test("markerTitle: a portal names its destination", () => {
+  assert.equal(markerTitle({ id: "m-0010", type: "portal", to: "east" }, i18n), "Portal to East Area");
+  assert.equal(markerTitle({ id: "m-0010", type: "portal" }, i18n), "Portal", "no destination");
 });
 
 test("effectiveTags: the entry's tags, then the marker's own, without repeats", () => {
@@ -38,12 +48,13 @@ test("effectiveTags: the entry's tags, then the marker's own, without repeats", 
 });
 
 test("popupFields: only the fields a marker has, in order, with readable values", () => {
-  const m = { type: "chest_challenge", players: 2, pillar: { x: 557, y: 505.5 }, to: "", seed: null };
+  const m = { type: "chest_challenge", players: 2, pillar: { x: 557, y: 505.5 }, species: "", seed: null };
   assert.deepEqual(popupFields(m, i18n), [
     { field: "players", value: "2" },
     { field: "pillar", value: "X 557, Y 505.5" },
   ]);
   assert.deepEqual(popupFields({ type: "chest_normal" }, i18n), []);
+  assert.deepEqual(popupFields({ type: "portal", to: "east" }, i18n), [], "a portal's destination is in its title");
 });
 
 test("popupFields: contracts show their name, falling back to the code", () => {

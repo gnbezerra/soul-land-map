@@ -2,7 +2,9 @@
 // Uses small made-up data, so editing the real CSVs never breaks them.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { buildModel, applyProgress, formatCount, countProgress, isUnlisted, splitUnlisted } from "../js/model.js";
+import {
+  buildModel, applyProgress, formatCount, countProgress, isUnlisted, splitUnlisted, isUntracked, dropUntracked,
+} from "../js/model.js";
 
 const categories = {
   groups: [
@@ -102,6 +104,61 @@ test("countProgress: found markers without trials, and trial layers, ignoring st
 
 test("formatCount", () => {
   assert.equal(formatCount(3, 10), "3/10");
+  assert.equal(formatCount(0, 10), "0/10");
+  assert.equal(formatCount(null, 4), "4", "untracked: the total alone");
+});
+
+// Portals and mechanisms are never marked found (categories.json `untracked`).
+const auxCategories = {
+  groups: [
+    { id: "normal_chest", types: ["chest_normal"] },
+    { id: "auxiliary", types: ["mechanism", "portal"] },
+    { id: "mixed", types: ["book", "teleport"] },
+  ],
+  explorationRules: [{ id: "chests", types: ["chest_normal"], points: 5 }],
+  types: {
+    chest_normal: { color: "#000", glyph: "C" },
+    mechanism: { color: "#000", glyph: "L", untracked: true },
+    portal: { color: "#000", glyph: "O", untracked: true },
+    book: { color: "#000", glyph: "B" },
+    teleport: { color: "#000", glyph: "T", untracked: true },
+  },
+};
+const auxMarkers = [
+  { id: "a-0001", type: "chest_normal" },
+  { id: "a-0002", type: "portal", to: "east" },
+  { id: "a-0003", type: "portal", to: "west" },
+  { id: "a-0004", type: "mechanism" },
+  { id: "a-0005", type: "book" },
+  { id: "a-0006", type: "teleport" },
+];
+
+test("isUntracked: only types flagged in categories.json", () => {
+  assert.equal(isUntracked(auxCategories, "portal"), true);
+  assert.equal(isUntracked(auxCategories, "book"), false);
+  assert.equal(isUntracked(auxCategories, "unknown_type"), false);
+});
+
+test("untracked types count no found markers, alone or in a group", () => {
+  const model = buildModel(auxCategories, {}, auxMarkers);
+  applyProgress(model, new Set(auxMarkers.map((m) => m.id)), {});
+  assert.deepEqual([model.types.get("portal").found, model.types.get("portal").total], [0, 2]);
+  assert.equal(model.types.get("portal").untracked, true);
+  assert.equal(model.types.get("book").found, 1);
+  const group = (id) => model.groups.find((g) => g.id === id);
+  assert.equal(group("auxiliary").untracked, true, "every type untracked");
+  assert.deepEqual([group("mixed").untracked, group("mixed").found, group("mixed").total], [false, 1, 2],
+    "a group with a tracked type counts that one");
+  assert.equal(group("normal_chest").untracked, false);
+  assert.deepEqual([model.exploration.found, model.exploration.total], [5, 5]);
+});
+
+test("dropUntracked: removes portals and mechanisms from the found set, keeps the rest", () => {
+  const found = new Set(["a-0001", "a-0002", "a-0004", "a-0005", "gone-0001"]);
+  assert.equal(dropUntracked(found, auxMarkers, auxCategories), true);
+  assert.deepEqual([...found], ["a-0001", "a-0005", "gone-0001"], "stale ids are not its business");
+  assert.equal(dropUntracked(found, auxMarkers, auxCategories), false, "nothing left to drop");
+  assert.equal(dropUntracked(new Set(), auxMarkers, auxCategories), false);
 });
 
 test("splitUnlisted: the game's entries in their order, then the site's own (tag unlisted)", () => {
