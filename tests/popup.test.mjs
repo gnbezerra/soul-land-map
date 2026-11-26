@@ -48,7 +48,7 @@ test("effectiveTags: the entry's tags, then the marker's own, without repeats", 
 });
 
 test("popupFields: only the fields a marker has, in order, with readable values", () => {
-  const m = { type: "chest_challenge", players: 2, pillar: { x: 557, y: 505.5 }, species: "", seed: null };
+  const m = { type: "chest_challenge", players: 2, pillar: { x: 557, y: 505.5 }, requiresSeed: "", seed: null };
   assert.deepEqual(popupFields(m, i18n), [
     { field: "players", value: "2" },
     { field: "pillar", value: "X 557, Y 505.5" },

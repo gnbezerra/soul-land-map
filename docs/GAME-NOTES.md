@@ -8,7 +8,7 @@ these facts (`docs/SPEC.md`), how they get into the data (`docs/DATA.md`), and w
 
 ## Regions
 
-The site plans eight regions:
+The game has eight regions; the site maps the first seven:
 
 1. Nuoding City Area
 2. Suotuo City Area
@@ -19,7 +19,8 @@ The site plans eight regions:
 7. City of Slaughter
 8. Dragon Island
 
-- The first seven follow the same category pattern; Dragon Island has no exploration (SPEC §4.9).
+- The first seven follow the same category pattern; Dragon Island has no exploration and is not on the
+  site ("Dragon Island" below, SPEC §4.9).
 - Each region is fully separate, linked to the others by portals with loading screens. Going through a
   portal changes nothing in the game: unlike a teleport point, it is not activated and gives no exploration
   value (owner, 2026-11-26).
@@ -145,19 +146,17 @@ turns out to be there after all):
 
 ## Dragon Island
 
-- 9 fixed boss respawns; bosses of the same species drop the same soul ring.
-- Ancient Tooth Peak is the world-boss arena.
-- A teleport near Silent Beach (Safe Zone) sits next to a whirlpool portal to Tian Dou City Area.
+Why the site leaves it out (owner, 2026-11-26):
 
-| Spawn location | Boss | Species |
-| --- | --- | --- |
-| Broken Tooth Reefs | Sly Supreme Orangutan | Supreme Orangutan |
-| North Coast Beach | Combatant Diamond Mammoth | Diamond Mammoth |
-| Thunder's Edge | Sly Mighty Kong Bear | Supreme Bear |
-| West Coast Beach | Combatant Supreme Bear | Supreme Bear |
-| East Coast Beach | Combatant Supreme Orangutan | Supreme Orangutan |
-| South Coast Beach | Sly Supreme Orangutan | Supreme Orangutan |
-| Hope Island | Sly Wolf Thief Leader | Wolf Thief |
+- It has no exploration: clicking the region's name on the game's map opens no exploration panel, as it does
+  in the other regions, and there are no chests, crystals or anything else to collect.
+- Its map shows a whirlpool portal to Tian Dou City Area, a teleport point next to it at Silent Beach (Safe
+  Zone), active from the start, and the bosses.
+- The bosses respawn 2 hours after they die. The game's Dragon Island screen lists them with their status,
+  who holds the reward and a "Go" button, and the first item of a boss's rewards lists the soul rings it can
+  give, so players do not open the map to find them.
+- Ancient Tooth Peak, in the centre, is an arena used once so far, in an event with a world boss that
+  appeared every two hours.
 | Soul Rest Island (north) | Combatant Wolf Thief Leader | Wolf Thief |
 | Soul Rest Island (south) | Sly Diamond Mammoth | Diamond Mammoth |
 

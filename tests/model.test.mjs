@@ -11,19 +11,19 @@ const categories = {
     { id: "normal_chest", types: ["chest_normal"] },
     { id: "divine_trial", types: ["divine_trial"] },
     { id: "extras", types: ["book"] },
-    { id: "empty", types: ["boss"] },
+    { id: "empty", types: ["relic"] },
   ],
-  // Books give no points; bosses would, but there is no data for them.
+  // Books give no points; relics would, but there is no data for them.
   explorationRules: [
     { id: "chests", types: ["chest_normal"], points: 5 },
     { id: "trials", types: ["divine_trial"], points: 10 },
-    { id: "bosses", types: ["boss"], points: 80 },
+    { id: "relics", types: ["relic"], points: 80 },
   ],
   types: {
     chest_normal: { color: "#000", glyph: "C" },
     divine_trial: { color: "#000", glyph: "D" },
     book: { color: "#000", glyph: "B" },
-    boss: { color: "#000", glyph: "X" },
+    relic: { color: "#000", glyph: "X" },
   },
 };
 const entries = {

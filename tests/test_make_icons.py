@@ -111,7 +111,7 @@ class CliTest(unittest.TestCase):
     def test_every_icon_is_referenced_by_categories(self):
         import json
         cats = json.loads((ROOT / "data" / "categories.json").read_text(encoding="utf-8"))
-        used = {f for t in cats["types"].values() for f in (t.get("icon"), t.get("iconFound")) if f}
+        used = {f for t in cats["types"].values() for f in (t.get("icon"), t.get("iconFound"), t.get("badgeIcon")) if f}
         self.assertTrue(ICON_NAMES, "ICONS table found in the tool")
         self.assertEqual(used, {f"icons/{n}.png" for n in ICON_NAMES}, "categories.json and ICONS agree")
         if make_icons:

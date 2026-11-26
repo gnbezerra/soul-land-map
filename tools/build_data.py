@@ -33,7 +33,6 @@ markers.csv columns
     pillar_x, pillar_y (chest_challenge)   optional, both or neither
     seed         (seed)                    number shown by the game when picking it up
     requires_seed (mechanism)              seed number needed to activate it
-    species      (boss)                    e.g. supreme-bear
     to           (portal)                  id of the destination map
     links                                  related marker ids separated by ';'
     tags                                   this marker's own requirements, separated by ';'
@@ -74,7 +73,7 @@ ROOT = Path(__file__).resolve().parent.parent
 MARKER_TYPES = {
     "chest_normal", "chest_coop", "chest_challenge", "chest_contract", "chest_boss", "chest_respawn", "crystal",
     "divine_trial", "encounter", "teleport", "viewpoint", "seed", "mechanism",
-    "portal", "book", "boss", "arena",
+    "portal", "book",
 }
 # Types whose markers belong to an exploration entry (the in-game list).
 ENTRY_TYPES = {
@@ -90,7 +89,6 @@ EXTRA_COLUMNS = {
     "pillar_y": {"chest_challenge"},
     "seed": {"seed"},
     "requires_seed": {"mechanism"},
-    "species": {"boss"},
     "to": {"portal"},
 }
 REQUIRED_EXTRAS = {
@@ -99,7 +97,6 @@ REQUIRED_EXTRAS = {
     "chest_contract": ["contract"],
     "seed": ["seed"],
     "mechanism": ["requires_seed"],
-    "boss": ["species"],
     "portal": ["to"],
 }
 ENUMS = {"subtype": {"puzzle", "combat"}, "contract": {"wood", "flame", "frost"}}
@@ -347,11 +344,6 @@ def load_markers(rows, map_id, entries, by_name, inside, rep):
             v = parse_int(r["requires_seed"], where, "requires_seed", rep, lo=1)
             if v is not None:
                 m["requiresSeed"] = v
-        if r["species"]:
-            if SLUG.match(r["species"]):
-                m["species"] = r["species"]
-            else:
-                rep.error(where, f"species '{r['species']}' must be a lowercase slug like 'supreme-bear'")
         if r["to"]:
             m["to"] = r["to"]
         if r["pillar_x"] or r["pillar_y"]:

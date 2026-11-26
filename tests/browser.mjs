@@ -909,17 +909,17 @@ try {
       equal(await popupTitle(), i18nEn.tf("popup.portalTo", { map: i18nEn.t(`map.${MAP}`) }), "the portal back");
     });
   }
-  // A portal to a map the site does not have yet says so, with no button.
+  // A portal to a map not on the site says why, with no button: not in yet, or never (Dragon Island).
   const allMapsCfg = json("data/maps.json");
-  const nowhere = Object.keys(allMapsCfg).flatMap((id) => (json(`data/markers/${id}.json`) ?? [])
-    .filter((m) => m.type === "portal" && !allMapsCfg[m.to]).map((m) => ({ id, m })))[0];
-  if (nowhere) {
+  const nowheres = Object.keys(allMapsCfg).flatMap((id) => (json(`data/markers/${id}.json`) ?? [])
+    .filter((m) => m.type === "portal" && !allMapsCfg[m.to]).map((m) => ({ id, m })));
+  for (const nowhere of nowheres) {
     await check(`portal to a map not on the site (${nowhere.m.id}): a note, no button`, async () => {
       await ev(`window.__stale = true`);
       await send("Page.navigate", { url: `${BASE}?lang=en#${nowhere.id}/${nowhere.m.id}` });
       await until(`!window.__stale && document.querySelector(".leaflet-popup .mk-popup strong")?.textContent`, "the popup", LOAD_WAIT);
       equal(await ev(`[[...${POPUP}.querySelectorAll(".note")].at(-1)?.textContent, !!${POPUP}.querySelector(".go-btn, .found-btn")]`),
-        [i18nEn.t("popup.mapNotOnSite"), false], "note and buttons");
+        [i18nEn.t(`popup.mapNotOnSite.${nowhere.m.to}`, i18nEn.t("popup.mapNotOnSite")), false], "note and buttons");
     });
   }
 

@@ -257,7 +257,8 @@ export function createLayers({
         go.addEventListener("click", () => onGoTo(m.to));
         actions.append(go);
       } else {
-        root.append(el("p", "note", i18n.t("popup.mapNotOnSite")));
+        // A map the site will never have says why (popup.mapNotOnSite.<map>); the others, that it is not in yet.
+        root.append(el("p", "note", i18n.t(`popup.mapNotOnSite.${m.to}`, i18n.t("popup.mapNotOnSite"))));
       }
     }
     if (categories.types[m.type]?.untracked) {

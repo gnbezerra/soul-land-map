@@ -6,7 +6,7 @@ import { portalTitle } from "./portals.js";
 // Extra marker fields shown in the popup when present. A Divine Trial shows its subtype in the type line
 // instead, the pillar of a challenge chest is also drawn on the map while its popup is open, and a portal's
 // destination (`to`) is in its title.
-export const POPUP_FIELDS = ["subtype", "players", "contract", "pillar", "species", "seed", "requiresSeed"];
+export const POPUP_FIELDS = ["subtype", "players", "contract", "pillar", "seed", "requiresSeed"];
 // Fields whose value is a code with a translated name: field -> i18n key prefix (e.g. "contract.wood").
 const NAMED_VALUES = { contract: "contract" };
 

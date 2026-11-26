@@ -131,8 +131,7 @@ The game's exploration UI has 6 categories, mirrored as the first groups of the 
 | Other | `teleport`, `viewpoint`, `seed` |
 
 The site's own groups are outside the game's counters and the exploration value: the respawned chests
-(`chest_respawn`, Nuoding only, §4.5), extras (`book`), auxiliary (`mechanism`, `portal`) and Dragon Island
-(`boss`, `arena`).
+(`chest_respawn`, Nuoding only, §4.5), extras (`book`) and auxiliary (`mechanism`, `portal`).
 
 `data/categories.json` holds three things:
 
@@ -144,7 +143,7 @@ The site's own groups are outside the game's counters and the exploration value:
 | Field | Required | Meaning |
 | --- | --- | --- |
 | `color` | yes | the category color: glow, pillar line, and the dot of a type with no icon |
-| `glyph` | yes | the letter in the colored dot when a type has no icon (`seed`, `mechanism`, `arena` today) |
+| `glyph` | yes | the letter in the colored dot when a type has no icon (`seed`, `mechanism` today) |
 | `icon` | for types with a sprite | path in `icons/`; the sidebar shows it too (§9) |
 | `tier` | yes | `common`, `major` or `minor`: the marker's size and glow (§7.2) |
 | `size` | optional | box in px, which overrides the tier: the teleport and scenic spot sprites are thin, so they get 26 px to weigh about as much as a chest |
@@ -246,7 +245,8 @@ Normal chests carry no reward of their own: it comes from the category's default
   Its title names the destination (`popup.portalTo`: "Portal to Suotuo City Area"; the `map.<id>` names of
   maps not on the site yet are in the UI strings too). Its popup's one action, "Go to this map", opens the
   destination on the portal that leads back, where the player comes out (`js/portals.js`), or on the whole
-  map when there is not exactly one; a destination not on the site, or a draft, gets a note instead.
+  map when there is not exactly one; a destination not on the site, or a draft, gets a note instead: "not on
+  the site yet", or a map's own reason (`popup.mapNotOnSite.<map>`: Dragon Island, §4.9).
 - `seed`: a Blue Silver Grass seed (Mixed Area), with the field `seed`, the number the game shows on pickup
   (it can differ from `entry_index`; both are stored).
 - `mechanism`: the magic mechanism near each seed, which builds a bridge only with the right seed;
@@ -254,7 +254,6 @@ Normal chests carry no reward of their own: it comes from the category's default
   away after a while and the seed is not used up (`docs/GAME-NOTES.md` "Regions").
 - `book`: a lore book, in the extras group. It has no entry: its official title is a `name` in
   `marker_texts.csv` and is the popup title.
-- `boss`, `arena`: Dragon Island (§4.9).
 
 ### 4.6 Divine Trial
 
@@ -361,18 +360,11 @@ The tables follow what the owner saw in-game (the details and the open questions
 
 The site may show a pick's options without their odds until the odds are known.
 
-### 4.9 Dragon Island (not implemented yet)
+### 4.9 Dragon Island
 
-One map without exploration, low priority. The game offers two lines with the same map and markers (Combat
-Zone, open PvP; Safe Zone, no PvP), so the site has one marker file and a Combat/Safe toggle in the header,
-only on this map.
-
-- Types: `boss` (fixed respawns, with the field `species`) and `arena` (Ancient Tooth Peak, world-boss
-  events).
-- No counters and no exploration bar. Positions are collected in-game.
-- The sidebar filters by species, and the popup lists the other locations of the same species.
-
-The bosses and their spawns: `docs/GAME-NOTES.md` "Dragon Island".
+Not on the site (owner, 2026-11-26): it has no exploration, and the game's own Dragon Island screen covers
+its bosses better than a map could (`docs/GAME-NOTES.md` "Dragon Island"). Tian Dou's portal to it stays, and
+its popup says why there is no map (`popup.mapNotOnSite.dragon-island`, §4.2 `portal`).
 
 ## 5. i18n
 
@@ -492,7 +484,7 @@ The markers are the game's sprites (§9), sized by tier (`TIER_SIZE` in `js/laye
 
 | Tier | Size | Glow | Types |
 | --- | --- | --- | --- |
-| `major` | 38 px | yes, in the category color | Divine Trials, crystals, encounters, books, bosses: what the player hunts for. Drawn above the chests. |
+| `major` | 38 px | yes, in the category color | Divine Trials, crystals, encounters, books: what the player hunts for. Drawn above the chests. |
 | `common` | 22 px | no | chests |
 | `minor` | 20 px | no | teleports, scenic spots and portals, which the game's own minimap already shows (teleports and scenic spots override the size, §4.2 `size`) |
 
@@ -670,5 +662,4 @@ Decided:
 - the exploration bar shows the game's exploration value in points, with the map's reward milestones;
 - trial progress is an integer set by the player, and a trial stage is called a "layer" on the site (§4.6).
 
-Open: the official Chinese texts as the source of truth (later, non-blocking); Dragon Island's positions
-(in-game collection).
+Open: the official Chinese texts as the source of truth (later, non-blocking).

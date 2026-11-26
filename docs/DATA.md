@@ -55,7 +55,7 @@ In every CSV file:
 | Column | Required | Meaning |
 | --- | --- | --- |
 | `id` | always | `<map>-0001`: unique, permanent, never reused |
-| `type` | always | `chest_normal`, `chest_coop`, `chest_challenge`, `chest_contract`, `chest_boss`, `chest_respawn`, `crystal`, `divine_trial`, `encounter`, `teleport`, `viewpoint`, `seed`, `mechanism`, `portal`, `book`, `boss`, `arena` |
+| `type` | always | `chest_normal`, `chest_coop`, `chest_challenge`, `chest_contract`, `chest_boss`, `chest_respawn`, `crystal`, `divine_trial`, `encounter`, `teleport`, `viewpoint`, `seed`, `mechanism`, `portal`, `book` |
 | `x`, `y` | always | game coordinates, as shown in the game UI |
 | `entry` | for chests, crystals, encounters, teleports, viewpoints and seeds | entry id, or its English name when no other entry has it |
 | `entry_index` | optional | number of the `[Location N]` link in the in-game answer |
@@ -65,7 +65,6 @@ In every CSV file:
 | `pillar_x`, `pillar_y` | optional, `chest_challenge` | both or neither |
 | `seed` | `seed` | number shown by the game when picking the seed up |
 | `requires_seed` | `mechanism` | seed number needed to activate it |
-| `species` | `boss` | e.g. `supreme-bear` |
 | `to` | `portal` | destination map id |
 | `links` | optional | related marker ids, separated by `;` |
 | `tags` | optional | this marker's own requirements, separated by `;`, on top of its entry's tags (e.g. `grappling_hook` on one chest of a `purple_demon_eye` entry) |
@@ -300,7 +299,8 @@ The steps, in order (each one is described above or under "Assets"):
 
 1. **Pick the map id.** Map ids use hyphens, as they go in the address (`#tian-dou`), and are permanent.
    Portals already use `tian-dou` (Tian Dou City Area), `xing-dou-mixed-area` (Mixed Area of Xing Dou
-   Forest), `sunset-forest` and `dragon-island`. Proposed for the last one, to confirm with the owner when it
+   Forest), `sunset-forest` and `dragon-island` (a map the site leaves out, SPEC §4.9). Proposed for the last
+   region, to confirm with the owner when it
    is added: `city-of-slaughter`.
 2. **Name it** in `i18n/en.json`, `pt.json` and `zh.json` (`map.<id>`, the official name). `game_data.py`
    finds the region by the English one.

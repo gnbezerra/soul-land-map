@@ -103,9 +103,8 @@ helps players more, and rewards need a lot of data collected in-game.
    in the data already). Needs a preview.
 4. **Rewards, items and loot** (SPEC §4.8): popup rewards with icons, including the Divine Trial layer
    rewards.
-5. **Icon leftovers**, when they come up: sprites for `seed` (candidate `dt_icon_cz`), `mechanism` and
-   `arena`, when those regions arrive; sharper major icons on 2x screens if the softness shows ("Known gaps").
-6. **Dragon Island** (SPEC §4.9: the Combat/Safe toggle, the species filter), last.
+5. **Icon leftovers**, when they come up: sprites for `seed` (candidate `dt_icon_cz`) and `mechanism`,
+   when the Mixed Area arrives; sharper major icons on 2x screens if the softness shows ("Known gaps").
 
 ## Waiting on the owner
 
@@ -125,8 +124,8 @@ helps players more, and rewards need a lot of data collected in-game.
 ## Known gaps
 
 - **Expected `build_data.py --check` warnings today:** none for Nuoding and Suotuo. For Xing Dou
-  Great Forest, its portal to `xing-dou-mixed-area`; for Tian Dou, its portal to `dragon-island`: maps that
-  do not exist yet.
+  Great Forest, its portal to `xing-dou-mixed-area`; for Tian Dou, its portal to `dragon-island`: maps not in
+  `maps.json` (Dragon Island never will be, SPEC §4.9).
 - **Suotuo looks crowded at the whole-map view.** Marker size follows the tile zoom (full size from
   `maxNativeZoom` up), not the game's scale. Suotuo has 1.65 image px per game unit at its native zoom against
   Nuoding's 3.57, so at full size its markers sit about 2.2 times closer together on screen. On a phone
@@ -138,8 +137,8 @@ helps players more, and rewards need a lot of data collected in-game.
   view is 2×. Suotuo at 5 was a 4× blur on a phone (owner, 2026-11-16).
 - **A map with no data** shows an empty sidebar and a `0/0` exploration value (a new draft map, before its
   data).
-- **Some UI keys exist only in English** on purpose: `type.book`, `type.mechanism`, `type.boss`,
-  `type.arena` fall back to `en.json`.
+- **Some UI keys exist only in English** on purpose: `type.book` and `type.mechanism` fall back
+  to `en.json`.
 - **Settings are not in the backup**, only the progress (SPEC §6).
 - **Switching the language reloads the page**, so the map goes back to the whole-map view (an open marker
   opens again through its deep link). The owner judged it minor (2026-11-15); keeping the view would mean

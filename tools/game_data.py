@@ -76,7 +76,7 @@ RESPAWN_RARITIES = ("normal", "good")
 NUMBER_WORDS = {"one": "1", "two": "2", "three": "3", "four": "4", "five": "5", "six": "6",
                 "i": "1", "ii": "2", "iii": "3", "iv": "4", "v": "5", "vi": "6"}
 MARKER_HEADER = ["id", "type", "entry", "entry_index", "x", "y", "subtype", "players", "contract",
-                 "pillar_x", "pillar_y", "seed", "requires_seed", "species", "to", "links", "tags"]
+                 "pillar_x", "pillar_y", "seed", "requires_seed", "to", "links", "tags"]
 ENTRY_HEADER = ["id", "type", "name_en", "size", "tags", "name_pt", "name_zh", "desc_en", "desc_pt", "desc_zh"]
 TYPE_ORDER = ["chest_normal", "chest_coop", "chest_challenge", "chest_contract", "chest_boss", "divine_trial",
               "crystal",
